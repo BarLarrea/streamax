@@ -1,0 +1,56 @@
+import mongoose from "mongoose";
+
+const profileSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        profileName: {
+            type: String,
+            required: true
+        },
+        avatar: {
+            type: String,
+            default: "default.png" //only relative path, the avatars will be stored in thr punlic dir in the frontend
+        },
+        likedContent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Content"
+            }
+        ],
+        lastWatched: {
+            type: [
+                {
+                    contentId: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "Content",
+                        required: true
+                    },
+                    progress: {
+                        type: Number,
+                        default: 0
+                    },
+                    updatedAt: {
+                        type: Date,
+                        default: Date.now
+                    }
+                }
+            ], // a small "cache" to quickly fetch a few last watched
+
+            validate: {
+                validator: function (arr) {
+                    return arr.length <= 5;
+                },
+                message: "You can store up to 5 last watched items only"
+            }
+        }
+    },
+
+    { timestamps: true }
+);
+
+const Profile = mongoose.model("Profile", profileSchema);
+export default Profile;
