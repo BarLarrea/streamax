@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 
-import User from "../models/userModel";
+import User from "../models/userModel.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
 
 const registerUser = async (req, res) => {
