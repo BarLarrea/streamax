@@ -6,7 +6,6 @@ const connectDB = async () => {
             ? process.env.MONGO_URI_PROD
             : process.env.MONGO_URI_DEV;
 
-    console.log("NODE_ENV", uri);
     try {
         await mongoose.connect(uri);
         console.log(`MongoDB connected to ${process.env.NODE_ENV} database`);
