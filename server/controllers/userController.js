@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 
 import User from "../models/userModel.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
+import generateAccessToken from "../utils/jwt.js";
 
 const registerUser = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -16,12 +17,10 @@ const registerUser = async (req, res) => {
     }
 
     if (!validatePassword(password)) {
-        return res
-            .status(400)
-            .json({
-                message:
-                    "Password must be at least: 8 characters, one uppercase letter, one lowercase letter,one number, and one special character"
-            });
+        return res.status(400).json({
+            message:
+                "Password must be at least: 8 characters, one uppercase letter, one lowercase letter,one number, and one special character"
+        });
     }
 
     try {
@@ -29,14 +28,12 @@ const registerUser = async (req, res) => {
         if (existingName) {
             return res
                 .status(400)
-                .json({ message: "User Name or Password are already exist" });
+                .json({ message: "User Name is Already Exist" });
         }
 
         const existingEmail = await User.findOne({ email: normalizedEmail });
         if (existingEmail) {
-            return res
-                .status(400)
-                .json({ message: "User Name or Password are already exist" });
+            return res.status(400).json({ message: "Email is Already Exist" });
         }
 
         console.log("Validation passed, ready to create new user...");
@@ -82,8 +79,15 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
+        const accessToken = generateAccessToken(user);
+
         return res.status(200).json({
-            message: `The user ${userName} is logged in successfully!`
+            message: `The user ${userName} is logged in successfully!`,
+            user: {
+                userName,
+                userId: user._id
+            },
+            accessToken
         });
     } catch (error) {
         console.error("Login Error:", error);
