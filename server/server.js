@@ -11,6 +11,9 @@ app.use(express.json());
 connectDB();
 
 // Routes setup
-app.use("api/register", userRout);
+app.use("/api/users", userRout);
 
-app.listen(3000, () => console.log("server is running on port 3000"));
+
+const PORT = process.env.PORT || 5050;
+
+app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
