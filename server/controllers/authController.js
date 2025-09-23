@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
 
-import User from "../models/userModel.js";
+import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
 import generateAccessToken from "../utils/jwt.js";
+import { formatUser } from "../utils/formatUser.js";
 
 const registerUser = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -24,36 +25,29 @@ const registerUser = async (req, res) => {
     }
 
     try {
-        const existingName = await User.findOne({ userName });
+        const existingName = await userRepo.getUserByUserName(userName);
         if (existingName) {
-            return res
-                .status(400)
-                .json({ message: "User Name is Already Exist" });
+            return res.status(400).json({ message: "Username already exists" });
         }
 
-        const existingEmail = await User.findOne({ email: normalizedEmail });
+        const existingEmail = await userRepo.getUserByEmail(normalizedEmail);
         if (existingEmail) {
-            return res.status(400).json({ message: "Email is Already Exist" });
+            return res.status(400).json({ message: "Email already exists" });
         }
 
         console.log("Validation passed, ready to create new user...");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({
-            userName: userName,
+        const newUser = await userRepo.createUser({
+            userName,
             email: normalizedEmail,
             password: hashedPassword
         });
 
-        await newUser.save();
-
         return res.status(201).json({
             message: "User registered successfully",
-            user: {
-                userName: newUser.userName,
-                email: newUser.email
-            }
+            user: formatUser(newUser)
         });
     } catch (error) {
         console.error("Error creating user:", error);
@@ -69,9 +63,13 @@ const loginUser = async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ userName });
+        const user = await userRepo.getUserByUserName(userName);
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        if (!user.isActive) {
+            return res.status(401).json({ message: "User inactive" });
         }
 
         const isPasswordMatch = await bcrypt.compare(password, user.password);
@@ -83,13 +81,7 @@ const loginUser = async (req, res) => {
 
         return res.status(200).json({
             message: `The user ${userName} is logged in successfully!`,
-            user: {
-                userName,
-                userId: user._id,
-                profiles: user.profiles.map((profile) => {
-                    id: profile._id, profileName, avatar;
-                })
-            },
+            user: formatUser(user),
             accessToken
         });
     } catch (error) {

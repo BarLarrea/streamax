@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import express from "express";
 
 import connectDB from "./config/db.js";
-import authRout from "./routes/authRout.js";
-import userRout from "./routes/userRout.js";
+import authRout from "./routes/authRoutes.js";
+import userRout from "./routes/userRoutes.js";
 import verifyAccessToken from "./middlewares/authMiddleware.js";
+import checkUserStatus from "./middlewares/userStatusMiddleware.js";
 
 dotenv.config();
 const app = express();
@@ -15,8 +16,8 @@ connectDB();
 // Routes Setup
 app.use("/api/auth", authRout);
 
-//Ptotected Routes
-app.use("/api/users", verifyAccessToken, userRout);
+// Protected Routes
+app.use("/api/users", verifyAccessToken, checkUserStatus, userRout);
 
 const PORT = process.env.PORT || 5050;
 
