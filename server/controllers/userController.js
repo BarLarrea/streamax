@@ -5,9 +5,9 @@ import { validateEmail, validatePassword } from "../utils/validation.js";
 import { formatUser } from "../utils/formatUser.js";
 
 const getUserById = async (req, res) => {
-    const { id } = req.params;
+    const { userId } = req.user;
     try {
-        const user = await userRepo.getUserById(id);
+        const user = await userRepo.getUserById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -25,17 +25,18 @@ const getUserById = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { userId } = req.user;
+
         const { userName, email } = req.body;
 
-        const user = await userRepo.getUserById(id);
+        const user = await userRepo.getUserById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         if (userName) {
             const existingName = await userRepo.getUserByUserName(userName);
-            if (existingName && existingName._id.toString() !== id) {
+            if (existingName && existingName._id.toString() !== userId) {
                 return res
                     .status(400)
                     .json({ message: "Username already exists" });
@@ -53,7 +54,7 @@ const updateUserDetails = async (req, res) => {
             const existingEmail = await userRepo.getUserByEmail(
                 normalizedEmail
             );
-            if (existingEmail && existingEmail._id.toString() !== id) {
+            if (existingEmail && existingEmail._id.toString() !== userId) {
                 return res
                     .status(400)
                     .json({ message: "Email already in use" });
@@ -77,9 +78,9 @@ const updateUserDetails = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { userId } = req.user;
 
-        const deletedUser = await userRepo.deleteUserAndDependencies(id);
+        const deletedUser = await userRepo.deleteUserAndDependencies(userId);
 
         if (!deletedUser) {
             return res.status(404).json({ message: "User not found" });
@@ -98,7 +99,9 @@ const deleteUserById = async (req, res) => {
 
 const changeUserPassword = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { userId } = req.user;
+
+        console.log(userId);
         const { oldPassword, newPassword } = req.body;
 
         if (!oldPassword || !newPassword) {
@@ -107,7 +110,7 @@ const changeUserPassword = async (req, res) => {
                 .json({ message: "Both old and new passwords are required" });
         }
 
-        const user = await userRepo.getUserById(id);
+        const user = await userRepo.getUserById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
