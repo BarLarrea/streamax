@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
 const updateUserDetails = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userName, email, password } = req.body;
+        const { userName, email } = req.body;
 
         const user = await userRepo.getUserById(id);
         if (!user) {
@@ -38,7 +38,7 @@ const updateUserDetails = async (req, res) => {
             if (existingName && existingName._id.toString() !== id) {
                 return res
                     .status(400)
-                    .json({ message: "UserName already exists" });
+                    .json({ message: "Username already exists" });
             }
             user.userName = userName;
         }
@@ -59,16 +59,6 @@ const updateUserDetails = async (req, res) => {
                     .json({ message: "Email already in use" });
             }
             user.email = normalizedEmail;
-        }
-
-        if (password) {
-            if (!validatePassword(password)) {
-                return res.status(400).json({
-                    message:
-                        "Password must be at least 8 characters, include uppercase, lowercase, number, and special character"
-                });
-            }
-            user.password = await bcrypt.hash(password, 10);
         }
 
         await userRepo.saveUser(user);
@@ -106,5 +96,48 @@ const deleteUserById = async (req, res) => {
     }
 };
 
+const changeUserPassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { oldPassword, newPassword } = req.body;
 
-export { getUserById, updateUserDetails, deleteUserById };
+        if (!oldPassword || !newPassword) {
+            return res
+                .status(400)
+                .json({ message: "Both old and new passwords are required" });
+        }
+
+        const user = await userRepo.getUserById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res
+                .status(401)
+                .json({ message: "Old password is incorrect" });
+        }
+
+        if (!validatePassword(newPassword)) {
+            return res.status(400).json({
+                message:
+                    "Password must be at least 8 characters, include uppercase, lowercase, number, and special character"
+            });
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        await userRepo.saveUser(user);
+
+        return res
+            .status(200)
+            .json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Change Password Error:", error);
+        return res
+            .status(500)
+            .json({ message: "Server error, failed to change password" });
+    }
+};
+
+export { getUserById, updateUserDetails, deleteUserById, changeUserPassword };

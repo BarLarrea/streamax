@@ -29,11 +29,26 @@ const deleteUserAndDependencies = async (id) => {
     return await User.findByIdAndDelete(id);
 };
 
+const getAllUsers = async () => {
+    return await User.find().select("-password");
+};
+
+const getActiveUsers = async () => {
+    return await User.find({ isActive: true }).select("-password");
+};
+
+const getInactiveUsers = async () => {
+    return await User.find({ isActive: false }).select("-password");
+};
+
 export {
     getUserById,
     getUserByUserName,
     getUserByEmail,
     createUser,
     saveUser,
-    deleteUserAndDependencies
+    deleteUserAndDependencies,
+    getAllUsers,
+    getActiveUsers,
+    getInactiveUsers
 };
