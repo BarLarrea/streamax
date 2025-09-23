@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
 import generateAccessToken from "../utils/jwt.js";
+import { formatUser } from "../utils/formatUser.js";
 
 const registerUser = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -46,10 +47,7 @@ const registerUser = async (req, res) => {
 
         return res.status(201).json({
             message: "User registered successfully",
-            user: {
-                userName: newUser.userName,
-                email: newUser.email
-            }
+            user: formatUser(newUser)
         });
     } catch (error) {
         console.error("Error creating user:", error);
@@ -79,15 +77,7 @@ const loginUser = async (req, res) => {
 
         return res.status(200).json({
             message: `The user ${userName} is logged in successfully!`,
-            user: {
-                userName,
-                userId: user._id,
-                profiles: user.profiles.map((profile) => ({
-                    id: profile._id,
-                    profileName: profile.profileName,
-                    avatar: profile.avatar
-                }))
-            },
+            user: formatUser(user),
             accessToken
         });
     } catch (error) {

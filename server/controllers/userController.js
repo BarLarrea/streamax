@@ -1,20 +1,19 @@
 import bcrypt from "bcryptjs";
-import User from "../models/userModel.js";
+
+import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
+import { formatUser } from "../utils/formatUser.js";
 
 const getUserById = async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await User.findById(id);
+        const user = await userRepo.getUserById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         return res.status(200).json({
-            id: user._id,
-            userName: user.userName,
-            email: user.email,
-            profiles: user.profiles
+            user: formatUser(user)
         });
     } catch (error) {
         console.error("Get User Error:", error);
@@ -26,20 +25,20 @@ const getUserById = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
     try {
-        const userId = req.params.id;
-        const { userName, email, password, profiles } = req.body;
+        const { id } = req.params;
+        const { userName, email, password } = req.body;
 
-        const user = await User.findById(userId);
+        const user = await userRepo.getUserById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         if (userName) {
-            const existingName = await User.findOne({ userName });
-            if (existingName && existingName._id.toString() !== userId) {
+            const existingName = await userRepo.getUserByUserName(userName);
+            if (existingName && existingName._id.toString() !== id) {
                 return res
                     .status(400)
-                    .json({ message: "User name already exists" });
+                    .json({ message: "UserName already exists" });
             }
             user.userName = userName;
         }
@@ -51,10 +50,10 @@ const updateUserDetails = async (req, res) => {
                     .status(400)
                     .json({ message: "Invalid email format" });
             }
-            const existingEmail = await User.findOne({
-                email: normalizedEmail
-            });
-            if (existingEmail && existingEmail._id.toString() !== userId) {
+            const existingEmail = await userRepo.getUserByEmail(
+                normalizedEmail
+            );
+            if (existingEmail && existingEmail._id.toString() !== id) {
                 return res
                     .status(400)
                     .json({ message: "Email already in use" });
@@ -72,20 +71,11 @@ const updateUserDetails = async (req, res) => {
             user.password = await bcrypt.hash(password, 10);
         }
 
-        if (profiles) {
-            user.profiles = profiles;
-        }
-
-        await user.save();
+        await userRepo.saveUser(user);
 
         return res.status(200).json({
             message: "User updated successfully",
-            user: {
-                id: user._id,
-                userName: user.userName,
-                email: user.email,
-                profiles: user.profiles
-            }
+            user: formatUser(user)
         });
     } catch (error) {
         console.error("Update User Error:", error);

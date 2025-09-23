@@ -16,6 +16,10 @@ const createUser = async (data) => {
     return await User.create(data);
 };
 
+const saveUser = async (user) => {
+    return await user.save();
+};
+
 async function deleteUserById(id) {
     return await User.findByIdAndDelete(id);
 }
@@ -25,5 +29,6 @@ export {
     getUserByUserName,
     getUserByEmail,
     createUser,
-    deleteUserById
+    deleteUserById,
+    saveUser
 };
