@@ -85,4 +85,26 @@ const updateUserDetails = async (req, res) => {
     }
 };
 
-export { getUserById, updateUserDetails };
+const deleteUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedUser = await userRepo.deleteUserAndDependencies(id);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({
+            message: "User and related data deleted successfully"
+        });
+    } catch (error) {
+        console.error("Delete User Error:", error);
+        return res
+            .status(500)
+            .json({ message: "Server error, failed to delete user" });
+    }
+};
+
+
+export { getUserById, updateUserDetails, deleteUserById };

@@ -1,4 +1,6 @@
 import User from "../models/userModel.js";
+import Profile from "../models/profileModel.js";
+import WatchHistory from "../models/watchHistoryModel.js";
 
 const getUserById = async (id) => {
     return await User.findById(id);
@@ -20,15 +22,18 @@ const saveUser = async (user) => {
     return await user.save();
 };
 
-async function deleteUserById(id) {
+const deleteUserAndDependencies = async (id) => {
+    await Profile.deleteMany({ userId: id });
+    await WatchHistory.deleteMany({ userId: id });
+
     return await User.findByIdAndDelete(id);
-}
+};
 
 export {
     getUserById,
     getUserByUserName,
     getUserByEmail,
     createUser,
-    deleteUserById,
-    saveUser
+    saveUser,
+    deleteUserAndDependencies
 };
