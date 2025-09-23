@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 
-import User from "../models/userModel.js";
+import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
 import generateAccessToken from "../utils/jwt.js";
 
@@ -24,29 +24,25 @@ const registerUser = async (req, res) => {
     }
 
     try {
-        const existingName = await User.findOne({ userName });
+        const existingName = await userRepo.getUserByUserName(userName);
         if (existingName) {
-            return res
-                .status(400)
-                .json({ message: "User Name is Already Exist" });
+            return res.status(400).json({ message: "Username already exists" });
         }
 
-        const existingEmail = await User.findOne({ email: normalizedEmail });
+        const existingEmail = await userRepo.getUserByEmail(normalizedEmail);
         if (existingEmail) {
-            return res.status(400).json({ message: "Email is Already Exist" });
+            return res.status(400).json({ message: "Email already exists" });
         }
 
         console.log("Validation passed, ready to create new user...");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({
-            userName: userName,
+        const newUser = await userRepo.createUser({
+            userName,
             email: normalizedEmail,
             password: hashedPassword
         });
-
-        await newUser.save();
 
         return res.status(201).json({
             message: "User registered successfully",
@@ -69,7 +65,7 @@ const loginUser = async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ userName });
+        const user = await userRepo.getUserByUserName(userName);
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
@@ -86,9 +82,11 @@ const loginUser = async (req, res) => {
             user: {
                 userName,
                 userId: user._id,
-                profiles: user.profiles.map((profile) => {
-                    id: profile._id, profileName, avatar;
-                })
+                profiles: user.profiles.map((profile) => ({
+                    id: profile._id,
+                    profileName: profile.profileName,
+                    avatar: profile.avatar
+                }))
             },
             accessToken
         });
