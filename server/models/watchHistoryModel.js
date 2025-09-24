@@ -28,7 +28,6 @@ const watchHistorySchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-
 // Indexes:
 // Fast queries per profile (get full watch history for one profile)
 watchHistorySchema.index({ profileId: 1 });

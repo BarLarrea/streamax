@@ -2,8 +2,12 @@ import bcrypt from "bcryptjs";
 
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
-import generateAccessToken from "../utils/jwt.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { formatUser } from "../utils/formatUser.js";
+import {
+    setUpRefreshTokenCookie,
+    clearRefreshTokenCookie
+} from "../utils/cookie.js";
 
 const registerUser = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -77,8 +81,27 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
+        if (user.refreshTokens.length === 5) {
+            return res.status(403).json({
+                message:
+                    "A user can be logged in on a maximum of 5 devices simultaneously"
+            });
+        }
+
         const accessToken = generateAccessToken(user);
 
+        const { refreshToken, jti } = generateRefreshToken(user._id);
+
+        user.refreshTokens.push({
+            token: refreshToken,
+            jti,
+            createdAt: new Date(),
+            lastUsed: new Date()
+        });
+
+        await userRepo.saveUser(user);
+
+        setUpRefreshTokenCookie(res); // Set first refresh token as HttpOnly cookie
         return res.status(200).json({
             message: `The user ${userName} is logged in successfully!`,
             user: formatUser(user),
@@ -92,4 +115,95 @@ const loginUser = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser };
+const refreshAccessToken = async (req, res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            return res
+                .status(401)
+                .json({ message: "No refresh token provided" });
+        }
+
+        const payload = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_JWT_SECRET
+        );
+
+        const user = await userRepo.getUserById(payload.userId);
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        if (!user.isActive) {
+            user.refreshTokens = [];
+            return res.status(403).json({
+                message: "User inactive, user has disconnected from all devises"
+            });
+        }
+
+        // Check if refresh token still exists in user's sessions
+        const session = user.refreshTokens.find(
+            (refreshToken) =>
+                refreshToken.jti === payload.jti &&
+                refreshToken.token === refreshToken
+        );
+        if (!session) {
+            return res
+                .status(403)
+                .json({ message: "Invalid or expired refresh token" });
+        }
+
+        // Update lastUsed for this session
+        session.lastUsed = new Date();
+        await userRepo.saveUser(user);
+
+        // Generate a new access token
+        const newAccessToken = generateAccessToken(user);
+
+        return res.status(200).json({
+            message: "Access token refreshed successfully",
+            accessToken: newAccessToken
+        });
+    } catch (error) {
+        console.error("Refresh access token error:", error);
+        return res
+            .status(403)
+            .json({ message: "Invalid or expired refresh token" });
+    }
+};
+
+const logoutUser = async (req, res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            return res.sendStatus(204); // No content - the user is already disconnected (refresh expired)
+        }
+
+        const payload = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_JWT_SECRET
+        );
+
+        const user = await userRepo.getUserById(payload.userId);
+        if (user) {
+            user.refreshTokens = user.refreshTokens.filter(
+                (refreshToken) => refreshToken.jti !== payload.jti
+            );
+            await userRepo.saveUser(user);
+        } else {
+            console.log("Logout attempted with non-existing userId");
+        }
+
+        clearRefreshTokenCookie(res);
+
+        return res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        console.error("Logout error:", error);
+
+        clearRefreshTokenCookie(res); // Always clear cookie even if token invalid
+
+        return res.status(200).json({ message: "Logged out (invalid token)" });
+    }
+};
+
+export { registerUser, loginUser, refreshAccessToken, logoutUser };

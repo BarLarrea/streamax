@@ -1,5 +1,28 @@
 import mongoose from "mongoose";
 
+// Sub-schema for refresh tokens (each represents one active session)
+const refreshTokenSchema = new mongoose.Schema(
+    {
+        token: {
+            type: String,
+            required: true
+        },
+        jti: {
+            type: String,
+            required: true
+        }, // Unique identifier for the session (Session ID)
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }, 
+        lastUsed: {
+            type: Date,
+            default: Date.now
+        } 
+    },
+    { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
     {
         userName: {
@@ -35,6 +58,16 @@ const userSchema = new mongoose.Schema(
                     return arr.length <= 5;
                 },
                 message: "A user can have at most 5 profiles"
+            }
+        },
+        refreshTokens: {
+            type: [refreshTokenSchema],
+            validate: {
+                validator: function (arr) {
+                    return arr.length <= 5;
+                },
+                message:
+                    "A user can be logged in on a maximum of 5 devices simultaneously"
             }
         }
     },
