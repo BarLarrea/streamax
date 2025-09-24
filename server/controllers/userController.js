@@ -130,11 +130,15 @@ const changeUserPassword = async (req, res) => {
         }
 
         user.password = await bcrypt.hash(newPassword, 10);
+        user.refreshTokens = []; //
         await userRepo.saveUser(user);
 
         return res
             .status(200)
-            .json({ message: "Password changed successfully" });
+            .json({
+                message:
+                    "Password changed successfully, all profiles logged out"
+            });
     } catch (error) {
         console.error("Change Password Error:", error);
         return res

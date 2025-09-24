@@ -4,6 +4,10 @@ import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { formatUser } from "../utils/formatUser.js";
+import {
+    setUpRefreshTokenCookie,
+    clearRefreshTokenCookie
+} from "../utils/cookie.js";
 
 const registerUser = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -97,20 +101,12 @@ const loginUser = async (req, res) => {
 
         await userRepo.saveUser(user);
 
-        // Set first refresh token as HttpOnly cookie
-        return res
-            .cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production", // only over HTTPS in prod
-                sameSite: "strict",
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-            })
-            .status(200)
-            .json({
-                message: `The user ${userName} is logged in successfully!`,
-                user: formatUser(user),
-                accessToken
-            });
+        setUpRefreshTokenCookie(res); // Set first refresh token as HttpOnly cookie
+        return res.status(200).json({
+            message: `The user ${userName} is logged in successfully!`,
+            user: formatUser(user),
+            accessToken
+        });
     } catch (error) {
         console.error("Login Error:", error);
         return res
@@ -136,6 +132,13 @@ const refreshAccessToken = async (req, res) => {
         const user = await userRepo.getUserById(payload.userId);
         if (!user) {
             return res.status(401).json({ message: "User not found" });
+        }
+
+        if (!user.isActive) {
+            user.refreshTokens = [];
+            return res.status(403).json({
+                message: "User inactive, user has disconnected from all devises"
+            });
         }
 
         // Check if refresh token still exists in user's sessions
@@ -169,4 +172,38 @@ const refreshAccessToken = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser, refreshAccessToken };
+const logoutUser = async (req, res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            return res.sendStatus(204); // No content - the user is already disconnected (refresh expired)
+        }
+
+        const payload = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_JWT_SECRET
+        );
+
+        const user = await userRepo.getUserById(payload.userId);
+        if (user) {
+            user.refreshTokens = user.refreshTokens.filter(
+                (refreshToken) => refreshToken.jti !== payload.jti
+            );
+            await userRepo.saveUser(user);
+        } else {
+            console.log("Logout attempted with non-existing userId");
+        }
+
+        clearRefreshTokenCookie(res);
+
+        return res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        console.error("Logout error:", error);
+
+        clearRefreshTokenCookie(res); // Always clear cookie even if token invalid
+
+        return res.status(200).json({ message: "Logged out (invalid token)" });
+    }
+};
+
+export { registerUser, loginUser, refreshAccessToken, logoutUser };
