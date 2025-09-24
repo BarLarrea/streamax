@@ -77,6 +77,13 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
+        if (user.refreshTokens.length === 5) {
+            return res.status(403).json({
+                message:
+                    "A user can be logged in on a maximum of 5 devices simultaneously"
+            });
+        }
+
         const accessToken = generateAccessToken(user);
 
         const { refreshToken, jti } = generateRefreshToken(user._id);
@@ -90,12 +97,20 @@ const loginUser = async (req, res) => {
 
         await userRepo.saveUser(user);
 
-        return res.status(200).json({
-            message: `The user ${userName} is logged in successfully!`,
-            user: formatUser(user),
-            accessToken,
-            refreshToken
-        });
+        // Set first refresh token as HttpOnly cookie
+        return res
+            .cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production", // only over HTTPS in prod
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            })
+            .status(200)
+            .json({
+                message: `The user ${userName} is logged in successfully!`,
+                user: formatUser(user),
+                accessToken
+            });
     } catch (error) {
         console.error("Login Error:", error);
         return res
@@ -104,4 +119,54 @@ const loginUser = async (req, res) => {
     }
 };
 
-export { registerUser, loginUser };
+const refreshAccessToken = async (req, res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            return res
+                .status(401)
+                .json({ message: "No refresh token provided" });
+        }
+
+        const payload = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_JWT_SECRET
+        );
+
+        const user = await userRepo.getUserById(payload.userId);
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        // Check if refresh token still exists in user's sessions
+        const session = user.refreshTokens.find(
+            (refreshToken) =>
+                refreshToken.jti === payload.jti &&
+                refreshToken.token === refreshToken
+        );
+        if (!session) {
+            return res
+                .status(403)
+                .json({ message: "Invalid or expired refresh token" });
+        }
+
+        // Update lastUsed for this session
+        session.lastUsed = new Date();
+        await userRepo.saveUser(user);
+
+        // Generate a new access token
+        const newAccessToken = generateAccessToken(user);
+
+        return res.status(200).json({
+            message: "Access token refreshed successfully",
+            accessToken: newAccessToken
+        });
+    } catch (error) {
+        console.error("Refresh access token error:", error);
+        return res
+            .status(403)
+            .json({ message: "Invalid or expired refresh token" });
+    }
+};
+
+export { registerUser, loginUser, refreshAccessToken };

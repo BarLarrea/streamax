@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { type } from "os";
 
 // Sub-schema for refresh tokens (each represents one active session)
 const refreshTokenSchema = new mongoose.Schema(
