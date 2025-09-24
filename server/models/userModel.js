@@ -15,11 +15,11 @@ const refreshTokenSchema = new mongoose.Schema(
         createdAt: {
             type: Date,
             default: Date.now
-        }, // When the session was created
+        }, 
         lastUsed: {
             type: Date,
             default: Date.now
-        } // Last time the refresh token was used
+        } 
     },
     { _id: false }
 );
