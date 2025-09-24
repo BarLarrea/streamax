@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
-import generateAccessToken from "../utils/jwt.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { formatUser } from "../utils/formatUser.js";
 
 const registerUser = async (req, res) => {
@@ -79,10 +79,22 @@ const loginUser = async (req, res) => {
 
         const accessToken = generateAccessToken(user);
 
+        const { refreshToken, jti } = generateRefreshToken(user._id);
+
+        user.refreshTokens.push({
+            token: refreshToken,
+            jti,
+            createdAt: new Date(),
+            lastUsed: new Date()
+        });
+
+        await userRepo.saveUser(user);
+
         return res.status(200).json({
             message: `The user ${userName} is logged in successfully!`,
             user: formatUser(user),
-            accessToken
+            accessToken,
+            refreshToken
         });
     } catch (error) {
         console.error("Login Error:", error);
