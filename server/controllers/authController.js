@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"; 
 
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
@@ -39,7 +40,7 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: "Email already exists" });
         }
 
-        console.log("Validation passed, ready to create new user...");
+        console.log("Validation passed, ready to create new user");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -60,13 +61,13 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-    const { userName, password } = req.body;
-
-    if (!userName || !password) {
-        return res.status(400).json({ message: "All fields are required" });
-    }
-
     try {
+        const { userName, password } = req.body;
+
+        if (!userName || !password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
         const user = await userRepo.getUserByUserName(userName);
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
@@ -92,6 +93,10 @@ const loginUser = async (req, res) => {
 
         const { refreshToken, jti } = generateRefreshToken(user._id);
 
+        console.log("user:", user);
+
+        setUpRefreshTokenCookie(res, refreshToken);
+        
         user.refreshTokens.push({
             token: refreshToken,
             jti,
@@ -101,7 +106,6 @@ const loginUser = async (req, res) => {
 
         await userRepo.saveUser(user);
 
-        setUpRefreshTokenCookie(res); // Set first refresh token as HttpOnly cookie
         return res.status(200).json({
             message: `The user ${userName} is logged in successfully!`,
             user: formatUser(user),
@@ -143,9 +147,9 @@ const refreshAccessToken = async (req, res) => {
 
         // Check if refresh token still exists in user's sessions
         const session = user.refreshTokens.find(
-            (refreshToken) =>
-                refreshToken.jti === payload.jti &&
-                refreshToken.token === refreshToken
+            (tokenSession) =>
+                tokenSession.jti === payload.jti &&
+                tokenSession.token === refreshToken
         );
         if (!session) {
             return res
@@ -187,7 +191,7 @@ const logoutUser = async (req, res) => {
         const user = await userRepo.getUserById(payload.userId);
         if (user) {
             user.refreshTokens = user.refreshTokens.filter(
-                (refreshToken) => refreshToken.jti !== payload.jti
+                (tokenSession) => tokenSession.jti !== payload.jti
             );
             await userRepo.saveUser(user);
         } else {

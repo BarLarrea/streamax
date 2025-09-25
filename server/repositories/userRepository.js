@@ -33,11 +33,11 @@ const getAllUsers = async () => {
     return await User.find().select("-password");
 };
 
-const getActiveUsers = async () => {
+const getAllActiveUsers = async () => {
     return await User.find({ isActive: true }).select("-password");
 };
 
-const getInactiveUsers = async () => {
+const getAllInactiveUsers = async () => {
     return await User.find({ isActive: false }).select("-password");
 };
 
@@ -49,6 +49,6 @@ export {
     saveUser,
     deleteUserAndDependencies,
     getAllUsers,
-    getActiveUsers,
-    getInactiveUsers
+    getAllActiveUsers,
+    getAllInactiveUsers
 };
