@@ -2,55 +2,49 @@ import User from "../models/userModel.js";
 import Profile from "../models/profileModel.js";
 import WatchHistory from "../models/watchHistoryModel.js";
 
-const getUserById = async (id) => {
+export const getUserById = async (id) => {
     return await User.findById(id);
 };
 
-const getUserByUserName = async (userName) => {
+export const getUserByUserName = async (userName) => {
     return await User.findOne({ userName });
 };
 
-const getUserByEmail = async (email) => {
+export const getUserByEmail = async (email) => {
     return await User.findOne({ email });
 };
 
-const createUser = async (data) => {
+export const createUser = async (data) => {
     return await User.create(data);
 };
 
-const saveUser = async (user) => {
+export const saveUser = async (user) => {
     return await user.save();
 };
 
-const deleteUserAndDependencies = async (id) => {
+export const deleteUserAndDependencies = async (id) => {
     await Profile.deleteMany({ userId: id });
     await WatchHistory.deleteMany({ userId: id });
 
     return await User.findByIdAndDelete(id);
 };
 
-const getAllUsers = async () => {
+export const getAllUsers = async () => {
     return await User.find().select("-password");
 };
 
-const getAllActiveUsers = async () => {
+export const getAllActiveUsers = async () => {
     return await User.find({ isActive: true }).select("-password");
 };
 
-const getAllInactiveUsers = async () => {
+export const getAllInactiveUsers = async () => {
     return await User.find({ isActive: false }).select("-password");
 };
 
-
-
-export {
-    getUserById,
-    getUserByUserName,
-    getUserByEmail,
-    createUser,
-    saveUser,
-    deleteUserAndDependencies,
-    getAllUsers,
-    getAllActiveUsers,
-    getAllInactiveUsers
+export const removeProfileFromUser = async (userId, profileId) => {
+    return await User.findByIdAndUpdate(
+        userId,
+        { $pull: { profiles: profileId } },
+        { new: true }
+    );
 };

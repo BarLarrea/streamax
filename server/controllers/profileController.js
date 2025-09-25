@@ -1,3 +1,4 @@
+import e from "express";
 import Profile from "../models/profileModel.js";
 import * as profileRipo from "../repositories/profileRipository.js";
 import * as userRepo from "../repositories/userRepository.js";
@@ -152,11 +153,132 @@ const updateProfileDetails = async (req, res) => {
         return res.status(500).json({ error: "Server error" });
     }
 };
+
+const deleteProfileById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Profile id is missing" });
+        }
+
+        const profile = await profileRipo.findProfileById(id);
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        const user = await userRepo.getUserById(profile.userId);
+
+        if (!user) {
+            return res
+                .status(404)
+                .json({ message: "Associated user not found" });
+        }
+
+        await userRepo.removeProfileFromUser(user._id, profile._id);
+
+        await profileRipo.findeAndDeleteProfileById(id);
+
+        return res
+            .status(200)
+            .json({ message: "Profile deleted successfully" });
+    } catch (error) {
+        console.error("Error in deleteProfileById:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
+const updateLastWatched = (profile, contentId, progress) => {
+    const existing = profile.lastWatched.find(
+        (item) => item.contentId.toString() === contentId
+    );
+
+    if (existing) {
+        existing.progress = progress;
+        existing.updatedAt = new Date();
+
+        // move the updated item to the end
+        profile.lastWatched = [
+            ...profile.lastWatched.filter(
+                (item) => item.contentId.toString() !== contentId
+            ),
+            existing
+        ];
+    } else {
+        // remove the oldest (first) item
+        if (profile.lastWatched.length >= 5) {
+            profile.lastWatched.shift();
+        }
+
+        // add the new item to the end
+        profile.lastWatched = [
+            ...profile.lastWatched,
+            { contentId, progress, updatedAt: new Date() }
+        ];
+    }
+};
+
+const updateLastWatchedController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Profile id is missing" });
+        }
+        const { contentId, progress } = req.body;
+
+        if (!contentId || progress == null) {
+            return res
+                .status(400)
+                .json({ message: "Content ID or progress is missing" });
+        }
+
+        const profile = await profileRipo.findProfileById(id);
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        updateLastWatched(profile, contentId, progress);
+
+        await profileRipo.saveProfile(profile);
+
+        return res.status(200).json({
+            message: "Last watched updated successfully",
+            profile: formatProfile(profile)
+        });
+    } catch (error) {
+        console.error("Error in updateLastWatchedController:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
+// Toggle like/unlike content
+const toggleLikeContent = async (req, res) => {
+    try {
+        const { id } = req.params; // profileId
+        const { contentId } = req.body;
+
+        // TODO: implement logic:
+        // 1. Validate inputs
+        // 2. Find profile by id
+        // 3. If contentId exists → remove it
+        // 4. If contentId doesn't exist → add it
+        // 5. Save profile and return formatted response
+
+        return res.status(200).json({
+            message: "Liked content updated successfully",
+            profile: {} // replace with formatProfile(profile)
+        });
+    } catch (error) {
+        console.error("Error in toggleLikeContent:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
 export {
     createProfile,
     getProfileById,
     getProfilesByUserID,
-    updateProfileDetails
-    // deleteProfileById,
+    updateProfileDetails,
+    deleteProfileById,
+    updateLastWatchedController,
     // getAllProfiles
 };

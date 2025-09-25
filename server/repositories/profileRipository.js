@@ -15,3 +15,8 @@ export const findProfileById = async (id) => {
 export const findeProfilesByUserID = async (userId) => {
     return await Profile.find({ userId });
 };
+
+export const findeAndDeleteProfileById = async (id) => {
+    return await Profile.findByIdAndDelete(id);
+};
+

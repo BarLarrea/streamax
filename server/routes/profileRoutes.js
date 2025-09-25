@@ -4,8 +4,9 @@ import {
     createProfile,
     getProfileById,
     getProfilesByUserID,
-    updateProfileDetails
-    // deleteProfileById,
+    updateProfileDetails,
+    deleteProfileById,
+    updateLastWatchedController
     // getAllProfiles
 } from "../controllers/profileController.js";
 
@@ -15,7 +16,8 @@ router.post("/", createProfile);
 router.get("/:id", getProfileById);
 router.get("/", getProfilesByUserID);
 router.patch("/:id", updateProfileDetails);
-// router.delete("/:id", deleteProfileById);
+router.delete("/:id", deleteProfileById);
+router.put("/last-watched/:id", updateLastWatchedController);
 
 // //Admin Routes
 // router.get("/", getAllProfiles);
