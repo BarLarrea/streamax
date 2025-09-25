@@ -41,6 +41,8 @@ const getAllInactiveUsers = async () => {
     return await User.find({ isActive: false }).select("-password");
 };
 
+
+
 export {
     getUserById,
     getUserByUserName,

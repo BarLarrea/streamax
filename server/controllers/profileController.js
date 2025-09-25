@@ -62,11 +62,101 @@ const createProfile = async (req, res) => {
     }
 };
 
+const getProfileById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Profile id is missing" });
+        }
+
+        const profile = await profileRipo.findProfileById(id);
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        return res.status(200).json({
+            message: "Profile fetched successfully",
+            profile: formatProfile(profile)
+        });
+    } catch (error) {
+        console.error("Error in getProfileById:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
+const getProfilesByUserID = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({ message: "User id is missing" });
+        }
+
+        const user = await userRepo.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const profiles = await profileRipo.findeProfilesByUserID(userId);
+        return res.status(200).json({
+            message: "Profiles fetched successfully",
+            profiles: profiles.map(formatProfile)
+        });
+    } catch (error) {
+        console.error("Error in getProfilesByUserID:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
+const updateProfileDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Profile id is missing" });
+        }
+
+        const { profileName, avatar } = req.body;
+
+        if (!profileName && !avatar) {
+            return res.status(400).json({ message: "No fields to update" });
+        }
+
+        const profile = await profileRipo.findProfileById(id);
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        if (profileName && profileName !== profile.profileName) {
+            const existingName = await profileRipo.findProfileByUserAndName(
+                profile.userId,
+                profileName
+            );
+            if (existingName) {
+                return res.status(403).json({
+                    message:
+                        "Profile name is already in use, choose another name"
+                });
+            }
+            profile.profileName = profileName;
+        }
+        if (avatar && avatar !== profile.avatar) {
+            profile.avatar = avatar;
+        }
+        await profileRipo.saveProfile(profile);
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            profile: formatProfile(profile)
+        });
+    } catch (error) {
+        console.error("Error in updateProfileDetails:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
 export {
-    createProfile
-    // getProfileById,
-    // getUserProfiles,
-    // updateUserDetails,
+    createProfile,
+    getProfileById,
+    getProfilesByUserID,
+    updateProfileDetails
     // deleteProfileById,
     // getAllProfiles
 };

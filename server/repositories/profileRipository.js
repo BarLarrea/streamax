@@ -8,26 +8,10 @@ export const findProfileByUserAndName = async (userId, profileName) => {
     return await Profile.findOne({ userId, profileName });
 };
 
-// const ____ = async () => {
-//     return;
-// };
+export const findProfileById = async (id) => {
+    return await Profile.findById(id);
+};
 
-// const ____ = async () => {
-//     return;
-// };
-
-// const ____ = async () => {
-//     return;
-// };
-
-// const ____ = async () => {
-//     return;
-// };
-
-// const ____ = async () => {
-//     return;
-// };
-
-// const ____ = async () => {
-//     return;
-// };
+export const findeProfilesByUserID = async (userId) => {
+    return await Profile.find({ userId });
+};
