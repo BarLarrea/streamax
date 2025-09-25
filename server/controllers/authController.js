@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"; 
+import jwt from "jsonwebtoken";
 
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
@@ -93,10 +93,8 @@ const loginUser = async (req, res) => {
 
         const { refreshToken, jti } = generateRefreshToken(user._id);
 
-        console.log("user:", user);
-
         setUpRefreshTokenCookie(res, refreshToken);
-        
+
         user.refreshTokens.push({
             token: refreshToken,
             jti,

@@ -52,5 +52,7 @@ const profileSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+profileSchema.index({ userId: 1, profileName: 1 }, { unique: true }); // Ensure unique profile names per user
+
 const Profile = mongoose.model("Profile", profileSchema);
 export default Profile;
