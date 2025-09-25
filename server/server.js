@@ -7,6 +7,7 @@ import authRout from "./routes/authRoutes.js";
 import userRout from "./routes/userRoutes.js";
 import verifyAccessToken from "./middlewares/authMiddleware.js";
 import checkUserStatus from "./middlewares/userStatusMiddleware.js";
+import profileRoutes from "./routes/profileRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/auth", authRout);
 
 // Protected Routes
 app.use("/api/users", verifyAccessToken, checkUserStatus, userRout);
+app.use("/api/profiles", verifyAccessToken, checkUserStatus, profileRoutes);
 
 const PORT = process.env.PORT || 5050;
 
