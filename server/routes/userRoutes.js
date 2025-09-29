@@ -1,5 +1,9 @@
 import express from "express";
 
+import verifyAccessToken from "../middlewares/authMiddleware.js";
+import checkUserStatus from "../middlewares/userStatusMiddleware.js";
+import setTargetUserId from "../middlewares/setTargetUserId.js";
+
 import {
     getUserById,
     updateUserDetails,
@@ -7,14 +11,16 @@ import {
     changeUserPassword
 } from "../controllers/userController.js";
 
+const userPipeline = [
+    verifyAccessToken,
+    checkUserStatus,
+    setTargetUserId,
+];
 const router = express.Router();
 
-router.get("/", getUserById);
-router.patch("/", updateUserDetails);
-router.delete("/", deleteUserById);
-router.put("/password", changeUserPassword);
-
-//Admin Routes
-// router.get("/", getAllUsers);
+router.get("/me", ...userPipeline, getUserById);
+router.patch("/me", ...userPipeline, updateUserDetails);
+router.delete("/me", ...userPipeline, deleteUserById);
+router.put("/me/password", ...userPipeline, changeUserPassword);
 
 export default router;

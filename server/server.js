@@ -5,9 +5,9 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import authRout from "./routes/authRoutes.js";
 import userRout from "./routes/userRoutes.js";
-import verifyAccessToken from "./middlewares/authMiddleware.js";
-import checkUserStatus from "./middlewares/userStatusMiddleware.js";
-import profileRoutes from "./routes/profileRoutes.js";
+import profileRoute from "./routes/profileRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import isAdmin from "./middlewares/adminMiddleware.js";
 
 dotenv.config();
 const app = express();
@@ -17,12 +17,11 @@ app.use(cookieParser());
 
 connectDB();
 
-// Routes Setup
+//Routes setup
 app.use("/api/auth", authRout);
-
-// Protected Routes
-app.use("/api/users", verifyAccessToken, checkUserStatus, userRout);
-app.use("/api/profiles", verifyAccessToken, checkUserStatus, profileRoutes);
+app.use("/api/users", userRout);
+app.use("/api/profiles", profileRoute);
+app.use("/api/admin", adminRoutes);
 
 const PORT = process.env.PORT || 5050;
 
