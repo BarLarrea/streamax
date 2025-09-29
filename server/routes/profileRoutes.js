@@ -8,7 +8,6 @@ import {
     deleteProfileById,
     updateLastWatchedController,
     toggleLikeContent
-    // getAllProfiles
 } from "../controllers/profileController.js";
 
 const router = express.Router();
@@ -20,8 +19,5 @@ router.patch("/:id", updateProfileDetails);
 router.delete("/:id", deleteProfileById);
 router.put("/last-watched/:id", updateLastWatchedController);
 router.put("/toggle-like/:id", toggleLikeContent);
-
-// //Admin Routes
-// router.get("/", getAllProfiles);
 
 export default router;

@@ -1,20 +1,18 @@
 import bcrypt from "bcryptjs";
-
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
 import { formatUser } from "../utils/formatUser.js";
 
 const getUserById = async (req, res) => {
-    const { userId } = req.user;
     try {
+        const userId = req.targetUserId;
+
         const user = await userRepo.getUserById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        return res.status(200).json({
-            user: formatUser(user)
-        });
+        return res.status(200).json({ user: formatUser(user) });
     } catch (error) {
         console.error("Get User Error:", error);
         return res
@@ -25,7 +23,7 @@ const getUserById = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
     try {
-        const { userId } = req.user;
+        const userId = req.targetUserId;
 
         const { userName, email } = req.body;
 
@@ -78,7 +76,10 @@ const updateUserDetails = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
     try {
-        const { userId } = req.user;
+        const userId = req.targetUserId;
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
 
         const deletedUser = await userRepo.deleteUserAndDependencies(userId);
 
@@ -133,12 +134,9 @@ const changeUserPassword = async (req, res) => {
         user.refreshTokens = []; //
         await userRepo.saveUser(user);
 
-        return res
-            .status(200)
-            .json({
-                message:
-                    "Password changed successfully, all profiles logged out"
-            });
+        return res.status(200).json({
+            message: "Password changed successfully, all profiles logged out"
+        });
     } catch (error) {
         console.error("Change Password Error:", error);
         return res
@@ -147,4 +145,138 @@ const changeUserPassword = async (req, res) => {
     }
 };
 
-export { getUserById, updateUserDetails, deleteUserById, changeUserPassword };
+//
+// Admin Only
+//
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await userRepo.getAllUsers();
+
+        const formattedUsers = users.map((user) => formatUser(user));
+
+        return res.status(200).json({ users: formattedUsers });
+    } catch (error) {
+        console.error("Get All Users Error:", error);
+        return res
+            .status(500)
+            .json({ message: "Server error, failed to get users" });
+    }
+};
+
+const changeUserStatus = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await userRepo.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.isActive = !user.isActive;
+
+        if (!user.isActive) {
+            user.refreshTokens = [];
+        }
+
+        await userRepo.saveUser(user);
+
+        return res.status(200).json({
+            message: `User has been ${
+                user.isActive ? "activated" : "deactivated"
+            } successfully`
+        });
+    } catch (error) {
+        console.error("Change User Status Error:", error);
+        return res
+            .status(500)
+            .json({ message: "Server error, failed to change user status" });
+    }
+};
+
+const makeUserAdmin = async (req, res) => {
+    try {
+        const { adminCode } = req.body;
+        if (!adminCode || adminCode !== process.env.ADMIN_CODE) {
+            return res.status(403).json({ message: "Invalid admin code" });
+        }
+
+        const userId = req.params.id;
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const user = await userRepo.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.isAdmin = true;
+
+        await userRepo.saveUser(user);
+
+        console.log(
+            `[ADMIN ACTION] ${
+                req.user.id
+            } granted admin to ${userId} at ${new Date()}`
+        );
+
+        return res
+            .status(200)
+            .json({ message: "User has been granted admin privileges" });
+    } catch (error) {
+        console.error("Make User Admin Error:", error);
+        return res
+            .status(500)
+            .json({ message: "Server error, failed to make user admin" });
+    }
+};
+
+const revokeUserAdmin = async (req, res) => {
+    try {
+        const { adminCode } = req.body;
+        if (!adminCode || adminCode !== process.env.ADMIN_CODE) {
+            return res.status(403).json({ message: "Invalid admin code" });
+        }
+
+        const userId = req.params.id;
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const user = await userRepo.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.isAdmin = false;
+
+        await userRepo.saveUser(user);
+
+        console.log(
+            `[ADMIN ACTION] ${
+                req.user.id
+            } revoked admin from ${userId} at ${new Date()}`
+        );
+
+        return res
+            .status(200)
+            .json({ message: "User admin privileges have been revoked" });
+    } catch (error) {
+        console.error("Revoke User Admin Error:", error);
+        return res
+            .status(500)
+            .json({ message: "Server error, failed to revoke admin status" });
+    }
+};
+
+export {
+    getUserById,
+    updateUserDetails,
+    deleteUserById,
+    changeUserPassword,
+    getAllUsers,
+    changeUserStatus,
+    makeUserAdmin,
+    revokeUserAdmin
+};
