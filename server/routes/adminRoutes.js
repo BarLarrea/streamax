@@ -21,9 +21,15 @@ import checkUserStatus from "../middlewares/userStatusMiddleware.js";
 import isAdmin from "../middlewares/adminMiddleware.js";
 import setTargetUserId from "../middlewares/setTargetUserId.js";
 
-const adminPipeline = [verifyAccessToken, checkUserStatus, isAdmin];
+const adminPipeline = [
+    verifyAccessToken,
+    checkUserStatus,
+    isAdmin,
+    setTargetUserId
+];
 
 const router = express.Router();
+
 //
 // User Management
 //
@@ -32,8 +38,8 @@ router.patch("/users/:id/status", ...adminPipeline, changeUserStatus);
 router.patch("/users/:id/make-admin", ...adminPipeline, makeUserAdmin);
 router.patch("/users/:id/revoke-admin", ...adminPipeline, revokeUserAdmin);
 
-// mutuall to userRoutes
-router.get("/users/:id", ...adminPipeline, setTargetUserId, getUserById);
-router.delete("/users/:id", ...adminPipeline, setTargetUserId, deleteUserById);
+// mutual
+router.get("/users/:id", ...adminPipeline, getUserById);
+router.delete("/users/:id", ...adminPipeline, deleteUserById);
 
 export default router;

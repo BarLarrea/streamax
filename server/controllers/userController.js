@@ -100,7 +100,7 @@ const deleteUserById = async (req, res) => {
 
 const changeUserPassword = async (req, res) => {
     try {
-        const { userId } = req.user;
+        const userId = req.targetUserId;
 
         console.log(userId);
         const { oldPassword, newPassword } = req.body;
@@ -166,7 +166,7 @@ const getAllUsers = async (req, res) => {
 
 const changeUserStatus = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = req.targetUserId;
 
         const user = await userRepo.getUserById(userId);
         if (!user) {
@@ -201,7 +201,7 @@ const makeUserAdmin = async (req, res) => {
             return res.status(403).json({ message: "Invalid admin code" });
         }
 
-        const userId = req.params.id;
+        const userId = req.targetUserId;
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }
@@ -239,7 +239,7 @@ const revokeUserAdmin = async (req, res) => {
             return res.status(403).json({ message: "Invalid admin code" });
         }
 
-        const userId = req.params.id;
+        const userId = req.targetUserId;
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }
