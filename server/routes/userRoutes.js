@@ -14,4 +14,7 @@ router.patch("/", updateUserDetails);
 router.delete("/", deleteUserById);
 router.put("/password", changeUserPassword);
 
+//Admin Routes
+// router.get("/", getAllUsers);
+
 export default router;

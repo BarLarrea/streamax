@@ -1,4 +1,4 @@
-export function setUpRefreshTokenCookie(res) {
+export function setUpRefreshTokenCookie(res, refreshToken) {
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // HTTPS only in production
