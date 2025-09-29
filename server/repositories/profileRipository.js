@@ -19,4 +19,3 @@ export const findeProfilesByUserID = async (userId) => {
 export const findeAndDeleteProfileById = async (id) => {
     return await Profile.findByIdAndDelete(id);
 };
-

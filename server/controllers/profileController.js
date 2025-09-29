@@ -1,8 +1,8 @@
-import e from "express";
 import Profile from "../models/profileModel.js";
 import * as profileRipo from "../repositories/profileRipository.js";
 import * as userRepo from "../repositories/userRepository.js";
 import { formatProfile } from "../utils/formatedProfile.js";
+import * as contentRepo from "../repositories/contentRipository.js";
 
 const createProfile = async (req, res) => {
     try {
@@ -188,32 +188,31 @@ const deleteProfileById = async (req, res) => {
 };
 
 const updateLastWatched = (profile, contentId, progress) => {
-    const existing = profile.lastWatched.find(
-        (item) => item.contentId.toString() === contentId
+    console.log("Updating last watched:", {
+        profileId: profile._id,
+        contentId,
+        progress
+    });
+    const index = profile.lastWatched.findIndex(
+        (object) => object.contentId.toString() === contentId.toString()
     );
+    if (index !== -1) {
+        profile.lastWatched[index].progress = progress;
+        profile.lastWatched[index].updatedAt = new Date();
 
-    if (existing) {
-        existing.progress = progress;
-        existing.updatedAt = new Date();
-
-        // move the updated item to the end
-        profile.lastWatched = [
-            ...profile.lastWatched.filter(
-                (item) => item.contentId.toString() !== contentId
-            ),
-            existing
-        ];
+        const existing = profile.lastWatched[index]; //get the existing item
+        profile.lastWatched.splice(index, 1); // remove it from its current position
+        profile.lastWatched.push(existing); // push it to the end
     } else {
         // remove the oldest (first) item
         if (profile.lastWatched.length >= 5) {
             profile.lastWatched.shift();
         }
-
-        // add the new item to the end
-        profile.lastWatched = [
-            ...profile.lastWatched,
-            { contentId, progress, updatedAt: new Date() }
-        ];
+        profile.lastWatched.push({
+            contentId,
+            progress,
+            updatedAt: new Date()
+        });
     }
 };
 
@@ -250,22 +249,48 @@ const updateLastWatchedController = async (req, res) => {
     }
 };
 
-// Toggle like/unlike content
 const toggleLikeContent = async (req, res) => {
     try {
         const { id } = req.params; // profileId
-        const { contentId } = req.body;
+        if (!id) {
+            return res.status(400).json({ message: "Profile id is missing" });
+        }
 
-        // TODO: implement logic:
-        // 1. Validate inputs
-        // 2. Find profile by id
-        // 3. If contentId exists → remove it
-        // 4. If contentId doesn't exist → add it
-        // 5. Save profile and return formatted response
+        const { contentId } = req.body;
+        if (!contentId) {
+            return res.status(400).json({ message: "Content id is missing" });
+        }
+        const profile = await profileRipo.findProfileById(id);
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+        const content = await contentRepo.findContentById(contentId);
+        if (!content) {
+            return res.status(404).json({ message: "Content not found" });
+        }
+
+        const isLiked = profile.likedContent.some(
+            (cid) => cid.toString() === contentId.toString()
+        );
+
+        let status;
+        if (isLiked) {
+            // Remove like
+            profile.likedContent = profile.likedContent.filter(
+                (cid) => cid.toString() !== contentId.toString()
+            );
+            status = "unliked";
+        } else {
+            // Add like
+            profile.likedContent.push(contentId);
+            status = "liked";
+        }
+
+        await profileRipo.saveProfile(profile);
 
         return res.status(200).json({
-            message: "Liked content updated successfully",
-            profile: {} // replace with formatProfile(profile)
+            message: `Content successfully ${status}`,
+            profile: formatProfile(profile)
         });
     } catch (error) {
         console.error("Error in toggleLikeContent:", error.message);
@@ -280,5 +305,6 @@ export {
     updateProfileDetails,
     deleteProfileById,
     updateLastWatchedController,
+    toggleLikeContent
     // getAllProfiles
 };

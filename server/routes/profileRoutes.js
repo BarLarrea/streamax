@@ -6,7 +6,8 @@ import {
     getProfilesByUserID,
     updateProfileDetails,
     deleteProfileById,
-    updateLastWatchedController
+    updateLastWatchedController,
+    toggleLikeContent
     // getAllProfiles
 } from "../controllers/profileController.js";
 
@@ -18,6 +19,7 @@ router.get("/", getProfilesByUserID);
 router.patch("/:id", updateProfileDetails);
 router.delete("/:id", deleteProfileById);
 router.put("/last-watched/:id", updateLastWatchedController);
+router.put("/toggle-like/:id", toggleLikeContent);
 
 // //Admin Routes
 // router.get("/", getAllProfiles);
