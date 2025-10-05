@@ -269,6 +269,19 @@ const toggleLikeContent = async (req, res) => {
     }
 };
 
+const getAllProfiles = async (req, res) => {
+    try {
+        const profiles = await profileRipo.findAllProfiles();
+        return res.status(200).json({
+            message: "All profiles fetched successfully",
+            profiles: profiles.map(formatProfile)
+        });
+    } catch (error) {
+        console.error("Error in getAllProfiles:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
 export {
     createProfile,
     getProfileById,
@@ -276,6 +289,6 @@ export {
     updateProfileDetails,
     deleteProfileById,
     updateLastWatchedController,
-    toggleLikeContent
-    // getAllProfiles
+    toggleLikeContent,
+    getAllProfiles
 };

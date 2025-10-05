@@ -8,7 +8,9 @@ import {
     makeUserAdmin,
     revokeUserAdmin
 } from "../controllers/userController.js";
-// import { getAllProfiles } from "../controllers/profileController.js";
+
+import { getAllProfiles } from "../controllers/profileController.js";
+
 // import {
 //     getAllContents,
 //     createContent,
@@ -38,8 +40,13 @@ router.patch("/users/:id/status", ...adminPipeline, changeUserStatus);
 router.patch("/users/:id/make-admin", ...adminPipeline, makeUserAdmin);
 router.patch("/users/:id/revoke-admin", ...adminPipeline, revokeUserAdmin);
 
-// mutual
+// mutual - self user and admin
 router.get("/users/:id", ...adminPipeline, getUserById);
 router.delete("/users/:id", ...adminPipeline, deleteUserById);
+
+//
+// Profile Management
+//
+router.get("/profiles", ...adminPipeline, getAllProfiles);
 
 export default router;

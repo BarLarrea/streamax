@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 const setTargetUserId = (req, res, next) => {
     try {
         if (!req.user.isAdmin) {
