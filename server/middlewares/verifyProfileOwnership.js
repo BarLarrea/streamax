@@ -1,4 +1,4 @@
-import * as profileRepo from "../repositories/profileRipository.js";
+import * as profileRepo from "../repositories/profileRepository.js";
 
 const verifyProfileOwnership = async (req, res, next) => {
     try {

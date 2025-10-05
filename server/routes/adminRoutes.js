@@ -49,4 +49,10 @@ router.delete("/users/:id", ...adminPipeline, deleteUserById);
 //
 router.get("/profiles", ...adminPipeline, getAllProfiles);
 
+//
+// Content Management
+//
+
+
+
 export default router;

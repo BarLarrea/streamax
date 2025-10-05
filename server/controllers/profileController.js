@@ -1,8 +1,8 @@
 import Profile from "../models/profileModel.js";
-import * as profileRipo from "../repositories/profileRipository.js";
+import * as profileRipo from "../repositories/profileRepository.js";
 import * as userRepo from "../repositories/userRepository.js";
 import { formatProfile } from "../utils/formatedProfile.js";
-import * as contentRepo from "../repositories/contentRipository.js";
+import * as contentRepo from "../repositories/contentRepository.js";
 
 const createProfile = async (req, res) => {
     try {
