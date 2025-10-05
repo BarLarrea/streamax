@@ -63,28 +63,6 @@ const createProfile = async (req, res) => {
     }
 };
 
-const getProfileById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ message: "Profile id is missing" });
-        }
-
-        const profile = await profileRipo.findProfileById(id);
-        if (!profile) {
-            return res.status(404).json({ message: "Profile not found" });
-        }
-
-        return res.status(200).json({
-            message: "Profile fetched successfully",
-            profile: formatProfile(profile)
-        });
-    } catch (error) {
-        console.error("Error in getProfileById:", error.message);
-        return res.status(500).json({ error: "Server error" });
-    }
-};
-
 const getProfilesByUserID = async (req, res) => {
     try {
         const { userId } = req.body;
@@ -108,23 +86,33 @@ const getProfilesByUserID = async (req, res) => {
     }
 };
 
+//
+// Aravid from verifyProfileOwnership middleware attaches the profile to req.profile (include validation)
+//
+
+const getProfileById = async (req, res) => {
+    try {
+        const profile = req.profile;
+
+        return res.status(200).json({
+            message: "Profile fetched successfully",
+            profile: formatProfile(profile)
+        });
+    } catch (error) {
+        console.error("Error in getProfileById:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
 const updateProfileDetails = async (req, res) => {
     try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ message: "Profile id is missing" });
-        }
-
         const { profileName, avatar } = req.body;
 
         if (!profileName && !avatar) {
             return res.status(400).json({ message: "No fields to update" });
         }
 
-        const profile = await profileRipo.findProfileById(id);
-        if (!profile) {
-            return res.status(404).json({ message: "Profile not found" });
-        }
+        const profile = req.profile;
 
         if (profileName && profileName !== profile.profileName) {
             const existingName = await profileRipo.findProfileByUserAndName(
@@ -139,9 +127,11 @@ const updateProfileDetails = async (req, res) => {
             }
             profile.profileName = profileName;
         }
+
         if (avatar && avatar !== profile.avatar) {
             profile.avatar = avatar;
         }
+
         await profileRipo.saveProfile(profile);
 
         return res.status(200).json({
@@ -156,15 +146,7 @@ const updateProfileDetails = async (req, res) => {
 
 const deleteProfileById = async (req, res) => {
     try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ message: "Profile id is missing" });
-        }
-
-        const profile = await profileRipo.findProfileById(id);
-        if (!profile) {
-            return res.status(404).json({ message: "Profile not found" });
-        }
+        const profile = req.profile;
 
         const user = await userRepo.getUserById(profile.userId);
 
@@ -176,7 +158,7 @@ const deleteProfileById = async (req, res) => {
 
         await userRepo.removeProfileFromUser(user._id, profile._id);
 
-        await profileRipo.findeAndDeleteProfileById(id);
+        await profileRipo.findeAndDeleteProfileById(profile._id);
 
         return res
             .status(200)
@@ -218,10 +200,6 @@ const updateLastWatched = (profile, contentId, progress) => {
 
 const updateLastWatchedController = async (req, res) => {
     try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ message: "Profile id is missing" });
-        }
         const { contentId, progress } = req.body;
 
         if (!contentId || progress == null) {
@@ -230,10 +208,7 @@ const updateLastWatchedController = async (req, res) => {
                 .json({ message: "Content ID or progress is missing" });
         }
 
-        const profile = await profileRipo.findProfileById(id);
-        if (!profile) {
-            return res.status(404).json({ message: "Profile not found" });
-        }
+        const profile = req.profile;
 
         updateLastWatched(profile, contentId, progress);
 
@@ -251,23 +226,19 @@ const updateLastWatchedController = async (req, res) => {
 
 const toggleLikeContent = async (req, res) => {
     try {
-        const { id } = req.params; // profileId
-        if (!id) {
-            return res.status(400).json({ message: "Profile id is missing" });
-        }
-
         const { contentId } = req.body;
+
         if (!contentId) {
             return res.status(400).json({ message: "Content id is missing" });
         }
-        const profile = await profileRipo.findProfileById(id);
-        if (!profile) {
-            return res.status(404).json({ message: "Profile not found" });
-        }
+
         const content = await contentRepo.findContentById(contentId);
+
         if (!content) {
             return res.status(404).json({ message: "Content not found" });
         }
+
+        const profile = req.profile;
 
         const isLiked = profile.likedContent.some(
             (cid) => cid.toString() === contentId.toString()
@@ -298,6 +269,19 @@ const toggleLikeContent = async (req, res) => {
     }
 };
 
+const getAllProfiles = async (req, res) => {
+    try {
+        const profiles = await profileRipo.findAllProfiles();
+        return res.status(200).json({
+            message: "All profiles fetched successfully",
+            profiles: profiles.map(formatProfile)
+        });
+    } catch (error) {
+        console.error("Error in getAllProfiles:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
 export {
     createProfile,
     getProfileById,
@@ -305,6 +289,6 @@ export {
     updateProfileDetails,
     deleteProfileById,
     updateLastWatchedController,
-    toggleLikeContent
-    // getAllProfiles
+    toggleLikeContent,
+    getAllProfiles
 };

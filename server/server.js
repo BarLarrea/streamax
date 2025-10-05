@@ -7,7 +7,6 @@ import authRout from "./routes/authRoutes.js";
 import userRout from "./routes/userRoutes.js";
 import profileRoute from "./routes/profileRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import isAdmin from "./middlewares/adminMiddleware.js";
 
 dotenv.config();
 const app = express();
