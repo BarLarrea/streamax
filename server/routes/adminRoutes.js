@@ -1,5 +1,10 @@
 import express from "express";
 
+import verifyAccessToken from "../middlewares/authMiddleware.js";
+import checkUserStatus from "../middlewares/userStatusMiddleware.js";
+import isAdmin from "../middlewares/adminMiddleware.js";
+import setTargetUserId from "../middlewares/setTargetUserId.js";
+
 import {
     getUserById,
     getAllUsers,
@@ -11,17 +16,7 @@ import {
 
 import { getAllProfiles } from "../controllers/profileController.js";
 
-// import {
-//     getAllContents,
-//     createContent,
-//     updateContent,
-//     deleteContent
-// } from "../controllers/contentController.js";
-
-import verifyAccessToken from "../middlewares/authMiddleware.js";
-import checkUserStatus from "../middlewares/userStatusMiddleware.js";
-import isAdmin from "../middlewares/adminMiddleware.js";
-import setTargetUserId from "../middlewares/setTargetUserId.js";
+import { createContent } from "../controllers/contentController.js";
 
 const adminPipeline = [
     verifyAccessToken,
@@ -53,6 +48,6 @@ router.get("/profiles", ...adminPipeline, getAllProfiles);
 // Content Management
 //
 
-
+router.post("/contents", ...adminPipeline, createContent);
 
 export default router;
