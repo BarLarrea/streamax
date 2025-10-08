@@ -9,23 +9,25 @@ const contentSchema = new mongoose.Schema(
         },
         title: { type: String, required: true },
 
-        // General metadata
+        // General metadata (movies and series)
         description: String,
-        releaseYear: Number,
+        releaseYear: { type: Number, min: 1900, max: new Date().getFullYear() },
         genres: [String],
         posterUrl: { type: String, default: "defaultPoster.png" },
+
+        // Movie and Episode
         duration: Number,
         videoUrl: String,
 
-        // Hierarchy references
+        // Hierarchy references (series => season => episodes)
         seriesId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
         seasonId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
-        seasonNumber: Number,
-        episodeNumber: Number,
+        seasonNumber: { type: Number, min: 1, max: 100 },
+        episodeNumber: { type: Number, min: 1, max: 200 },
 
-        // Franchise / Collection
-        franchiseId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
-        partNumber: Number
+        // Collection references (e.g., Marvel Cinematic Universe)
+        collectionId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
+        collectionName: String
     },
     { timestamps: true }
 );
