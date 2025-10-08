@@ -8,6 +8,7 @@ import {
     buildCollectionData
 } from "../services/contentBuilder.js";
 
+// ----- ADMIN -----
 const createContent = async (req, res) => {
     try {
         const { type } = req.body;
@@ -59,5 +60,27 @@ const createContent = async (req, res) => {
     }
 };
 
+export const updateContent = async (req, res) => {};
+
+export const deleteContent = async (req, res) => {};
+
+// ----- GENERAL -----
+export const getAllContents = async (req, res) => {};
+export const getContentById = async (req, res) => {};
+export const searchContents = async (req, res) => {};
+export const getContentsByGenre = async (req, res) => {};
+
+// ----- HIERARCHY -----
+export const getSeasonsBySeriesId = async (req, res) => {};
+export const getEpisodesBySeasonId = async (req, res) => {};
+
+// ----- RECOMMENDATIONS & POPULARITY -----
+export const getRecommendedContents = async (req, res) => {};
+export const getPopularContents = async (req, res) => {};
+export const getRecentContents = async (req, res) => {};
+
+// ----- EXTERNAL SERVICES / STATS -----
+export const refreshExternalRatings = async (req, res) => {};
+export const incrementViewCount = async (req, res) => {};
 
 export { createContent };
