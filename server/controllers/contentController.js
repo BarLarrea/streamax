@@ -104,7 +104,41 @@ const updateContent = async (req, res) => {
     }
 };
 
-const deleteContent = async (req, res) => {};
+const deleteContentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Content ID is required" });
+        }
+
+        const deletedContent = await contentRepo.deleteContent(id);
+
+        if (!deletedContent) {
+            return res.status(404).json({ message: "Content not found" });
+        }
+
+        console.log(
+            "Deleted content:",
+            deletedContent.type,
+            deletedContent.title,
+            "by admin:",
+            req.user.id,
+            "at",
+            new Date().toISOString()
+        );
+
+        return res.status(200).json({
+            message: "Content deleted successfully",
+            deletedContent
+        });
+    } catch (error) {
+        console.error("Error deleting content:", error);
+        return res.status(500).json({
+            message: "Server error — failed to delete content",
+            error: error.message
+        });
+    }
+};
 
 // ----- GENERAL -----
 const getAllContents = async (req, res) => {};
@@ -123,7 +157,7 @@ const refreshExternalRatings = async (req, res) => {};
 export {
     createContent,
     updateContent,
-    deleteContent,
+    deleteContentById,
     getAllContents,
     getContentById,
     searchContents,
