@@ -18,7 +18,8 @@ import { getAllProfiles } from "../controllers/profileController.js";
 
 import {
     createContent,
-    updateContent
+    updateContent,
+    deleteContentById
 } from "../controllers/contentController.js";
 
 const adminPipeline = [
@@ -51,5 +52,6 @@ router.get("/profiles", ...adminPipeline, getAllProfiles);
 //
 router.post("/contents", ...adminPipeline, createContent);
 router.put("/contents/:id", ...adminPipeline, updateContent);
+router.delete("/contents/:id", ...adminPipeline, deleteContentById);
 
 export default router;
