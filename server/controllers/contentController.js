@@ -1,5 +1,5 @@
 import * as contentRepo from "../repositories/contentRepository.js";
-
+import { filterAllowedFieldsByType } from "../services/contentFilter.js";
 import {
     buildMovieData,
     buildSeriesData,
@@ -16,32 +16,34 @@ const createContent = async (req, res) => {
             return res.status(400).json({ message: "Type is required" });
         }
 
-        let contentData;
+        // Filter body to only include allowed fields for the specified type
+        const filteredBody = filterAllowedFieldsByType(type, req.body);
+        if (!filteredBody) {
+            return res.status(400).json({ message: "Invalid content type" });
+        }
+
+        const contentData = {};
 
         switch (type) {
             case "movie":
-                contentData = buildMovieData(req.body);
+                contentData = buildMovieData(filteredBody);
                 break;
 
             case "series":
-                contentData = buildSeriesData(req.body);
+                contentData = buildSeriesData(filteredBody);
                 break;
 
             case "season":
-                contentData = buildSeasonData(req.body);
+                contentData = buildSeasonData(filteredBody);
                 break;
 
             case "episode":
-                contentData = buildEpisodeData(req.body);
+                contentData = buildEpisodeData(filteredBody);
                 break;
 
             case "collection":
-                contentData = buildCollectionData(req.body);
+                contentData = buildCollectionData(filteredBody);
                 break;
-            default:
-                return res
-                    .status(400)
-                    .json({ message: "Invalid content type" });
         }
 
         if (!contentData.valid) {
@@ -60,27 +62,74 @@ const createContent = async (req, res) => {
     }
 };
 
-export const updateContent = async (req, res) => {};
+const updateContent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Content ID is required" });
+        }
 
-export const deleteContent = async (req, res) => {};
+        const existingContent = await contentRepo.getContentById(id);
+        if (!existingContent) {
+            return res.status(404).json({ message: "Content not found" });
+        }
+
+        // Filter body to only include allowed fields for the specified type
+        const filteredBody = filterAllowedFieldsByType(
+            existingContent.type,
+            req.body
+        );
+        if (!filteredBody) {
+            return res.status(400).json({ message: "Invalid content type" });
+        }
+
+        if (filteredBody.type && filteredBody.type !== existingContent.type) {
+            return res
+                .status(400)
+                .json({ message: "Content type cannot be changed" });
+        }
+
+        const updatedContent = await contentRepo.updateContent(id, {
+            ...existingContent.toObject(),
+            ...filteredBody
+        });
+
+        return res.status(200).json({
+            message: "Content updated successfully",
+            content: updatedContent
+        });
+    } catch (error) {
+        console.error("Error updating content:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const deleteContent = async (req, res) => {};
 
 // ----- GENERAL -----
-export const getAllContents = async (req, res) => {};
-export const getContentById = async (req, res) => {};
-export const searchContents = async (req, res) => {};
-export const getContentsByGenre = async (req, res) => {};
+const getAllContents = async (req, res) => {};
+const getContentById = async (req, res) => {};
+const searchContents = async (req, res) => {};
+const getContentsByGenre = async (req, res) => {};
 
 // ----- HIERARCHY -----
-export const getSeasonsBySeriesId = async (req, res) => {};
-export const getEpisodesBySeasonId = async (req, res) => {};
+const getSeasonsBySeriesId = async (req, res) => {};
+const getEpisodesBySeasonId = async (req, res) => {};
 
-// ----- RECOMMENDATIONS & POPULARITY -----
-export const getRecommendedContents = async (req, res) => {};
-export const getPopularContents = async (req, res) => {};
-export const getRecentContents = async (req, res) => {};
+// ---- EXTERNAL ----
+const importExternalMetadata = async (req, res) => {};
+const refreshExternalRatings = async (req, res) => {};
 
-// ----- EXTERNAL SERVICES / STATS -----
-export const refreshExternalRatings = async (req, res) => {};
-export const incrementViewCount = async (req, res) => {};
-
-export { createContent };
+export {
+    createContent,
+    updateContent,
+    deleteContent,
+    getAllContents,
+    getContentById,
+    searchContents,
+    getContentsByGenre,
+    getSeasonsBySeriesId,
+    getEpisodesBySeasonId,
+    importExternalMetadata,
+    refreshExternalRatings
+};

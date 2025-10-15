@@ -16,7 +16,10 @@ import {
 
 import { getAllProfiles } from "../controllers/profileController.js";
 
-import { createContent } from "../controllers/contentController.js";
+import {
+    createContent,
+    updateContent
+} from "../controllers/contentController.js";
 
 const adminPipeline = [
     verifyAccessToken,
@@ -34,7 +37,6 @@ router.get("/users", ...adminPipeline, getAllUsers);
 router.patch("/users/:id/status", ...adminPipeline, changeUserStatus);
 router.patch("/users/:id/make-admin", ...adminPipeline, makeUserAdmin);
 router.patch("/users/:id/revoke-admin", ...adminPipeline, revokeUserAdmin);
-
 // mutual - self user and admin
 router.get("/users/:id", ...adminPipeline, getUserById);
 router.delete("/users/:id", ...adminPipeline, deleteUserById);
@@ -47,7 +49,7 @@ router.get("/profiles", ...adminPipeline, getAllProfiles);
 //
 // Content Management
 //
-
 router.post("/contents", ...adminPipeline, createContent);
+router.put("/contents/:id", ...adminPipeline, updateContent);
 
 export default router;
