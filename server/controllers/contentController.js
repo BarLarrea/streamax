@@ -1,7 +1,6 @@
 import * as contentRepo from "../repositories/contentRepository.js";
 import { filterAllowedFieldsByType } from "../services/contentFilter.js";
 import { buildContentByType } from "../services/contentBuilder.js";
-
 import { formatContentByType } from "../utils/contentFormatter.js";
 
 // ==================== ADMIN ACTIONS ====================
@@ -123,37 +122,43 @@ const deleteContentById = async (req, res) => {
 // ==================== PUBLIC READ ACTIONS ====================
 // (Endpoints accessible to all users)
 
-// Get all contents with optional filters, pagination + sorting
+// Get all contents with dynamic filters + pagination
 const getAllContents = async (req, res) => {
     try {
-        const { type, genres, releaseYear, sort, limit, page } = req.query;
+        const { type, genres, releaseYear, actors, directors, limit, page } =
+            req.query;
 
-        // --- Filters ---
-        const filters = {
-            ...(type ? { type } : {}),
-            ...(genres
-                ? {
-                      genres: {
-                          $in: genres
-                              .split(",")
-                              .map((g) => g.toLowerCase().trim())
-                      }
-                  }
-                : {}),
-            ...(releaseYear ? { releaseYear: Number(releaseYear) } : {})
-        };
+        // --- Dynamic Filters ---
+        const filters = {};
 
-        // --- Pagination + Sorting ---
-        const options = {
-            sort: sort ? { [sort]: -1 } : { createdAt: -1 },
-            limit: limit ? Number(limit) : 20,
-            skip: page ? (Number(page) - 1) * (limit ? Number(limit) : 20) : 0
-        };
+        if (type) filters.type = type;
+        if (genres)
+            filters.genres = {
+                $in: genres.split(",").map((g) => g.toLowerCase().trim())
+            };
+        if (releaseYear) filters.releaseYear = Number(releaseYear);
+        if (actors)
+            filters.actors = {
+                $in: actors.split(",").map((a) => a.trim())
+            };
+        if (directors)
+            filters.directors = {
+                $in: directors.split(",").map((d) => d.trim())
+            };
+
+        // --- Pagination ---
+        const pageNum = Number(page) || 1;
+        const limitNum = Number(limit) || 20;
+        const skip = (pageNum - 1) * limitNum;
 
         // --- Query ---
-        const contents = await contentRepo.getAllContents(filters, options);
+        const { contents, totalDocuments } = await contentRepo.getAllContents(
+            filters,
+            skip,
+            limitNum
+        );
 
-        if (!contents || contents.length === 0) {
+        if (totalDocuments === 0) {
             return res.status(404).json({
                 message: "No contents found matching your filters",
                 filters
@@ -163,10 +168,11 @@ const getAllContents = async (req, res) => {
         // --- Response ---
         return res.status(200).json({
             success: true,
-            count: contents.length,
-            page: page ? Number(page) : 1,
             filters,
-            sort: options.sort,
+            page: pageNum,
+            limit: limitNum,
+            totalDocuments,
+            totalPages: Math.ceil(totalDocuments / limitNum),
             contents: contents.map(formatContentByType)
         });
     } catch (error) {
@@ -201,10 +207,55 @@ const getContentById = async (req, res) => {
     }
 };
 
-const searchContents = async (req, res) => {};
+// Search contents by title, description, actors, directors, genres
+const searchContents = async (req, res) => {
+    try {
+        let query = req.query.q;
+        if (!query || !query.trim()) {
+            return res.status(400).json({
+                message: "Search query cannot be empty or just spaces"
+            });
+        }
+
+        // --- Query ---
+        query = query.trim().replace(/\s+/g, " "); // Normalize spaces in the middle of the query word
+
+        // --- Pagination ---
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+
+        // --- Search ---
+        const { contents, totalDocuments } = await contentRepo.searchContents(
+            query,
+            limit,
+            skip
+        );
+
+        if (totalDocuments === 0) {
+            return res
+                .status(404)
+                .json({ message: "No contents found matching your query" });
+        }
+
+        // --- Response ---
+        return res.status(200).json({
+            success: true,
+            query,
+            page,
+            limit,
+            totalDocuments,
+            totalPages: Math.ceil(totalDocuments / limit),
+            contents: contents.map(formatContentByType)
+        });
+    } catch (error) {
+        console.error("Error searching contents:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
 
 // ==================== HIERARCHY ACTIONS ====================
-// (Series → Seasons → Episodes relations)
+// (Series -> Seasons -> Episodes)
 
 const getSeasonsBySeriesId = async (req, res) => {
     try {

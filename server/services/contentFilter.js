@@ -6,6 +6,7 @@ const allowedFieldsByType = {
         "genres",
         "duration",
         "videoUrl",
+        "trilerUrl",
         "releaseYear",
         "posterUrl",
         "collectionId"
@@ -16,9 +17,10 @@ const allowedFieldsByType = {
         "description",
         "genres",
         "releaseYear",
-        "posterUrl"
+        "posterUrl",
+        "trilerUrl"
     ],
-    season: ["title", "seriesId", "seasonNumber", "releaseYear"],
+    season: ["title", "seriesId", "seasonNumber", "releaseYear", "trilerUrl"],
     episode: [
         "title",
         "seriesId",
@@ -26,6 +28,7 @@ const allowedFieldsByType = {
         "episodeNumber",
         "duration",
         "videoUrl",
+        "trilerUrl",
         "description",
         "posterUrl"
     ],

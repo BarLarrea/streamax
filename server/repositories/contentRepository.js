@@ -53,30 +53,57 @@ export const getContentById = async (contentId) => {
     return { status: "ok", data: content };
 };
 
-export const getAllContents = async (filters = {}, options = {}) => {
+export const getAllContents = async (filters = {}, skip, limit) => {
     try {
-        const query = Content.find(filters); // built the query object
+        // Apply options (limit, skip, select)
+        const [contents, totalDocuments] = await Promise.all([
+            Content.find(filters)
+                .skip(skip)
+                .limit(limit)
+                .sort({ releaseYear: -1 }) // default sort
+                .lean(),
+            Content.countDocuments(filters)
+        ]);
 
-        // Apply options (sort, limit, skip, select)
-        if (options.sort) query.sort(options.sort);
-        if (options.limit) query.limit(options.limit);
-        if (options.skip) query.skip(options.skip);
-        if (options.select) query.select(options.select);
-
-        const results = await query.exec(); // do the actual query
-        return results;
+        return { contents, totalDocuments };
     } catch (error) {
         console.error("Error fetching contents:", error);
         throw error;
     }
 };
 
-// export const searchContents = async (query) => {
-//     const regex = new RegExp(query, "i");
-//     return await Content.find({
-//         $or: [{ title: regex }, { description: regex }, { genres: regex }]
-//     });
-// };
+export const searchContents = async (query, limit, skip) => {
+    const regex = new RegExp(query, "i"); // case-insensitive search
+
+    const [contents, totalDocuments] = await Promise.all([
+        Content.find({
+            $or: [
+                { title: regex },
+                { alternativeTitles: regex },
+                { genres: regex },
+                { releaseYear: regex },
+                { actors: regex },
+                { directors: regex }
+            ]
+        })
+            .skip(skip)
+            .limit(limit)
+            .sort({ releaseYear: -1 }) // Newest first
+            .lean(),
+
+        Content.countDocuments({
+            $or: [
+                { title: regex },
+                { alternativeTitles: regex },
+                { genres: regex },
+                { releaseYear: regex },
+                { actors: regex },
+                { directors: regex }
+            ]
+        })
+    ]);
+    return { contents, totalDocuments };
+};
 
 // ==================== HIERARCHY ====================
 
