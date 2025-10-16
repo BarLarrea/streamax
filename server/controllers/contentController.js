@@ -8,7 +8,9 @@ import {
     buildCollectionData
 } from "../services/contentBuilder.js";
 
-// ----- ADMIN -----
+import { formatContentByType } from "../utils/contentFormatter.js";
+
+// ==================== ADMIN ACTIONS ====================
 const createContent = async (req, res) => {
     try {
         const { type } = req.body;
@@ -153,26 +155,39 @@ const deleteContentById = async (req, res) => {
     }
 };
 
-// ----- GENERAL -----
+// ==================== PUBLIC READ ACTIONS ====================
+// (Endpoints accessible to all users)
 
-// Get all contents with optional filters, sorting, pagination
+// Get all contents with optional filters, pagination + sorting
 const getAllContents = async (req, res) => {
     try {
         const { type, genres, releaseYear, sort, limit, page } = req.query;
 
+        // --- Filters ---
         const filters = {
             ...(type ? { type } : {}),
-            ...(genres ? { genres: { $in: genres.split(",") } } : {}),
+            ...(genres
+                ? {
+                      genres: {
+                          $in: genres
+                              .split(",")
+                              .map((g) => g.toLowerCase().trim())
+                      }
+                  }
+                : {}),
             ...(releaseYear ? { releaseYear: Number(releaseYear) } : {})
         };
 
+        // --- Pagination + Sorting ---
         const options = {
             sort: sort ? { [sort]: -1 } : { createdAt: -1 },
             limit: limit ? Number(limit) : 20,
             skip: page ? (Number(page) - 1) * (limit ? Number(limit) : 20) : 0
         };
 
+        // --- Query ---
         const contents = await contentRepo.getAllContents(filters, options);
+
         if (!contents || contents.length === 0) {
             return res.status(404).json({
                 message: "No contents found matching your filters",
@@ -180,13 +195,14 @@ const getAllContents = async (req, res) => {
             });
         }
 
+        // --- Response ---
         return res.status(200).json({
             success: true,
             count: contents.length,
             page: page ? Number(page) : 1,
             filters,
             sort: options.sort,
-            contents
+            contents: contents.map(formatContentByType)
         });
     } catch (error) {
         console.error("Error fetching contents:", error);
@@ -201,25 +217,97 @@ const getContentById = async (req, res) => {
             return res.status(400).json({ message: "Content ID is required" });
         }
 
-        const content = await contentRepo.getContentById(id);
-        if (!content) {
+        const result = await contentRepo.getContentById(id);
+
+        if (result.status === "invalid_id") {
+            return res.status(404).json({ message: "Invalid content ID" });
+        }
+
+        if (result.status === "not_found") {
             return res.status(404).json({ message: "Content not found" });
         }
 
-        return res.status(200).json({ content });
+        return res
+            .status(200)
+            .json({ content: formatContentByType(result.data) });
     } catch (error) {
         console.error("Error fetching content by ID:", error);
         return res.status(500).json({ message: "Server error" });
     }
 };
+
 const searchContents = async (req, res) => {};
-const getContentsByGenre = async (req, res) => {};
 
-// ----- HIERARCHY -----
-const getSeasonsBySeriesId = async (req, res) => {};
-const getEpisodesBySeasonId = async (req, res) => {};
+// ==================== HIERARCHY ACTIONS ====================
+// (Series → Seasons → Episodes relations)
 
-// ---- EXTERNAL ----
+const getSeasonsBySeriesId = async (req, res) => {
+    try {
+        const { seriesId } = req.params;
+        if (!seriesId) {
+            return res.status(400).json({ message: "Series ID is required" });
+        }
+
+        const result = await contentRepo.getSeasonsBySeriesId(seriesId);
+
+        if (result.status === "invalid_id") {
+            return res.status(400).json({ message: "Invalid series ID" });
+        }
+
+        if (result.status === "not_found") {
+            return res
+                .status(404)
+                .json({ message: "No seasons found for this series" });
+        }
+
+        // result.status === "ok"
+        return res.status(200).json({
+            success: true,
+            seasonAmount: result.data.length,
+            seriesId,
+            seasons: result.data.map(formatContentByType)
+        });
+    } catch (error) {
+        console.error("Error fetching seasons by series ID:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+const getEpisodesBySeasonId = async (req, res) => {
+    try {
+        const { seasonId } = req.params;
+        if (!seasonId) {
+            return res.status(400).json({ message: "Season ID is required" });
+        }
+
+        const result = await contentRepo.getEpisodesBySeasonId(seasonId);
+
+        if (result.status === "invalid_id") {
+            return res.status(400).json({ message: "Invalid season ID" });
+        }
+
+        if (result.status === "not_found") {
+            return res
+                .status(404)
+                .json({ message: "No episodes found for this season" });
+        }
+
+        // result.status === "ok"
+        return res.status(200).json({
+            success: true,
+            episodeAmount: result.data.length,
+            seasonId,
+            episodes: result.data.map(formatContentByType)
+        });
+    } catch (error) {
+        console.error("Error fetching episodes by season ID:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+// ==================== EXTERNAL SOURCES ====================
+// (Data import or external API integration)
+
 const importExternalMetadata = async (req, res) => {};
 const refreshExternalRatings = async (req, res) => {};
 
@@ -230,7 +318,6 @@ export {
     getAllContents,
     getContentById,
     searchContents,
-    getContentsByGenre,
     getSeasonsBySeriesId,
     getEpisodesBySeasonId,
     importExternalMetadata,

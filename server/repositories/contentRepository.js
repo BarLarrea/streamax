@@ -1,16 +1,56 @@
+import mongoose from "mongoose";
 import Content from "../models/contentModel.js";
 
-// ----- CREATE -----
+// ==================== CREATE / UPDATE / DELETE ====================
+
 export const createContent = async (data) => {
     return await Content.create(data);
 };
 
-// ----- READ & QUERY -----
+export const saveContent = async (content) => {
+    return await content.save();
+};
+
+export const updateContent = async (id, data) => {
+    return await Content.findByIdAndUpdate(
+        id,
+        data,
+        { new: true },
+        { runValidators: true } // Ensure data adheres to schema
+    );
+};
+
+export const deleteContent = async (id) => {
+    return await Content.findByIdAndDelete(id);
+};
+
+// ==================== READ & QUERY ====================
+
 export const getContentById = async (contentId) => {
-    if (!momgoose.Types.ObjectId.isValid(contentId)) {
-        return null;
+    if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return { status: "invalid_id", data: null };
     }
-    return await Content.findById(contentId);
+
+    const content = await Content.findById(contentId)
+        .populate({
+            path: "collectionId",
+            select: "title _id"
+        })
+        .populate({
+            path: "seriesId",
+            select: "title posterUrl releaseYear"
+        })
+        .populate({
+            path: "seasonId",
+            select: "title seasonNumber"
+        })
+        .lean();
+
+    if (!content) {
+        return { status: "not_found", data: null };
+    }
+
+    return { status: "ok", data: content };
 };
 
 export const getAllContents = async (filters = {}, options = {}) => {
@@ -31,10 +71,6 @@ export const getAllContents = async (filters = {}, options = {}) => {
     }
 };
 
-export const getContentsByGenre = async (genre) => {
-    return await Content.find({ genres: { $in: [genre] } });
-};
-
 // ----- Search -----
 // export const searchContents = async (query) => {
 //     const regex = new RegExp(query, "i");
@@ -43,33 +79,36 @@ export const getContentsByGenre = async (genre) => {
 //     });
 // };
 
-// ----- HIERARCHY -----
+// ==================== HIERARCHY ====================
+
 export const getSeasonsBySeriesId = async (seriesId) => {
-    return await Content.find({ seriesId, type: "season" }).sort({
-        seasonNumber: 1
-    });
+    if (!mongoose.Types.ObjectId.isValid(seriesId)) {
+        return { status: "invalid_id", data: null };
+    }
+
+    const seasons = await Content.find({ seriesId, type: "season" })
+        .sort({ seasonNumber: 1 })
+        .lean();
+
+    if (!seasons || seasons.length === 0) {
+        return { status: "not_found", data: [] };
+    }
+
+    return { status: "ok", data: seasons };
 };
 
 export const getEpisodesBySeasonId = async (seasonId) => {
-    return await Content.find({ seasonId, type: "episode" }).sort({
-        episodeNumber: 1
-    });
-};
+    if (!mongoose.Types.ObjectId.isValid(seasonId)) {
+        return { status: "invalid_id", data: null };
+    }
 
-// ----- UPDATE / DELETE -----
-export const saveContent = async (content) => {
-    return await content.save();
-};
+    const episodes = await Content.find({ seasonId, type: "episode" })
+        .sort({ episodeNumber: 1 })
+        .lean();
 
-export const updateContent = async (id, data) => {
-    return await Content.findByIdAndUpdate(
-        id,
-        data,
-        { new: true },
-        { runValidators: true } // Ensure data adheres to schema
-    );
-};
+    if (!episodes || episodes.length === 0) {
+        return { status: "not_found", data: [] };
+    }
 
-export const deleteContent = async (id) => {
-    return await Content.findByIdAndDelete(id);
+    return { status: "ok", data: episodes };
 };

@@ -48,8 +48,8 @@ contentSchema.index(
 
 // Ensure unique movie part number inside the same franchise
 contentSchema.index(
-    { franchiseId: 1, partNumber: 1 },
-    { unique: true, partialFilterExpression: { type: "movie" } }
+    { collectionId: 1 },
+    { unique: true, partialFilterExpression: { $in: ["movie", "series"] } }
 );
 
 const Content = mongoose.model("Content", contentSchema);
