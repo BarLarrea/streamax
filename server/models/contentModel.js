@@ -14,11 +14,16 @@ const contentSchema = new mongoose.Schema(
         description: String,
         releaseYear: { type: Number, min: 1900, max: new Date().getFullYear() },
         genres: [String],
+        actors: [String],
+        directors: [String],
         posterUrl: { type: String, default: "defaultPoster.png" },
 
-        // Movie and Episode
+        // Movie and Episode only
         duration: Number,
         videoUrl: String,
+
+        // Movie, Series, and season only
+        trilerUrl: String,
 
         // Hierarchy references (series => season => episodes)
         seriesId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
