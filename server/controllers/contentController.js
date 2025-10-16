@@ -22,6 +22,13 @@ const createContent = async (req, res) => {
             return res.status(400).json({ message: "Invalid content type" });
         }
 
+        // Normalize genres to lowercase
+        if (filteredBody.genres) {
+            filteredBody.genres = filteredBody.genres.map((g) =>
+                g.toLowerCase()
+            );
+        }
+
         const contentData = {};
 
         switch (type) {
@@ -89,6 +96,12 @@ const updateContent = async (req, res) => {
                 .json({ message: "Content type cannot be changed" });
         }
 
+        if (filteredBody.genres) {
+            filteredBody.genres = filteredBody.genres.map((g) =>
+                g.toLowerCase()
+            );
+        }
+
         const updatedContent = await contentRepo.updateContent(id, {
             ...existingContent.toObject(),
             ...filteredBody
@@ -141,8 +154,64 @@ const deleteContentById = async (req, res) => {
 };
 
 // ----- GENERAL -----
-const getAllContents = async (req, res) => {};
-const getContentById = async (req, res) => {};
+
+// Get all contents with optional filters, sorting, pagination
+const getAllContents = async (req, res) => {
+    try {
+        const { type, genres, releaseYear, sort, limit, page } = req.query;
+
+        const filters = {
+            ...(type ? { type } : {}),
+            ...(genres ? { genres: { $in: genres.split(",") } } : {}),
+            ...(releaseYear ? { releaseYear: Number(releaseYear) } : {})
+        };
+
+        const options = {
+            sort: sort ? { [sort]: -1 } : { createdAt: -1 },
+            limit: limit ? Number(limit) : 20,
+            skip: page ? (Number(page) - 1) * (limit ? Number(limit) : 20) : 0
+        };
+
+        const contents = await contentRepo.getAllContents(filters, options);
+        if (!contents || contents.length === 0) {
+            return res.status(404).json({
+                message: "No contents found matching your filters",
+                filters
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            count: contents.length,
+            page: page ? Number(page) : 1,
+            filters,
+            sort: options.sort,
+            contents
+        });
+    } catch (error) {
+        console.error("Error fetching contents:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+const getContentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Content ID is required" });
+        }
+
+        const content = await contentRepo.getContentById(id);
+        if (!content) {
+            return res.status(404).json({ message: "Content not found" });
+        }
+
+        return res.status(200).json({ content });
+    } catch (error) {
+        console.error("Error fetching content by ID:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
 const searchContents = async (req, res) => {};
 const getContentsByGenre = async (req, res) => {};
 
