@@ -1,12 +1,6 @@
 import * as contentRepo from "../repositories/contentRepository.js";
 import { filterAllowedFieldsByType } from "../services/contentFilter.js";
-import {
-    buildMovieData,
-    buildSeriesData,
-    buildSeasonData,
-    buildEpisodeData,
-    buildCollectionData
-} from "../services/contentBuilder.js";
+import { buildContentByType } from "../services/contentBuilder.js";
 
 import { formatContentByType } from "../utils/contentFormatter.js";
 
@@ -24,36 +18,7 @@ const createContent = async (req, res) => {
             return res.status(400).json({ message: "Invalid content type" });
         }
 
-        // Normalize genres to lowercase
-        if (filteredBody.genres) {
-            filteredBody.genres = filteredBody.genres.map((g) =>
-                g.toLowerCase()
-            );
-        }
-
-        const contentData = {};
-
-        switch (type) {
-            case "movie":
-                contentData = buildMovieData(filteredBody);
-                break;
-
-            case "series":
-                contentData = buildSeriesData(filteredBody);
-                break;
-
-            case "season":
-                contentData = buildSeasonData(filteredBody);
-                break;
-
-            case "episode":
-                contentData = buildEpisodeData(filteredBody);
-                break;
-
-            case "collection":
-                contentData = buildCollectionData(filteredBody);
-                break;
-        }
+        const contentData = buildContentByType(filteredBody);
 
         if (!contentData.valid) {
             return res.status(400).json({ message: contentData.error });

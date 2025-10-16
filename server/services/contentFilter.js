@@ -1,6 +1,7 @@
 const allowedFieldsByType = {
     movie: [
         "title",
+        "alternativeTitles",
         "description",
         "genres",
         "duration",
@@ -9,7 +10,14 @@ const allowedFieldsByType = {
         "posterUrl",
         "collectionId"
     ],
-    series: ["title", "description", "genres", "releaseYear", "posterUrl"],
+    series: [
+        "title",
+        "alternativeTitles",
+        "description",
+        "genres",
+        "releaseYear",
+        "posterUrl"
+    ],
     season: ["title", "seriesId", "seasonNumber", "releaseYear"],
     episode: [
         "title",

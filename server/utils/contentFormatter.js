@@ -2,9 +2,10 @@
 export const formattedMovie = (movie) => ({
     movieId: movie._id,
     title: movie.title,
+    alternativeTitles: movie.alternativeTitles,
     description: movie.description,
     releaseYear: movie.releaseYear,
-    genres: movie.genres || [],
+    genres: movie.genres,
     duration: movie.duration,
     videoUrl: movie.videoUrl,
     posterUrl: movie.posterUrl,
@@ -23,9 +24,10 @@ export const formattedMovie = (movie) => ({
 export const formattedSeries = (series) => ({
     seriesId: series._id,
     title: series.title,
+    alternativeTitles: series.alternativeTitles,
     description: series.description,
     releaseYear: series.releaseYear,
-    genres: series.genres || [],
+    genres: series.genres,
     posterUrl: series.posterUrl,
     createdAt: series.createdAt,
     updatedAt: series.updatedAt,

@@ -1,6 +1,8 @@
+// ----- MOVIE -----
 export const buildMovieData = (body) => {
     const {
         title,
+        alternativeTitles,
         description,
         genres,
         duration,
@@ -27,8 +29,9 @@ export const buildMovieData = (body) => {
     const contentData = {
         type: "movie",
         title,
+        alternativeTitles: alternativeTitles || [],
         description,
-        genres,
+        genres: genres.map((g) => g.toLowerCase()),
         duration,
         videoUrl,
         releaseYear,
@@ -39,8 +42,16 @@ export const buildMovieData = (body) => {
     return { valid: true, data: contentData };
 };
 
+// ----- SERIES -----
 export const buildSeriesData = (body) => {
-    const { title, description, genres, releaseYear, posterUrl } = body;
+    const {
+        title,
+        alternativeTitles,
+        description,
+        genres,
+        releaseYear,
+        posterUrl
+    } = body;
 
     if (!title || !description || !genres?.length || !releaseYear) {
         return {
@@ -52,8 +63,9 @@ export const buildSeriesData = (body) => {
     const contentData = {
         type: "series",
         title,
+        alternativeTitles: alternativeTitles || [],
         description,
-        genres,
+        genres: genres.map((g) => g.toLowerCase()),
         releaseYear,
         posterUrl
     };
@@ -61,6 +73,7 @@ export const buildSeriesData = (body) => {
     return { valid: true, data: contentData };
 };
 
+// ----- SEASON -----
 export const buildSeasonData = (body) => {
     const { title, seriesId, seasonNumber, releaseYear } = body;
 
@@ -82,6 +95,7 @@ export const buildSeasonData = (body) => {
     return { valid: true, data: contentData };
 };
 
+// ----- EPISODE -----
 export const buildEpisodeData = (body) => {
     const {
         title,
@@ -123,6 +137,7 @@ export const buildEpisodeData = (body) => {
     return { valid: true, data: contentData };
 };
 
+// ----- COLLECTION -----
 export const buildCollectionData = (body) => {
     const { title } = body;
 
@@ -136,4 +151,22 @@ export const buildCollectionData = (body) => {
     };
 
     return { valid: true, data: contentData };
+};
+
+// ----- MASTER FUNCTION -----
+export const buildContentByType = (body) => {
+    if (!body.type) return null;
+
+    switch (body.type) {
+        case "movie":
+            return buildMovieData(body);
+        case "series":
+            return buildSeriesData(body);
+        case "season":
+            return buildSeasonData(body);
+        case "episode":
+            return buildEpisodeData(body);
+        case "collection":
+            return buildCollectionData(body);
+    }
 };

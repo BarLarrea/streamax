@@ -8,6 +8,7 @@ const contentSchema = new mongoose.Schema(
             required: true
         },
         title: { type: String, required: true },
+        alternativeTitles: [String],
 
         // General metadata (movies and series)
         description: String,
@@ -26,8 +27,7 @@ const contentSchema = new mongoose.Schema(
         episodeNumber: { type: Number, min: 1, max: 200 },
 
         // Collection references (e.g., Marvel Cinematic Universe)
-        collectionId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
-        collectionName: String
+        collectionId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" }
     },
     { timestamps: true }
 );

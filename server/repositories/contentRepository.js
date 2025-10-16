@@ -24,7 +24,7 @@ export const deleteContent = async (id) => {
     return await Content.findByIdAndDelete(id);
 };
 
-// ==================== READ & QUERY ====================
+// ==================== READ / QUERY / SEARCH ====================
 
 export const getContentById = async (contentId) => {
     if (!mongoose.Types.ObjectId.isValid(contentId)) {
@@ -71,7 +71,6 @@ export const getAllContents = async (filters = {}, options = {}) => {
     }
 };
 
-// ----- Search -----
 // export const searchContents = async (query) => {
 //     const regex = new RegExp(query, "i");
 //     return await Content.find({
