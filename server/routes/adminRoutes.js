@@ -1,5 +1,10 @@
 import express from "express";
 
+import verifyAccessToken from "../middlewares/authMiddleware.js";
+import checkUserStatus from "../middlewares/userStatusMiddleware.js";
+import isAdmin from "../middlewares/adminMiddleware.js";
+import setTargetUserId from "../middlewares/setTargetUserId.js";
+
 import {
     getUserById,
     getAllUsers,
@@ -11,17 +16,11 @@ import {
 
 import { getAllProfiles } from "../controllers/profileController.js";
 
-// import {
-//     getAllContents,
-//     createContent,
-//     updateContent,
-//     deleteContent
-// } from "../controllers/contentController.js";
-
-import verifyAccessToken from "../middlewares/authMiddleware.js";
-import checkUserStatus from "../middlewares/userStatusMiddleware.js";
-import isAdmin from "../middlewares/adminMiddleware.js";
-import setTargetUserId from "../middlewares/setTargetUserId.js";
+import {
+    createContent,
+    updateContent,
+    deleteContentById
+} from "../controllers/contentController.js";
 
 const adminPipeline = [
     verifyAccessToken,
@@ -39,7 +38,6 @@ router.get("/users", ...adminPipeline, getAllUsers);
 router.patch("/users/:id/status", ...adminPipeline, changeUserStatus);
 router.patch("/users/:id/make-admin", ...adminPipeline, makeUserAdmin);
 router.patch("/users/:id/revoke-admin", ...adminPipeline, revokeUserAdmin);
-
 // mutual - self user and admin
 router.get("/users/:id", ...adminPipeline, getUserById);
 router.delete("/users/:id", ...adminPipeline, deleteUserById);
@@ -48,5 +46,12 @@ router.delete("/users/:id", ...adminPipeline, deleteUserById);
 // Profile Management
 //
 router.get("/profiles", ...adminPipeline, getAllProfiles);
+
+//
+// Content Management
+//
+router.post("/contents", ...adminPipeline, createContent);
+router.put("/contents/:id", ...adminPipeline, updateContent);
+router.delete("/contents/:id", ...adminPipeline, deleteContentById);
 
 export default router;

@@ -8,24 +8,31 @@ const contentSchema = new mongoose.Schema(
             required: true
         },
         title: { type: String, required: true },
+        alternativeTitles: [String],
 
-        // General metadata
+        // General metadata (movies and series)
         description: String,
-        releaseYear: Number,
+        releaseYear: { type: Number, min: 1900, max: new Date().getFullYear() },
         genres: [String],
+        actors: [String],
+        directors: [String],
         posterUrl: { type: String, default: "defaultPoster.png" },
+
+        // Movie and Episode only
         duration: Number,
         videoUrl: String,
 
-        // Hierarchy references
+        // Movie, Series, and season only
+        trilerUrl: String,
+
+        // Hierarchy references (series => season => episodes)
         seriesId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
         seasonId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
-        seasonNumber: Number,
-        episodeNumber: Number,
+        seasonNumber: { type: Number, min: 1, max: 100 },
+        episodeNumber: { type: Number, min: 1, max: 200 },
 
-        // Franchise / Collection
-        franchiseId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
-        partNumber: Number
+        // Collection references (e.g., Marvel Cinematic Universe)
+        collectionId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" }
     },
     { timestamps: true }
 );
@@ -46,8 +53,8 @@ contentSchema.index(
 
 // Ensure unique movie part number inside the same franchise
 contentSchema.index(
-    { franchiseId: 1, partNumber: 1 },
-    { unique: true, partialFilterExpression: { type: "movie" } }
+    { collectionId: 1 },
+    { unique: true, partialFilterExpression: { $in: ["movie", "series"] } }
 );
 
 const Content = mongoose.model("Content", contentSchema);
