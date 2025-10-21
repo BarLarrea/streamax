@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Content from "../models/contentModel.js";
+import { isValidId } from "../utils/dalUtils.js";
 
 // ==================== CREATE / UPDATE / DELETE ====================
 
@@ -16,7 +17,6 @@ export const updateContent = async (id, data) => {
         id,
         data,
         { new: true },
-        { runValidators: true } // Ensure data adheres to schema
     );
 };
 
@@ -27,7 +27,7 @@ export const deleteContent = async (id) => {
 // ==================== READ / QUERY / SEARCH ====================
 
 export const getContentById = async (contentId) => {
-    if (!mongoose.Types.ObjectId.isValid(contentId)) {
+    if (!isValidId(contentId)) {
         return { status: "invalid_id", data: null };
     }
 
@@ -108,7 +108,7 @@ export const searchContents = async (query, limit, skip) => {
 // ==================== HIERARCHY ====================
 
 export const getSeasonsBySeriesId = async (seriesId) => {
-    if (!mongoose.Types.ObjectId.isValid(seriesId)) {
+    if (!isValidId(seriesId)) {
         return { status: "invalid_id", data: null };
     }
 
@@ -124,7 +124,7 @@ export const getSeasonsBySeriesId = async (seriesId) => {
 };
 
 export const getEpisodesBySeasonId = async (seasonId) => {
-    if (!mongoose.Types.ObjectId.isValid(seasonId)) {
+    if (!isValidId(seasonId)) {
         return { status: "invalid_id", data: null };
     }
 

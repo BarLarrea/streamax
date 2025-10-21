@@ -8,6 +8,7 @@ import userRout from "./routes/userRoutes.js";
 import profileRoute from "./routes/profileRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import contentRoutes from "./routes/contentRoutes.js";
+import watchHistoryRoutes from "./routes/watchHistoryRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/users", userRout);
 app.use("/api/profiles", profileRoute);
 app.use("/api/admin", adminRoutes);
 app.use("/api/content", contentRoutes);
+app.use("/api/watch-history", watchHistoryRoutes);
 
 const PORT = process.env.PORT || 5050;
 

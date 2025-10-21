@@ -7,23 +7,31 @@ const watchHistorySchema = new mongoose.Schema(
             ref: "Profile",
             required: true
         },
+
         contentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Content",
             required: true
         },
-        episodeId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Episode" // relevant only if content is a series
+
+        type: {
+            type: String,
+            enum: ["movie", "episode"],
+            required: true
         },
-        watchedAt: {
-            type: Date,
-            default: Date.now
-        },
-        progress: {
-            type: Number, // seconds
-            default: 0
-        }
+
+        durationAtWatch: {
+            type: Number,
+            required: true
+        }, // helps to avoid approaching the db to get content duration each time
+
+        progress: { type: Number, default: 0 }, // seconds
+
+        isCompleted: { type: Boolean, default: false },
+
+        isArchived: { type: Boolean, default: false }, // when profile is deleted but we want to keep data for analytics
+
+        archivedAt: { type: Date, default: null }
     },
     { timestamps: true }
 );
@@ -36,7 +44,8 @@ watchHistorySchema.index({ profileId: 1 });
 watchHistorySchema.index({ contentId: 1 });
 
 //Ensure only ONE record per profile per episode (no duplicates)
-watchHistorySchema.index({ profileId: 1, episodeId: 1 }, { unique: true });
+watchHistorySchema.index({ profileId: 1, contentId: 1 }, { unique: true });
 
 const WatchHistory = mongoose.model("WatchHistory", watchHistorySchema);
+
 export default WatchHistory;
