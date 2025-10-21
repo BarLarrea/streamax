@@ -17,7 +17,6 @@ export const updateContent = async (id, data) => {
         id,
         data,
         { new: true },
-        { runValidators: true } // Ensure data adheres to schema
     );
 };
 
