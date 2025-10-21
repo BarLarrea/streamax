@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import WatchHistory from "../models/watchHistoryModel.js";
 import { isValidId } from "../utils/dalUtils.js";
 
@@ -14,11 +13,7 @@ export const createWatchHistoryRecord = async (profileId, contentId) => {
         contentId
     });
 
-    if (!newRecord) {
-        return { status: "error", data: null };
-    }
-
-    return { status: "success", data: newRecord.toObject() };
+    return { status: "success", data: newRecord.toObject() }; // if the create isnt success, an error will be thrown and it will be catched in the controller
 };
 
 // Archive watch history when profile is deleted and keep the data for analytics
@@ -45,13 +40,30 @@ export const updateWatchHistoryRecord = async (WatchHistoryRecord) => {
 
 export const updateProgress = async (profileId, contentId, progress) => {
     if (!isValidId(profileId) || !isValidId(contentId)) {
-        return  { status: "invalid_id", data: null };
+        return { status: "invalid_id", data: null };
     }
-    return await WatchHistory.findOneAndUpdate(
+
+    const data = await WatchHistory.findOneAndUpdate(
         { profileId, contentId },
         { progress },
         { new: true }
     ).lean();
+
+    return { status: "success", data };
+};
+
+export const markAsCompleted = async (profileId, contentId) => {
+    if (!isValidId(profileId) || !isValidId(contentId)) {
+        return { status: "invalid_id", data: null };
+    }
+
+    const data = await WatchHistory.findOneAndUpdate(
+        { profileId, contentId },
+        { isCompleted: true, progress: 0 },
+        { new: true }
+    ).lean();
+
+    return { status: "success", data };
 };
 
 export const deleteWatchHistoryByProfileId = async (profileId) => {
@@ -133,8 +145,50 @@ export const getWatchHistoryRecord = async (profileId, contentId) => {
     }).lean();
 
     if (!record) {
-        return { status: "not_found", data: [] };
+        return { status: "not_found", data: null };
     }
 
     return { status: "success", data: record };
+};
+
+export const getCompletedContents = async (profileId) => {
+    if (!isValidId(profileId)) {
+        return { status: "invalid_id", data: null };
+    }
+
+    const result = await WatchHistory.find(
+        { profileId, isCompleted: true },
+        "contentId type durationAtWatch progress updatedAt"
+    )
+        .lean()
+        .sort({ updatedAt: -1 });
+
+    if (!result || result.length === 0) {
+        return { status: "not_found", data: [] };
+    }
+
+    return { status: "success", data: result };
+};
+
+export const getWatchingNow = async (profileId) => {
+    if (!isValidId(profileId)) {
+        return { status: "invalid_id", data: null };
+    }
+
+    const result = await WatchHistory.find(
+        {
+            profileId,
+            isCompleted: false,
+            progress: { $gt: 0 } // watched at least a bit
+        },
+        "contentId type durationAtWatch progress updatedAt"
+    )
+        .lean()
+        .sort({ updatedAt: -1 });
+
+    if (!result || result.length === 0) {
+        return { status: "not_found", data: [] };
+    }
+
+    return { status: "success", data: result };
 };
