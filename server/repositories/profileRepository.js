@@ -17,5 +17,5 @@ export const findProfilesByUserID = async (userId) => {
 };
 
 export const findAndDeleteProfileById = async (id) => {
-    return await Profile.findByIdAndDelete(id);
+    return await Profile.findByIdAndDelete(id).populate("userId");
 };

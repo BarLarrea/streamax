@@ -3,6 +3,7 @@ import * as profileRipo from "../repositories/profileRepository.js";
 import * as userRepo from "../repositories/userRepository.js";
 import { formatProfile } from "../utils/profileFormatter.js";
 import * as contentRepo from "../repositories/contentRepository.js";
+import { archiveWatchHistoryByProfileId } from "../repositories/watchHistoryRepository.js";
 
 const createProfile = async (req, res) => {
     try {
@@ -156,13 +157,25 @@ const deleteProfileById = async (req, res) => {
                 .json({ message: "Associated user not found" });
         }
 
+        const { status, data } = await archiveWatchHistoryByProfileId(
+            profile._id
+        );
+        if (status !== "success") {
+            console.error(
+                "Failed to archive watch history for profile:",
+                profile._id
+            );
+        }
+
         await userRepo.removeProfileFromUser(user._id, profile._id);
 
         await profileRipo.findAndDeleteProfileById(profile._id);
 
-        return res
-            .status(200)
-            .json({ message: "Profile deleted successfully" });
+        return res.status(200).json({
+            success: true,
+            message: "Profile deleted successfully",
+            archiveWatchHistory: data || "No data"
+        });
     } catch (error) {
         console.error("Error in deleteProfileById:", error.message);
         return res.status(500).json({ error: "Server error" });
