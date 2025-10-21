@@ -25,7 +25,7 @@ export const archiveWatchHistoryByProfileId = async (profileId) => {
     const result = await WatchHistory.updateMany(
         { profileId },
         { isArchived: true }
-    ).lean();
+    );
 
     if (result.matchedCount === 0) {
         return { status: "not_found", data: [] };
@@ -47,7 +47,7 @@ export const updateProgress = async (profileId, contentId, progress) => {
         { profileId, contentId },
         { progress },
         { new: true }
-    ).lean();
+    );
 
     return { status: "success", data };
 };
@@ -61,7 +61,7 @@ export const markAsCompleted = async (profileId, contentId) => {
         { profileId, contentId },
         { isCompleted: true, progress: 0 },
         { new: true }
-    ).lean();
+    );
 
     return { status: "success", data };
 };
