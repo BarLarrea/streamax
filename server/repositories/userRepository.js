@@ -22,10 +22,7 @@ export const saveUser = async (user) => {
     return await user.save();
 };
 
-export const deleteUserAndDependencies = async (id) => {
-    await Profile.deleteMany({ userId: id });
-    await WatchHistory.deleteMany({ userId: id });
-
+export const deleteUser = async (id) => {
     return await User.findByIdAndDelete(id);
 };
 

@@ -7,7 +7,7 @@ export const buildMovieData = (body) => {
         genres,
         duration,
         videoUrl,
-        trilerUrl,
+        trailerUrl,
         releaseYear,
         posterUrl,
         collectionId
@@ -35,7 +35,7 @@ export const buildMovieData = (body) => {
         genres: genres.map((g) => g.toLowerCase()),
         duration,
         videoUrl,
-        trilerUrl,
+        trailerUrl,
         releaseYear,
         posterUrl,
         collectionId
@@ -52,7 +52,7 @@ export const buildSeriesData = (body) => {
         description,
         genres,
         releaseYear,
-        trilerUrl,
+        trailerUrl,
         posterUrl
     } = body;
 
@@ -70,7 +70,7 @@ export const buildSeriesData = (body) => {
         description,
         genres: genres.map((g) => g.toLowerCase()),
         releaseYear,
-        trilerUrl,
+        trailerUrl,
         posterUrl
     };
 
@@ -79,7 +79,7 @@ export const buildSeriesData = (body) => {
 
 // ----- SEASON -----
 export const buildSeasonData = (body) => {
-    const { title, seriesId, seasonNumber, releaseYear, trilerUrl } = body;
+    const { title, seriesId, seasonNumber, releaseYear, trailerUrl } = body;
 
     if (!title || !seriesId || !seasonNumber || !releaseYear) {
         return {
@@ -94,7 +94,7 @@ export const buildSeasonData = (body) => {
         seriesId,
         seasonNumber,
         releaseYear,
-        trilerUrl
+        trailerUrl
     };
 
     return { valid: true, data: contentData };

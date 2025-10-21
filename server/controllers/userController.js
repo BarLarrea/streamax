@@ -1,7 +1,10 @@
 import bcrypt from "bcryptjs";
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
-import { formatUser } from "../utils/formatUser.js";
+import { formatUser } from "../utils/userFormatter.js";
+import { findProfilesByUserID } from "../repositories/profileRepository.js";
+import { archiveWatchHistoryByProfileId } from "../repositories/watchHistoryRepository.js";
+import { findAndDeleteProfileById } from "../repositories/profileRepository.js";
 
 const getUserById = async (req, res) => {
     try {
@@ -81,14 +84,57 @@ const deleteUserById = async (req, res) => {
             return res.status(400).json({ message: "User ID is required" });
         }
 
-        const deletedUser = await userRepo.deleteUserAndDependencies(userId);
+        let deletedProfiles = [];
+        let profilesWatchHistoryArchived = [];
 
+        const userProfiles = await userRepo.findProfilesByUserID(userId);
+
+        if (userProfiles && userProfiles.length > 0) {
+            for (const profile of userProfiles) {
+                let { status, data } = await archiveWatchHistoryByProfileId(
+                    profile._id
+                );
+                profilesWatchHistoryArchived.push({
+                    profileId: profile._id,
+                    status,
+                    data
+                });
+                if (status !== "success") {
+                    console.warn(
+                        `Failed to archive watch history for profile ${profile._id}`
+                    );
+                }
+            }
+
+            for (const profile of userProfiles) {
+                deletedProfiles.push(
+                    await findAndDeleteProfileById(profile._id)
+                );
+            }
+
+            const deletedUser = await userRepo.deleteUser(userId);
+
+            if (!deletedUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "User and related data deleted successfully",
+                deletedProfiles,
+                profilesWatchHistoryArchived
+            });
+        }
+
+        const deletedUser = await userRepo.deleteUser(userId);
         if (!deletedUser) {
             return res.status(404).json({ message: "User not found" });
         }
-
         return res.status(200).json({
-            message: "User and related data deleted successfully"
+            success: true,
+            message: "User deleted successfully",
+            deletedProfiles,
+            profilesWatchHistoryArchived
         });
     } catch (error) {
         console.error("Delete User Error:", error);

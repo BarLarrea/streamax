@@ -12,10 +12,10 @@ export const findProfileById = async (id) => {
     return await Profile.findById(id);
 };
 
-export const findeProfilesByUserID = async (userId) => {
+export const findProfilesByUserID = async (userId) => {
     return await Profile.find({ userId });
 };
 
-export const findeAndDeleteProfileById = async (id) => {
-    return await Profile.findByIdAndDelete(id);
+export const findAndDeleteProfileById = async (id) => {
+    return await Profile.findByIdAndDelete(id).populate("userId");
 };

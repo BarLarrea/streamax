@@ -1,5 +1,5 @@
 const isAdmin = (req, res, next) => {
-    if (req.user && req.user.role === "admin") {
+    if (req.user && req.user.isAdmin) {
         const now = new Date().toISOString();
         console.log(`Admin access granted to ${req.user.username} at ${now}`);
         next();
