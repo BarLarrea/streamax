@@ -23,7 +23,7 @@ const contentSchema = new mongoose.Schema(
         videoUrl: String,
 
         // Movie, Series, and season only
-        trilerUrl: String,
+        trailerUrl: String,
 
         // Hierarchy references (series => season => episodes)
         seriesId: { type: mongoose.Schema.Types.ObjectId, ref: "Content" },
@@ -54,7 +54,10 @@ contentSchema.index(
 // Ensure unique movie part number inside the same franchise
 contentSchema.index(
     { collectionId: 1 },
-    { unique: true, partialFilterExpression: { $in: ["movie", "series"] } }
+    {
+        unique: true,
+        partialFilterExpression: { type: { $in: ["movie", "series"] } }
+    }
 );
 
 const Content = mongoose.model("Content", contentSchema);

@@ -1,7 +1,7 @@
 import Profile from "../models/profileModel.js";
 import * as profileRipo from "../repositories/profileRepository.js";
 import * as userRepo from "../repositories/userRepository.js";
-import { formatProfile } from "../utils/formatedProfile.js";
+import { formatProfile } from "../utils/profileFormatter.js";
 import * as contentRepo from "../repositories/contentRepository.js";
 
 const createProfile = async (req, res) => {
@@ -75,7 +75,7 @@ const getProfilesByUserID = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const profiles = await profileRipo.findeProfilesByUserID(userId);
+        const profiles = await profileRipo.findAndDeleteProfileById(userId);
         return res.status(200).json({
             message: "Profiles fetched successfully",
             profiles: profiles.map(formatProfile)
@@ -158,7 +158,7 @@ const deleteProfileById = async (req, res) => {
 
         await userRepo.removeProfileFromUser(user._id, profile._id);
 
-        await profileRipo.findeAndDeleteProfileById(profile._id);
+        await profileRipo.findAndDeleteProfileById(profile._id);
 
         return res
             .status(200)

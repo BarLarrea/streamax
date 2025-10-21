@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
-import { formatUser } from "../utils/formatUser.js";
+import { formatUser } from "../utils/userFormatter.js";
 
 const getUserById = async (req, res) => {
     try {
