@@ -13,11 +13,7 @@ export const saveContent = async (content) => {
 };
 
 export const updateContent = async (id, data) => {
-    return await Content.findByIdAndUpdate(
-        id,
-        data,
-        { new: true },
-    );
+    return await Content.findByIdAndUpdate(id, data, { new: true });
 };
 
 export const deleteContent = async (id) => {
