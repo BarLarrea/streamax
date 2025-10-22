@@ -32,7 +32,7 @@ function generateRefreshToken(userId) {
     const payload = { userId, jti };
 
     const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
-        REFRESH_JWT_EXPIRATION
+        expiresIn: REFRESH_JWT_EXPIRATION
     });
 
     return { refreshToken, jti };
