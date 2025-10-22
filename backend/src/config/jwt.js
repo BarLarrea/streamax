@@ -1,9 +1,15 @@
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 
+const ACCESS_JWT_SECRET = process.env.ACCESS_JWT_SECRET;
+const ACCESS_JWT_EXPIRATION = process.env.ACCESS_JWT_EXPIRATION;
+
+const REFRESH_JWT_SECRET = process.env.REFRESH_JWT_SECRET;
+const REFRESH_JWT_EXPIRATION = process.env.REFRESH_JWT_EXPIRATION;
+
 function generateAccessToken(user) {
     if (!user) {
-        throw new Error("Invalid user payload for accsess token generation");
+        throw new Error("Invalid user payload for access token generation");
     }
     const payload = {
         userId: user._id,
@@ -11,8 +17,8 @@ function generateAccessToken(user) {
         isAdmin: user.isAdmin
     };
 
-    return jwt.sign(payload, process.env.ACCESS_JWT_SECRET, {
-        expiresIn: process.env.ACCESS_JWT_EXPIRATION
+    return jwt.sign(payload, ACCESS_JWT_SECRET, {
+        expiresIn: ACCESS_JWT_EXPIRATION
     });
 }
 
@@ -25,8 +31,8 @@ function generateRefreshToken(userId) {
 
     const payload = { userId, jti };
 
-    const refreshToken = jwt.sign(payload, process.env.REFRESH_JWT_SECRET, {
-        expiresIn: process.env.REFRESH_JWT_EXPIRATION
+    const refreshToken = jwt.sign(payload, REFRESH_JWT_SECRET, {
+        expiresIn: REFRESH_JWT_EXPIRATION
     });
 
     return { refreshToken, jti };
