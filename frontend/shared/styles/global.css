@@ -1,0 +1,68 @@
+/* ===== Global Design Tokens ===== */
+:root {
+    /* Brand */
+    --brand-1: #37d8ff; /* light aqua */
+    --brand-2: #00f7b0; /* mint */
+    --brand-glow-1: rgba(55, 216, 255, 0.14);
+    --brand-glow-2: rgba(0, 247, 176, 0.12);
+
+    /* Neutral surfaces */
+    --bg-0: #1c1f29; /* page top */
+    --bg-1: #2b2f3a; /* page bottom */
+    --surface: rgba(255, 255, 255, 0.08);
+    --surface-border: rgba(255, 255, 255, 0.06);
+
+    /* Text */
+    --text-1: #f2f3f5;
+    --text-2: #c3c8cf;
+    --text-3: #9ea4ad;
+
+    /* Radii / shadow */
+    --radius-lg: 16px;
+    --shadow-1: 0 8px 24px rgba(0, 0, 0, 0.25);
+    --shadow-1h: 0 12px 30px rgba(0, 0, 0, 0.3);
+
+    /* Focus ring */
+    --ring: 0 0 0 3px rgba(55, 216, 255, 0.25);
+}
+
+html,
+body {
+    height: 100%;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--text-1);
+    font-family: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* ===== Brand Logo (single source of truth) ===== */
+.brand-logo {
+    display: inline-block;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 6px var(--brand-glow-1), 0 0 12px var(--brand-glow-2);
+    transition: filter 0.25s ease, text-shadow 0.25s ease;
+}
+
+/* Size modifiers */
+.brand-logo--xl {
+    font-size: 2.8rem;
+    line-height: 1;
+}
+.brand-logo--md {
+    font-size: 1.6rem;
+    line-height: 1;
+} /* header use */
+
+/* Subtle hover (keeps it elegant) */
+.brand-logo:hover {
+    text-shadow: 0 0 8px var(--brand-glow-1), 0 0 18px var(--brand-glow-2);
+    filter: saturate(1.03);
+}
