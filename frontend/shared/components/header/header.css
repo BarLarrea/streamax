@@ -1,0 +1,131 @@
+
+/* ===== HEADER – DESKTOP VIEW ====== */
+
+.header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* Logo | Nav | Avatar */
+    align-items: center;
+    padding: 1rem 2rem;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Logo */
+.logo {
+    color: #ffffff;
+    font-size: 1.6rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Navigation menu */
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.8rem;
+    transition: all 0.3s ease;
+}
+
+.nav a {
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.nav a:hover {
+    color: #9ca3af;
+    transform: scale(1.05);
+}
+
+/* User avatar */
+.user-menu {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* Hamburger button - hidden by default */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+
+
+/* ===== HEADER – RESPONSIVE STYLES ====== */
+
+@media (max-width: 700px) {
+    /* Show hamburger button */
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Header layout for small screens */
+    .header {
+        grid-template-columns: auto auto auto; /* Logo | Button | Avatar */
+        align-items: center;
+        padding: 0.8rem 1rem;
+        position: relative;
+    }
+
+    /* Hide nav by default */
+    .nav {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        padding: 1rem 0;
+        text-align: center;
+        gap: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Nav visible when open */
+    .nav.open {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Smaller elements for compact screens */
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+}
