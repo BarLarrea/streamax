@@ -26,9 +26,9 @@ const initApp = async () => {
         case "register":
             await loadRegisterPage();
             break;
-        // case "home":
-        //     await loadHomePage();
-        //     break;
+        case "home":
+            await loadHomePage();
+            break;
         default:
             console.warn(`No handler for page: ${currentPage}`);
             break;

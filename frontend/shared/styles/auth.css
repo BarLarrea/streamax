@@ -67,6 +67,13 @@
     color: var(--text-2);
     margin-bottom: 0.35rem;
 }
+
+.form-group p {
+    font-size: 0.7rem;
+    color: var(--text-3);
+    margin-top: 0.3rem;
+}
+
 .form-group input {
     width: 100%;
     padding: 0.9rem 0.85rem;
@@ -121,6 +128,43 @@
 }
 .auth__link a:hover {
     text-decoration: underline;
+}
+
+.form-group--admin-toggle {
+    margin-top: 1rem;
+}
+
+.form-group--admin-code {
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.form-group--admin-code.show {
+    display: block !important;
+}
+
+.form-group--admin-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+
+.form-group--admin-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    width: auto;
+}
+
+.form-group--admin-toggle input[type="checkbox"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
 }
 
 /* Responsive */

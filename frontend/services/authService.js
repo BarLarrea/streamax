@@ -10,5 +10,19 @@ export const loginUser = async (userName, password) => {
         { withCredentials: true }
     );
 
-    return response.json();
+    return response.data;
+};
+
+export const registerUser = async (userName, email, password, adminCode) => {
+    const response = await axios.post(
+        `${API_URLS.BASE}${API_URLS.AUTH.REGISTER}`,
+        {
+            userName,
+            email,
+            password,
+            adminCode
+        }
+    );
+
+    return response.data;
 };

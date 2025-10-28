@@ -5,6 +5,7 @@ const loadRegisterPage = async () => {
         "./pages/register/register.html",
         "./shared/styles/auth.css"
     );
+    await import("./register.js");
 };
 
 export default loadRegisterPage;
