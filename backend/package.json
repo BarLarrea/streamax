@@ -8,8 +8,8 @@
     "license": "ISC",
     "description": "",
     "scripts": {
-        "start": "NODE_ENV=production node src/server.js",
-        "dev": "NODE_ENV=development nodemon src/server.js"
+        "start": "NODE_ENV=production node --env-file=.env src/server.js",
+        "dev": "NODE_ENV=development nodemon --env-file=.env src/server.js"
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",

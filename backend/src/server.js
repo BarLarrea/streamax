@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -11,7 +10,6 @@ import adminRoutes from "./routes/adminRoutes.js";
 import contentRoutes from "./routes/contentRoutes.js";
 import watchHistoryRoutes from "./routes/watchHistoryRoutes.js";
 
-dotenv.config();
 const app = express();
 
 app.use(
