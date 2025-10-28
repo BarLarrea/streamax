@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
-import { generateAccessToken, generateRefreshToken } from "../confif/jwt.js";
+import { generateAccessToken, generateRefreshToken } from "../config/jwt.js";
 import { formatUser } from "../utils/userFormatter.js";
 import {
     setUpRefreshTokenCookie,
