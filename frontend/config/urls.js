@@ -13,6 +13,11 @@ export const API_URLS = {
         BY_ID: (id) => `/users/${id}`
     },
 
+    PROFILES: {
+        ROOT: "/profiles",
+        BY_ID: (id) => `/profiles/${id}`
+    },
+
     CONTENT: {
         ROOT: "/content",
         SEARCH: (query) => `/content/search?q=${encodeURIComponent(query)}`

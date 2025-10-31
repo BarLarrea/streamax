@@ -129,6 +129,7 @@ const loginUser = async (req, res) => {
 const refreshAccessToken = async (req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken;
+        console.log("Refresh token received:", refreshToken);
         if (!refreshToken) {
             return res
                 .status(401)

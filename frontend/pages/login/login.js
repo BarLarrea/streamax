@@ -31,7 +31,7 @@ const handleSubmit = async (e) => {
         console.log("Login successful:", data.user);
         showSuccess("Login successful!");
 
-        window.location.hash = "#/home";
+        window.location.hash = "#/profiles";
     } catch (error) {
         const message = error.response?.data?.message || error.message;
 
