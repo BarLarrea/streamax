@@ -1,4 +1,4 @@
-/* ===== Global Design Tokens ===== */
+/* ===== GLOBAL DESIGN TOKENS ===== */
 :root {
     /* Brand */
     --brand-1: #37d8ff; /* light aqua */
@@ -26,16 +26,14 @@
     --ring: 0 0 0 3px rgba(55, 216, 255, 0.25);
 }
 
-html,
+/* ===== GLOBAL BACKGROUND & TYPOGRAPHY ===== */
 body {
-    height: 100%;
-    min-height: 100vh;
-    margin: 0;
-    color: var(--text-1);
-    font-family: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
     background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
     background-attachment: fixed;
     background-size: cover;
+    color: var(--text-1);
+    font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* ===== Brand Logo (single source of truth) ===== */
@@ -51,7 +49,7 @@ body {
     transition: filter 0.25s ease, text-shadow 0.25s ease;
 }
 
-/* Size modifiers */
+/* Size variants */
 .brand-logo--xl {
     font-size: 2.8rem;
     line-height: 1;
@@ -59,9 +57,9 @@ body {
 .brand-logo--md {
     font-size: 1.6rem;
     line-height: 1;
-} /* header use */
+}
 
-/* Subtle hover (keeps it elegant) */
+/* Hover interaction */
 .brand-logo:hover {
     text-shadow: 0 0 8px var(--brand-glow-1), 0 0 18px var(--brand-glow-2);
     filter: saturate(1.03);

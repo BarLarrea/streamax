@@ -4,13 +4,39 @@
     left: 0;
     width: 100%;
 
-    background: rgba(0, 0, 0, 0.3);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(
+        90deg,
+        rgba(28, 31, 41, 0.85) 0%,
+        rgba(43, 47, 58, 0.85) 100%
+    );
 
-    text-align: center;
-    padding: 0.8rem;
+    border-top: 1px solid rgba(55, 216, 255, 0.15);
+
+    color: var(--text-3);
     font-size: 0.8rem;
-    color: #9ca3af;
-    backdrop-filter: blur(6px);
+    text-align: center;
+
+    padding: 0.8rem 1rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.25);
+
     z-index: 1000;
+
+    animation: fadeUpFooter 0.6s ease forwards;
+}
+
+@keyframes fadeUpFooter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#app-footer a:hover {
+    color: var(--brand-1);
+    text-shadow: 0 0 6px var(--brand-glow-1);
 }
