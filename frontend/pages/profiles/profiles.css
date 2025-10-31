@@ -1,0 +1,215 @@
+/* ========== PAGE LAYOUT ========== */
+.profiles {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(
+            circle at top left,
+            var(--brand-glow-1),
+            transparent 60%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            var(--brand-glow-2),
+            transparent 60%
+        ),
+        linear-gradient(to bottom, var(--bg-0), var(--bg-1));
+    animation: bgShift 10s ease-in-out infinite alternate;
+    overflow: hidden;
+    padding: 2rem;
+    padding-top: 6rem;
+}
+
+@keyframes bgShift {
+    from {
+        background-position: left top;
+    }
+    to {
+        background-position: right bottom;
+    }
+}
+
+/* ========== HEADER ========== */
+.profiles-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--text-1);
+    letter-spacing: 0.5px;
+}
+
+#user-greeting {
+    color: var(--text-1);
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    text-shadow: 0 0 10px rgba(55, 216, 255, 0.3);
+    animation: fadeUp 1s ease forwards;
+}
+
+.profiles-kicker {
+    font-size: 1.5rem;
+    color: var(--brand-1);
+    letter-spacing: 1px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 1s ease forwards 0.4s;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== PROFILE LIST GRID ========== */
+.profiles-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+    max-width: 800px;
+    width: 100%;
+}
+
+/* ========== PROFILE CARD ========== */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    width: 140px;
+    height: 170px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease;
+    box-shadow: var(--shadow-1);
+}
+
+.profile-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: var(--shadow-1h);
+}
+
+/* Avatar image */
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(55, 216, 255, 0.3);
+}
+
+/* Profile name */
+.profile-name {
+    margin-top: 0.8rem;
+    font-size: 1rem;
+    color: var(--text-1);
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ========== ADD PROFILE CARD ========== */
+.add-profile {
+    border: 1px dashed var(--brand-2);
+    background: rgba(255, 255, 255, 0.03);
+    opacity: 0.8;
+}
+
+.add-profile:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.add-icon {
+    font-size: 2.5rem;
+    color: var(--brand-1);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(55, 216, 255, 0.4);
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 400px) {
+    .profiles-header {
+        margin-bottom: 2rem;
+    }
+
+    #user-greeting {
+        font-size: 1.6rem;
+    }
+
+    .profiles-kicker {
+        font-size: 1.1rem;
+    }
+
+    .profiles-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .profile-card {
+        width: 110px;
+        height: 140px;
+        padding: 0.7rem;
+    }
+
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .profile-name {
+        font-size: 0.85rem;
+    }
+}
+
+/* טאבלטים בינוניים (400–900px) */
+@media (min-width: 401px) and (max-width: 900px) {
+    .profiles {
+        padding: 3rem 1.5rem;
+    }
+
+    .profiles-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .profiles-list {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .profile-card {
+        width: 140px;
+        height: 160px;
+    }
+
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (min-width: 901px) {
+    .profiles {
+        padding: 4rem;
+    }
+
+    .profiles-list {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 2rem;
+        max-width: 900px;
+    }
+
+    #user-greeting {
+        font-size: 2.5rem;
+    }
+
+    .profiles-kicker {
+        font-size: 1.6rem;
+    }
+}
