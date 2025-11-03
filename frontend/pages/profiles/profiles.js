@@ -1,7 +1,6 @@
 const profilesPage = document.querySelector("#app-main");
 const profilesList = document.querySelector("#profiles-list");
 const profileKicker = document.querySelector(".profiles-kicker");
-console.log(profileKicker);
 
 const user = JSON.parse(localStorage.getItem("user"));
 const userName = user?.userName || "User";

@@ -13,6 +13,9 @@ const loadComponent = async (selector, htmlPath, cssPath) => {
             link.href = cssPath;
             document.head.appendChild(link);
         }
+
+        // Ensure any dynamic content is rendered
+        await new Promise((resolve) => requestAnimationFrame(resolve));
     } catch (err) {
         console.error(`Error loading component: ${htmlPath}`, err);
     }
