@@ -1,199 +1,123 @@
-/* ===== Unified Auth Look (Login & Register) ===== */
+/* ===== Auth Page Layout (Login & Register) ===== */
 .auth {
-    min-height: 100vh;
+    min-height: calc(100vh - 150px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 3rem;
+}
+
+/* Center inner content */
+.auth .container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    padding: 2rem;
-    gap: 2rem;
-
-    /* Moves content up slightly, scales smoothly on screen height */
-    transform: translateY(-6vh);
+    gap: 1rem;
+    width: 100%;
+    max-width: 420px;
 }
 
+/* ===== Refined Auth Header ===== */
 .auth__header {
-    max-width: 520px;
-    margin-inline: auto;
+    text-align: center;
+    padding: 1.5rem 1rem 1rem;
 }
+
 .auth__kicker {
-    color: var(--text-2);
-    font-weight: 500;
-    margin-bottom: 0.25rem;
+    color: var(--brand-1);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
 }
+
 .auth__title {
     margin: 0;
 }
+
 .auth__subtitle {
     color: var(--text-2);
+    font-size: 0.95rem;
     line-height: 1.6;
-    margin: 0.75rem auto 0;
+    margin-top: 0.75rem;
     max-width: 460px;
+    margin-inline: auto;
+    opacity: 0.9;
 }
 
-/* Card */
+/* ===== Card Section ===== */
 .auth__card {
+    /* uses global .card styles from base.css */
     width: 100%;
-    max-width: 380px;
-    background: var(--surface);
-    border: 1px solid var(--surface-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-1);
-    backdrop-filter: blur(12px);
-    padding: 2.2rem 1.8rem;
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-.auth__card:hover {
-    box-shadow: var(--shadow-1h);
-    transform: translateY(-2px);
 }
 
-.auth__card h2 {
-    margin: 0 0 1.2rem 0;
-    text-align: left;
-    font-weight: 700;
-    color: var(--text-1);
-}
-
-/* Fields */
-.form-group {
-    text-align: left;
-    margin-bottom: 1.1rem;
-}
-.form-group label {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--text-2);
-    margin-bottom: 0.35rem;
-}
-
-.form-group p {
-    font-size: 0.7rem;
-    color: var(--text-3);
-    margin-top: 0.3rem;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 0.9rem 0.85rem;
-    color: var(--text-1);
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 10px;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.form-group input::placeholder {
-    color: var(--text-3);
-}
-.form-group input:focus {
-    border-color: var(--brand-1);
-    box-shadow: var(--ring);
-}
-
-/* Button */
-.btn {
-    width: 100%;
-    padding: 0.95rem;
-    border: none;
-    border-radius: 10px;
-    color: #071013;
-    font-weight: 800;
-    font-size: 1rem;
-    cursor: pointer;
-    background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-.btn:hover {
-    transform: translateY(-1px);
-    filter: saturate(1.02);
-}
-.btn:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
-}
-
-/* Secondary text link */
+/* ===== Link Section ===== */
 .auth__link {
+    text-align: center;
     margin-top: 1rem;
     color: var(--text-2);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
 }
+
 .auth__link a {
     color: var(--brand-1);
     text-decoration: none;
-    font-weight: 600;
 }
+
 .auth__link a:hover {
     text-decoration: underline;
 }
 
+.regisret-form .fotm-group .lable .p {
+    font-size: 3rem;
+}
+
+/* ===== Admin Toggle (original behavior & look) ===== */
 .form-group--admin-toggle {
     margin-top: 1rem;
+    text-align: left;
+    color: var(--text-2);
+    font-size: 0.9rem;
 }
 
-.form-group--admin-code {
-    margin-top: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.form-group--admin-code.show {
-    display: block !important;
-}
-
-.form-group--admin-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: auto;
-    padding: 0;
-    margin: 0.5rem 0;
-}
-
+/* keep checkbox inline with text, like original */
 .form-group--admin-toggle label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
+    display: inline;
+    font-size: inherit;
+    white-space: nowrap;
     cursor: pointer;
-    width: auto;
 }
 
+/* restore default checkbox look and alignment */
 .form-group--admin-toggle input[type="checkbox"] {
-    margin: 0;
-    width: 16px;
-    height: 16px;
+    display: inline-block;
+    width: auto;
+    margin: 0 6px 0 0;
+    vertical-align: middle;
+    accent-color: var(--brand-1);
+    transform: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+    position: static;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .brand-logo--xl {
-        font-size: 2.2rem;
-    }
-    .auth__card {
-        padding: 1.8rem 1.2rem;
-    }
+.form-group .password-hint {
+    font-size: 0.7rem;
+    color: var(--text-2);
+    margin-top: 0.35rem;
 }
 
-/* Medium-small screens (laptops, short monitors) */
-@media (max-height: 800px) {
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
     .auth {
-        transform: translateY(-4vh);
+        padding-block: 2rem;
     }
-}
 
-/* Very small viewports (mobile landscape or small devices) */
-@media (max-height: 650px) {
-    .auth {
-        transform: translateY(-2vh);
-    }
-}
-
-/* Extra-small height screens – disable offset to prevent clipping */
-@media (max-height: 550px) {
-    .auth {
-        transform: none;
+    .auth .container {
+        max-width: 90%;
+        gap: 1.25rem;
     }
 }

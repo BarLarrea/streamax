@@ -23,15 +23,19 @@ const handleSubmit = async (e) => {
 
     try {
         const data = await loginUser(userName, password);
-        // Continue the login process only if axios call is successful (stsatus !== 2xx will throw an error)
 
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        console.log("Login successful:", data.user);
-        showSuccess("Login successful!");
-
-        window.location.hash = "#/profiles";
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+            showSuccess("Login success!");
+            console.log("Login success:", data.user);
+            window.location.hash = "#/profiles";
+        } else {
+            console.warn("User not yet saved, retrying...");
+            setTimeout(() => (window.location.hash = "#/profiles"), 100);
+        }
     } catch (error) {
         const message = error.response?.data?.message || error.message;
 

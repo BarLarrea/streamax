@@ -2,83 +2,89 @@
     class="auth"
     data-page="register"
 >
-    <header class="auth__header">
-        <div class="auth__kicker">Join</div>
-        <h1 class="auth__title">
-            <span class="brand-logo brand-logo--xl">StreaMax</span>
-        </h1>
-        <p class="auth__subtitle">
-            Create your account and start watching what you love.
-        </p>
-    </header>
-
-    <div class="auth__card">
-        <h2>Create an account</h2>
-        <form id="register-form">
-            <div class="form-group">
-                <label for="userName">User Name</label>
-                <input
-                    id="userName"
-                    type="text"
-                    placeholder="Choose a username"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    required
-                />
-                <p>
-                    Mmust be at least: 8 characters, one uppercase letter, one
-                    lowercase letter, one number, and one special character
-                </p>
-            </div>
-
-            <div class="form-group form-group--admin-toggle">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="register-as-admin"
-                    />
-                    Register as Admin
-                </label>
-            </div>
-
-            <div
-                class="form-group form-group--admin-code"
-                id="admin-code-group"
-                style="display: none"
-            >
-                <label for="admin-code">Admin Code</label>
-                <input
-                    id="admin-code"
-                    type="password"
-                    placeholder="Enter admin code"
-                />
-            </div>
-
-            <button
-                class="btn"
-                type="submit"
-            >
-                Sign Up
-            </button>
-            <p class="auth__link">
-                Already have an account? <a href="#/login">Log In</a>
+    <div class="container">
+        <header class="auth__header">
+            <div class="auth__kicker">Join</div>
+            <h1 class="auth__title">
+                <span class="brand-logo brand-logo--xl">StreaMax</span>
+            </h1>
+            <p class="auth__subtitle">
+                Create your account and start watching what you love
             </p>
-        </form>
+        </header>
+
+        <div class="auth__card">
+            <h2>Create an account</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="userName">User Name</label>
+                    <input
+                        id="userName"
+                        type="text"
+                        placeholder="Choose a username"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        required
+                    />
+                    <p class="password-hint">
+                        Must be at least: 8 characters, one uppercase letter,
+                        one lowercase letter, one number, and one special
+                        character
+                    </p>
+                </div>
+
+                <div class="form-group form-group--admin-toggle">
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="register-as-admin"
+                        />
+                        Register as Admin
+                    </label>
+                </div>
+
+                <div
+                    class="form-group form-group--admin-code"
+                    id="admin-code-group"
+                    style="display: none"
+                >
+                    <label for="admin-code">Admin Code</label>
+                    <input
+                        id="admin-code"
+                        type="password"
+                        placeholder="Enter admin code"
+                    />
+                </div>
+
+                <button
+                    class="btn"
+                    type="submit"
+                >
+                    Sign Up
+                </button>
+
+                <p class="auth__link">
+                    Already have an account? <a href="#/login">Log In</a>
+                </p>
+            </form>
+        </div>
     </div>
 </section>
