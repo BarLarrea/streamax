@@ -7,7 +7,8 @@ const loadHeader = async () => {
         "./shared/components/header/header.css"
     );
 
-    await import("./header.js");
+    const module = await import("./header.js");
+    module.initHeaderMenu();
 };
 
 export default loadHeader;

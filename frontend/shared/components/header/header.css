@@ -1,131 +1,188 @@
-
-/* ===== HEADER – DESKTOP VIEW ====== */
-
+/* ===== HEADER BASE ===== */
 .header {
-    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
-    display: grid;
-    grid-template-columns: auto 1fr auto; /* Logo | Nav | Avatar */
+    width: 100%;
+    height: 70px;
+    background: rgba(28, 31, 41, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid rgba(55, 216, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: space-between; /* keep right content aligned */
 }
 
-/* Logo */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* small spacing between logo & button */
+}
+
+/* ===== LOGO ===== */
 .logo {
-    color: #ffffff;
-    font-size: 1.6rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/* Navigation menu */
+/* ===== NAVIGATION ===== */
 .nav {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1.8rem;
-    transition: all 0.3s ease;
+    gap: 1.5rem;
 }
-
 .nav a {
-    color: #e5e7eb;
+    color: var(--text-1);
     text-decoration: none;
-    font-size: 1rem;
     font-weight: 500;
-    transition: color 0.3s ease, transform 0.2s ease;
+    transition: color 0.2s ease;
 }
-
 .nav a:hover {
-    color: #9ca3af;
-    transform: scale(1.05);
+    color: var(--brand-1);
 }
 
-/* User avatar */
+/* ===== USER MENU DROPDOWN ===== */
 .user-menu {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    border-radius: 50%;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    width: 44px;
+    height: 44px;
 }
-
 .user-avatar:hover {
     transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(55, 216, 255, 0.25);
 }
 
-/* Hamburger button - hidden by default */
+.user-dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: rgba(28, 31, 41, 0.95);
+    border: 1px solid rgba(55, 216, 255, 0.15);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    min-width: 160px;
+    z-index: 2000;
+    animation: fadeIn 0.25s ease forwards;
+}
+
+.user-dropdown a,
+.user-dropdown button {
+    color: var(--text-1);
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s ease;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+    background: rgba(55, 216, 255, 0.1);
+    color: var(--brand-1);
+}
+
+/* Show when active */
+.user-dropdown.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== NAV MENU TOGGLE (MOBILE) ===== */
 .menu-toggle {
     display: none;
     background: none;
     border: none;
-    color: #ffffff;
     font-size: 1.8rem;
+    color: var(--text-2);
     cursor: pointer;
+    line-height: 1;
+    border-radius: 50%;
+    padding: 4px;
+    transition: color 0.25s ease, transform 0.1s ease;
 }
 
+/* light hover tint */
+.menu-toggle:hover {
+    color: var(--brand-1);
+}
 
+/* refined tap / click feedback */
+.menu-toggle:active {
+    transform: scale(0.94);
+    box-shadow: 0 0 10px rgba(55, 216, 255, 0.25);
+    animation: pulseGlow 0.35s ease-out;
+}
 
-/* ===== HEADER – RESPONSIVE STYLES ====== */
+/* remove default focus ring */
+.menu-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
 
+/* subtle pulse glow */
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 rgba(55, 216, 255, 0);
+    }
+    40% {
+        box-shadow: 0 0 12px rgba(55, 216, 255, 0.35);
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(55, 216, 255, 0);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 700px) {
-    /* Show hamburger button */
     .menu-toggle {
         display: block;
     }
 
-    /* Header layout for small screens */
-    .header {
-        grid-template-columns: auto auto auto; /* Logo | Button | Avatar */
-        align-items: center;
-        padding: 0.8rem 1rem;
-        position: relative;
-    }
-
-    /* Hide nav by default */
     .nav {
         display: none;
-        flex-direction: column;
         position: absolute;
-        top: 100%;
+        top: 70px;
         left: 0;
         width: 100%;
-        background: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        align-items: center;
+        background: rgba(28, 31, 41, 0.98);
         padding: 1rem 0;
-        text-align: center;
-        gap: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        border-top: 1px solid rgba(55, 216, 255, 0.15);
     }
 
-    /* Nav visible when open */
     .nav.open {
         display: flex;
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* Smaller elements for compact screens */
-    .logo {
-        font-size: 1.2rem;
-    }
-
-    .user-avatar {
-        width: 32px;
-        height: 32px;
     }
 }

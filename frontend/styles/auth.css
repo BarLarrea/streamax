@@ -1,0 +1,123 @@
+/* ===== Auth Page Layout (Login & Register) ===== */
+.auth {
+    min-height: calc(100vh - 150px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 3rem;
+}
+
+/* Center inner content */
+.auth .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 420px;
+}
+
+/* ===== Refined Auth Header ===== */
+.auth__header {
+    text-align: center;
+    padding: 1.5rem 1rem 1rem;
+}
+
+.auth__kicker {
+    color: var(--brand-1);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth__title {
+    margin: 0;
+}
+
+.auth__subtitle {
+    color: var(--text-2);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 0.75rem;
+    max-width: 460px;
+    margin-inline: auto;
+    opacity: 0.9;
+}
+
+/* ===== Card Section ===== */
+.auth__card {
+    /* uses global .card styles from base.css */
+    width: 100%;
+}
+
+/* ===== Link Section ===== */
+.auth__link {
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--text-2);
+    font-size: 0.9rem;
+}
+
+.auth__link a {
+    color: var(--brand-1);
+    text-decoration: none;
+}
+
+.auth__link a:hover {
+    text-decoration: underline;
+}
+
+.regisret-form .fotm-group .lable .p {
+    font-size: 3rem;
+}
+
+/* ===== Admin Toggle (original behavior & look) ===== */
+.form-group--admin-toggle {
+    margin-top: 1rem;
+    text-align: left;
+    color: var(--text-2);
+    font-size: 0.9rem;
+}
+
+/* keep checkbox inline with text, like original */
+.form-group--admin-toggle label {
+    display: inline;
+    font-size: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* restore default checkbox look and alignment */
+.form-group--admin-toggle input[type="checkbox"] {
+    display: inline-block;
+    width: auto;
+    margin: 0 6px 0 0;
+    vertical-align: middle;
+    accent-color: var(--brand-1);
+    transform: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+    position: static;
+}
+
+.form-group .password-hint {
+    font-size: 0.7rem;
+    color: var(--text-2);
+    margin-top: 0.35rem;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+    .auth {
+        padding-block: 2rem;
+    }
+
+    .auth .container {
+        max-width: 90%;
+        gap: 1.25rem;
+    }
+}

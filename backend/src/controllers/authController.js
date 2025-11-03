@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import * as userRepo from "../repositories/userRepository.js";
 import { validateEmail, validatePassword } from "../utils/validation.js";
-import { generateAccessToken, generateRefreshToken } from "../confif/jwt.js";
+import { generateAccessToken, generateRefreshToken } from "../config/jwt.js";
 import { formatUser } from "../utils/userFormatter.js";
 import {
     setUpRefreshTokenCookie,
@@ -11,7 +11,7 @@ import {
 } from "../utils/cookie.js";
 
 const registerUser = async (req, res) => {
-    const { userName, email, password } = req.body;
+    const { userName, email, password, adminCode } = req.body;
 
     if (!userName || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
@@ -27,6 +27,14 @@ const registerUser = async (req, res) => {
             message:
                 "Password must be at least: 8 characters, one uppercase letter, one lowercase letter,one number, and one special character"
         });
+    }
+
+    if (adminCode) {
+        const validAdminCode = process.env.ADMIN_REGISTRATION_CODE;
+        if (adminCode !== validAdminCode) {
+            console.warn("Attempted registration with invalid admin code");
+            return res.status(403).json({ message: "Invalid credentials" });
+        }
     }
 
     try {
@@ -47,7 +55,8 @@ const registerUser = async (req, res) => {
         const newUser = await userRepo.createUser({
             userName,
             email: normalizedEmail,
-            password: hashedPassword
+            password: hashedPassword,
+            isAdmin: adminCode ? true : false
         });
 
         return res.status(201).json({
@@ -110,7 +119,7 @@ const loginUser = async (req, res) => {
             accessToken
         });
     } catch (error) {
-        console.error("Login Error:", error);
+        console.error("Login", error);
         return res
             .status(500)
             .json({ message: "Server Error, Failed to Login" });
@@ -120,6 +129,7 @@ const loginUser = async (req, res) => {
 const refreshAccessToken = async (req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken;
+        console.log("Refresh token received:", refreshToken);
         if (!refreshToken) {
             return res
                 .status(401)

@@ -1,53 +1,67 @@
 <header class="header">
-    <h1 class="logo">StreaMax</h1>
-
-    <button class="menu-toggle">☰</button>
+    <div class="header-left">
+        <h1 class="logo">StreaMax</h1>
+        <button
+            class="menu-toggle"
+            aria-label="Open menu"
+        >
+            ☰
+        </button>
+    </div>
 
     <nav class="nav">
         <a
-            href="#home"
-            data-page="home"
+            href="#/home"
             class="nav-link active"
             >Home</a
         >
         <a
-            href="#movies"
-            data-page="movies"
+            href="#/movies"
             class="nav-link"
             >Movies</a
         >
         <a
-            href="#series"
-            data-page="series"
+            href="#/series"
             class="nav-link"
             >Series</a
         >
         <a
-            href="#genres"
-            data-page="genres"
+            href="#/genres"
             class="nav-link"
             >Genres</a
         >
         <a
-            href="#mylist"
-            data-page="myStreaMax"
+            href="#/mylist"
             class="nav-link"
             >My StreaMax</a
         >
         <a
-            href="#search"
-            data-page="search"
+            href="#/search"
             class="nav-link"
             >Search</a
         >
     </nav>
+
     <div class="user-menu">
         <img
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            alt="User Profile"
             class="user-avatar"
+            src="assets/profile/avatar0.png"
+            alt="User Profile"
+            id="user-avatar"
         />
+
+        <div
+            class="user-dropdown"
+            id="user-dropdown"
+        >
+            <a href="#/profiles">Switch Profile</a>
+            <a href="#/edit-profile">Edit Profile</a>
+            <button id="logout-btn">Log Out</button>
+        </div>
     </div>
 
-    <script src="./header.js"></script>
+    <script
+        type="module"
+        src="./header.js"
+    ></script>
 </header>

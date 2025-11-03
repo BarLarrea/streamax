@@ -6,14 +6,36 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0"
         />
+        <meta
+            name="theme-color"
+            content="#1c1f29"
+        />
         <title>StreaMax</title>
+
+        <!-- ===== Global Styles ===== -->
         <link
             rel="stylesheet"
-            href="./main.css"
+            href="./styles/global.css"
         />
         <link
             rel="stylesheet"
-            href="./shared/styles/global.css"
+            href="./styles/base.css"
+        />
+        <link
+            rel="stylesheet"
+            href="./styles/layout.css"
+        />
+
+        <!-- ===== Favicon ===== -->
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="./assets/icons/favicon.ico"
+        />
+
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
         />
     </head>
 
@@ -23,6 +45,12 @@
         <main id="app-main"></main>
 
         <footer id="app-footer"></footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/toastify-js"
+            type="text/javascript"
+        ></script>
 
         <script
             type="module"

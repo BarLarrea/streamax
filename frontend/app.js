@@ -2,6 +2,7 @@ import loadHeader from "./shared/components/header/index.js";
 import loadFooter from "./shared/components/footer/index.js";
 import loadLoginPage from "./pages/login/index.js";
 import loadRegisterPage from "./pages/register/index.js";
+import loadProfilesPage from "./pages/profiles/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -26,9 +27,12 @@ const initApp = async () => {
         case "register":
             await loadRegisterPage();
             break;
-        // case "home":
-        //     await loadHomePage();
-        //     break;
+        case "profiles":
+            await loadProfilesPage();
+            break;
+        case "home":
+            await loadHomePage();
+            break;
         default:
             console.warn(`No handler for page: ${currentPage}`);
             break;
