@@ -41,20 +41,23 @@
 }
 
 #user-greeting {
-    font-size: 2.2rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    text-shadow: 0 0 10px rgba(55, 216, 255, 0.3);
-    animation: fadeUp 1s ease forwards;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 0rem;
+    margin-bottom: 2rem;
+    color: var(--text-1);
+    text-shadow: 0 0 2px rgba(0, 234, 255, 0.6), 0 0 2px rgba(0, 234, 255, 0.4),
+        0 0 2px rgba(0, 234, 255, 0.3);
 }
 
 .profiles-kicker {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
     color: var(--brand-1);
     letter-spacing: 0.5px;
     opacity: 0;
     transform: translateY(10px);
-    animation: fadeUp 1s ease forwards 0.4s;
+    animation: fadeUp 1s ease forwards 0.2s;
 }
 
 @keyframes fadeUp {

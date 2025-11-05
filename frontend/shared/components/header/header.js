@@ -17,6 +17,15 @@ export const initHeaderMenu = () => {
         });
     });
 
+    // Close nav when clicking outside
+    document.addEventListener("click", (e) => {
+        const isClickInsideNav = nav.contains(e.target);
+        const isClickOnToggle = menuToggle.contains(e.target);
+        if (!isClickInsideNav && !isClickOnToggle) {
+            nav.classList.remove("open");
+        }
+    });
+
     // Handle user dropdown menu
     const avatar = document.getElementById("user-avatar");
     const dropdown = document.getElementById("user-dropdown");
