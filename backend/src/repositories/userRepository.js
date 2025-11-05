@@ -7,7 +7,7 @@ export const getUserById = async (id) => {
 };
 
 export const getUserByUserName = async (userName) => {
-    return await User.findOne({ userName });
+    return await User.findOne({ userName }).populate("profiles");
 };
 
 export const getUserByEmail = async (email) => {

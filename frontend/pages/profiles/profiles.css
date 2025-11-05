@@ -52,7 +52,7 @@
 
 .profiles-kicker {
     font-size: 1.2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     color: var(--brand-1);
     letter-spacing: 0.5px;
     opacity: 0;
@@ -70,12 +70,11 @@
 /* ===== PROFILE GRID ===== */
 .profiles-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(140px, max-content));
+    justify-content: center;
     justify-items: center;
-    width: 100%;
-    max-width: 800px;
-    z-index: 2;
+    gap: 1rem;
+    max-width: none;
 }
 
 /* ===== PROFILE CARD ===== */
