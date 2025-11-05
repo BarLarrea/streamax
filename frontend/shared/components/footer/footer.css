@@ -3,6 +3,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
+    height: var(--footer-height);
 
     background: linear-gradient(
         90deg,
@@ -36,7 +37,7 @@
     }
 }
 
-#app-footer a:hover {
-    color: var(--brand-1);
-    text-shadow: 0 0 6px var(--brand-glow-1);
+#app-footer p {
+    margin: 0;
+    line-height: 1.4;
 }
