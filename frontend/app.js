@@ -17,7 +17,7 @@ const initApp = async () => {
     const noLayoutPages = ["login", "register"];
 
     if (!noLayoutPages.includes(currentPage)) {
-        await loadHeader();
+        await loadHeader(currentPage);
         await loadFooter();
     }
 

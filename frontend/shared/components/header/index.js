@@ -1,6 +1,6 @@
 import loadComponent from "../../../utils/loadComponent.js";
 
-const loadHeader = async () => {
+const loadHeader = async (currentPage) => {
     await loadComponent(
         "#app-header",
         "./shared/components/header/header.html",
@@ -8,7 +8,7 @@ const loadHeader = async () => {
     );
 
     const module = await import("./header.js");
-    module.initHeaderMenu();
+    module.initHeaderMenu(currentPage);
 };
 
 export default loadHeader;

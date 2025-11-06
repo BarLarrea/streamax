@@ -47,6 +47,10 @@
     color: var(--brand-1);
 }
 
+.nav.hidden {
+    display: none;
+}
+
 /* ===== USER MENU DROPDOWN ===== */
 .user-menu {
     position: relative;
@@ -95,6 +99,10 @@
     transition: 0.2s ease;
 }
 
+.user-dropdown button.hidden {
+    display: none;
+}
+
 .user-dropdown a:hover,
 .user-dropdown button:hover {
     background: rgba(55, 216, 255, 0.1);
@@ -134,6 +142,10 @@
 /* light hover tint */
 .menu-toggle:hover {
     color: var(--brand-1);
+}
+
+.menu-toggle.hidden {
+    display: none;
 }
 
 /* refined tap / click feedback */

@@ -1,11 +1,29 @@
 import { logoutUser } from "../../../services/authService.js";
 import { showSuccess, showError } from "../../../utils/notifications.js";
+import loadUserAccountBar from "../userAccountBar/index.js";
 
-export const initHeaderMenu = () => {
+export const initHeaderMenu = async (currentPage) => {
     const menuToggle = document.querySelector(".menu-toggle");
     const nav = document.querySelector(".nav");
 
     if (!menuToggle || !nav) return;
+
+    const nonNavBarPages = ["createProfile"];
+
+    if (nonNavBarPages.includes(currentPage)) {
+        nav.classList.add("hidden");
+        menuToggle.classList.add("hidden");
+    } else {
+        nav.classList.remove("hidden");
+        menuToggle.classList.remove("hidden");
+    }
+
+    if (currentPage === "profiles") {
+        const user = JSON.parse(localStorage.getItem("user")) || {};
+        console.log("User data for account bar:", user);
+
+        await loadUserAccountBar(user);
+    }
 
     menuToggle.addEventListener("click", () => {
         nav.classList.toggle("open");
