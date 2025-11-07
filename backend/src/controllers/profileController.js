@@ -76,7 +76,7 @@ const getProfilesByUserID = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const profiles = await profileRipo.findAndDeleteProfileById(userId);
+        const profiles = await profileRipo.findProfilesByUserID(userId);
         return res.status(200).json({
             message: "Profiles fetched successfully",
             profiles: profiles.map(formatProfile)

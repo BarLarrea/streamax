@@ -3,6 +3,7 @@ import loadFooter from "./shared/components/footer/index.js";
 import loadLoginPage from "./pages/login/index.js";
 import loadRegisterPage from "./pages/register/index.js";
 import loadProfilesPage from "./pages/profiles/index.js";
+import loadCreateProfilePage from "./pages/createProfile/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -16,7 +17,7 @@ const initApp = async () => {
     const noLayoutPages = ["login", "register"];
 
     if (!noLayoutPages.includes(currentPage)) {
-        await loadHeader();
+        await loadHeader(currentPage);
         await loadFooter();
     }
 
@@ -29,6 +30,9 @@ const initApp = async () => {
             break;
         case "profiles":
             await loadProfilesPage();
+            break;
+        case "create-profile":
+            await loadCreateProfilePage();
             break;
         case "home":
             await loadHomePage();

@@ -1,34 +1,25 @@
+import loadNavBar from "../navBar/index.js";
+import loadUserAccountBar from "../userAccountBar/index.js";
 import { logoutUser } from "../../../services/authService.js";
 import { showSuccess, showError } from "../../../utils/notifications.js";
 
-export const initHeaderMenu = () => {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const nav = document.querySelector(".nav");
+export const initHeaderMenu = async (currentPage) => {
+    const nonNavPages = ["profiles", "create-profile"];
 
-    if (!menuToggle || !nav) return;
+    if (!nonNavPages.includes(currentPage)) {
+        await loadNavBar();
+    }
 
-    menuToggle.addEventListener("click", () => {
-        nav.classList.toggle("open");
-    });
-
-    nav.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
-            nav.classList.remove("open");
-        });
-    });
-
-    // Handle user dropdown menu
     const avatar = document.getElementById("user-avatar");
     const dropdown = document.getElementById("user-dropdown");
     const logoutBtn = document.getElementById("logout-btn");
 
     if (avatar && dropdown) {
         avatar.addEventListener("click", (e) => {
-            e.stopPropagation(); // prevent closing immediately
+            e.stopPropagation();
             dropdown.classList.toggle("show");
         });
 
-        // close dropdown if clicking outside
         document.addEventListener("click", (e) => {
             if (!dropdown.contains(e.target) && !avatar.contains(e.target)) {
                 dropdown.classList.remove("show");

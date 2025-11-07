@@ -1,12 +1,10 @@
 /* ===== PAGE LAYOUT ===== */
 .profiles {
-    position: relative; /* section is already positioned by layout */
+    position: relative;
     width: 100%;
     flex: 1;
-    padding: 8rem 2rem 3rem; /* space from header and footer */
+    padding: 6rem 2rem 3rem;
     overflow-y: auto;
-
-    /* Page background */
     background: radial-gradient(
             circle at top left,
             var(--brand-glow-1),
@@ -41,20 +39,23 @@
 }
 
 #user-greeting {
-    font-size: 2.2rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    text-shadow: 0 0 10px rgba(55, 216, 255, 0.3);
-    animation: fadeUp 1s ease forwards;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 0rem;
+    margin-bottom: 2rem;
+    color: var(--text-1);
+    text-shadow: 0 0 2px rgba(0, 234, 255, 0.6), 0 0 2px rgba(0, 234, 255, 0.4),
+        0 0 2px rgba(0, 234, 255, 0.3);
 }
 
 .profiles-kicker {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
     color: var(--brand-1);
     letter-spacing: 0.5px;
     opacity: 0;
     transform: translateY(10px);
-    animation: fadeUp 1s ease forwards 0.4s;
+    animation: fadeUp 1s ease forwards 0.2s;
 }
 
 @keyframes fadeUp {
@@ -66,17 +67,19 @@
 
 /* ===== PROFILE GRID ===== */
 .profiles-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 2rem;
-    justify-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
     width: 100%;
-    max-width: 800px;
-    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 /* ===== PROFILE CARD ===== */
 .profile-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -133,48 +136,102 @@
     text-shadow: 0 0 8px rgba(55, 216, 255, 0.4);
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 400px) {
-    .profiles {
-        padding: 5rem 1rem 2rem;
-    }
-    .profiles-header {
-        margin-bottom: 2rem;
-    }
-    #user-greeting {
-        font-size: 1.6rem;
-    }
-    .profiles-kicker {
-        font-size: 1rem;
-    }
-    .profiles-list {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-    .profile-card {
-        width: 110px;
-        height: 140px;
-        padding: 0.7rem;
-    }
-    .profile-avatar {
-        width: 70px;
-        height: 70px;
-    }
-    .profile-name {
-        font-size: 0.85rem;
-    }
+/* ===== EDIT PROFILE BUTTON ===== */
+.edit-profile-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--text-1);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.9);
+    cursor: pointer;
+    transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+    pointer-events: none;
 }
 
-@media (min-width: 401px) and (max-width: 900px) {
-    .profiles {
-        padding: 6rem 2rem 3rem;
-    }
+/* show buttons only when .profiles has .editing */
+.profiles.editing .edit-profile-btn {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+/* hover effect on edit button */
+.profiles.editing .edit-profile-btn:hover {
+    background: var(--brand-1);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* ===== EDIT MODE TOGGLE BUTTON (minimal, bottom) ===== */
+.profiles-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 5rem; /* lower on the page */
+    padding-bottom: 4rem; /* extra breathing space */
+}
+
+.toggle-edit-btn {
+    background: rgba(255, 255, 255, 0.05); /* subtle, constant background */
+    border: none;
+    color: var(--text-2);
+    font-size: 0.9rem;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-edit-btn:hover {
+    opacity: 1;
+    color: var(--brand-1);
+    transform: translateY(-1px);
+}
+
+/* subtle underline animation */
+.toggle-edit-btn::after {
+    content: "";
+    display: block;
+    width: 0%;
+    height: 0.5px;
+    background: var(--brand-1);
+    margin-top: 2px;
+    transition: width 0.3s ease;
+}
+
+.toggle-edit-btn:hover::after {
+    width: 100%;
+}
+
+/* ===== SHOW EDIT BUTTONS ONLY IN EDIT MODE ===== */
+.profiles.editing .edit-profile-btn {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.edit-profile-btn {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
     .profiles-list {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1.5rem;
+        gap: 1.2rem;
     }
     .profile-card {
-        width: 140px;
+        width: 130px;
         height: 160px;
     }
     .profile-avatar {
@@ -183,16 +240,40 @@
     }
 }
 
-@media (min-width: 901px) {
-    .profiles-list {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 2rem;
-        max-width: 900px;
+@media (max-width: 600px) {
+    .profiles {
+        padding: 5rem 1rem 2rem;
     }
+
     #user-greeting {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
     }
+
     .profiles-kicker {
-        font-size: 1.6rem;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .profiles-list {
+        gap: 1rem;
+    }
+
+    .profile-card {
+        width: 120px;
+        height: 150px;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .profile-name {
+        font-size: 0.9rem;
+    }
+
+    .profiles-footer {
+        margin-top: 3rem;
+        padding-bottom: 3rem;
     }
 }
