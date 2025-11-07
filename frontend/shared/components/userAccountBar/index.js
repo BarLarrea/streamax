@@ -2,7 +2,7 @@ import loadComponent from "../../../utils/loadComponent.js";
 
 const loadUserAccountBar = async (user) => {
     await loadComponent(
-        ".nav",
+        ".header-slot",
         "./shared/components/userAccountBar/userAccountBar.html",
         "./shared/components/userAccountBar/userAccountBar.css"
     );

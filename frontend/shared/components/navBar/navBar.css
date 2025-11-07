@@ -1,0 +1,97 @@
+/* ===== NAV BAR MENU (big screens) ===== */
+.nav {
+    display: flex;
+    gap: 1.5rem;
+}
+.nav a {
+    color: var(--text-1);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+.nav a:hover {
+    color: var(--brand-1);
+}
+
+.nav.hidden {
+    display: none;
+}
+
+/* ===== NAV MENU TOGGLE (mobile) ===== */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-2);
+    cursor: pointer;
+    line-height: 1;
+    border-radius: 50%;
+    padding: 4px;
+    transition: color 0.25s ease, transform 0.1s ease;
+}
+
+/* light hover tint */
+.menu-toggle:hover {
+    color: var(--brand-1);
+}
+
+.menu-toggle.hidden {
+    display: none;
+}
+
+/* refined tap / click feedback */
+.menu-toggle:active {
+    transform: scale(0.94);
+    box-shadow: 0 0 10px rgba(55, 216, 255, 0.25);
+    animation: pulseGlow 0.35s ease-out;
+}
+
+/* remove default focus ring */
+.menu-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.nav a.active {
+    color: var(--brand-1);
+    border-bottom: 2px solid var(--brand-1);
+}
+
+/* subtle pulse glow */
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 rgba(55, 216, 255, 0);
+    }
+    40% {
+        box-shadow: 0 0 12px rgba(55, 216, 255, 0.35);
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(55, 216, 255, 0);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(28, 31, 41, 0.98);
+        padding: 1rem 0;
+        border-top: 1px solid rgba(55, 216, 255, 0.15);
+    }
+
+    .nav.open {
+        display: flex;
+        top: var(--header-height);
+    }
+}

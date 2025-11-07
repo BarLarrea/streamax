@@ -1,0 +1,97 @@
+/* ===== USER ACCOUNT BAR (clean polished version) ===== */
+.user-account-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-left: auto;
+    padding-right: 1rem;
+    height: var(--header-height);
+    color: var(--text-1);
+    background: transparent;
+    border: none;
+    font-size: 0.95rem;
+}
+
+/* ===== USER INFO ===== */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+.user-info:hover {
+    transform: translateY(-2px);
+}
+.user-name,
+.user-email {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    transition: color 0.25s ease;
+}
+.user-info:hover .user-name,
+.user-info:hover .user-email {
+    color: var(--text-1);
+}
+
+/* ===== EDIT BUTTON ===== */
+.edit-account-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-2);
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+    position: relative;
+}
+
+/* appear smoothly when hovering user bar */
+.user-info:hover + .edit-account-btn,
+.edit-account-btn:hover {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* highlight and tooltip */
+.edit-account-btn:hover {
+    color: var(--brand-1);
+}
+
+/* tooltip */
+.edit-account-btn::after {
+    content: "Edit user";
+    position: absolute;
+    bottom: -1.9rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.4rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.edit-account-btn:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+    .user-account-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        padding-right: 0;
+    }
+}

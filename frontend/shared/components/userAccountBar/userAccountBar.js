@@ -3,5 +3,5 @@ export function userAccountBar(user) {
     const userEmail = document.querySelector(".user-email");
 
     userName ? (userName.textContent = user.userName) : "Guest User";
-    userEmail ? (userEmail.textContent = user.userEmail) : "Missing Email";
+    userEmail ? (userEmail.textContent = user.email) : "Missing Email";
 }
