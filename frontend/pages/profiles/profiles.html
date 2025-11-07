@@ -11,8 +11,13 @@
         class="profiles-list"
         id="profiles-list"
     >
-        <!-- Example profile card -->
         <div class="profile-card">
+            <button
+                class="edit-profile-btn"
+                title="Edit Profile"
+            >
+                <i class="bi bi-pencil"></i>
+            </button>
             <img
                 src="assets/profile/avatar1.png"
                 alt="Profile avatar"
@@ -22,6 +27,12 @@
         </div>
 
         <div class="profile-card">
+            <button
+                class="edit-profile-btn"
+                title="Edit Profile"
+            >
+                <i class="bi bi-pencil"></i>
+            </button>
             <img
                 src="assets/profile/avatar2.png"
                 alt="Profile avatar"
@@ -30,10 +41,17 @@
             <p class="profile-name">Noa</p>
         </div>
 
-        <!-- Add profile card -->
         <div class="profile-card add-profile">
             <div class="add-icon">+</div>
             <p class="profile-name">Add Profile</p>
         </div>
+    </div>
+    <div class="profiles-footer">
+        <button
+            id="toggle-edit-mode"
+            class="toggle-edit-btn"
+        >
+            Edit Profiles
+        </button>
     </div>
 </section>
