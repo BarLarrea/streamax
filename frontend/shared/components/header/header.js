@@ -4,17 +4,9 @@ import { logoutUser } from "../../../services/authService.js";
 import { showSuccess, showError } from "../../../utils/notifications.js";
 
 export const initHeaderMenu = async (currentPage) => {
-    const nonNavPages = ["profiles", "createProfile"];
+    const nonNavPages = ["profiles", "create-profile"];
 
-    if (nonNavPages.includes(currentPage)) {
-        const user = JSON.parse(localStorage.getItem("user")) || {};
-        if (!user) {
-            throw new Error(
-                "Imposible loading user account bar, since user not found in localStorage"
-            );
-        }
-        await loadUserAccountBar(user);
-    } else {
+    if (!nonNavPages.includes(currentPage)) {
         await loadNavBar();
     }
 
