@@ -9,9 +9,21 @@
 
 /* Core HTML & BODY setup */
 html,
-
+body {
+    height: 100%;
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    line-height: 1.5;
+}
 
 /* Basic body structure */
+body {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-1);
+    background: var(--bg-0);
+    font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+}
 
 /* Default text behavior */
 a {
@@ -108,8 +120,7 @@ button:hover,
 }
 
 /* ===== GLOBAL CARD STYLE ===== */
-.card,
-.auth__card {
+.card {
     width: 100%;
     max-width: 380px;
     background: var(--surface);
@@ -122,8 +133,7 @@ button:hover,
     margin-inline: auto;
     box-sizing: border-box;
 }
-.card:hover,
-.auth__card:hover {
+.card:hover {
     box-shadow: var(--shadow-1h);
     transform: translateY(-2px);
 }
