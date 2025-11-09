@@ -8,7 +8,7 @@ const loadHeader = async (currentPage) => {
     );
 
     const module = await import("./header.js");
-    module.initHeaderMenu(currentPage);
+    module.initAppHeader(currentPage);
 };
 
 export default loadHeader;
