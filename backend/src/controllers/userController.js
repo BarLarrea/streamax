@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
     try {
-        const userId = req.targetUserId;
+        const userId = req.targetUserId; //Get target user ID from middleware
 
         const { userName, email } = req.body;
 
@@ -61,6 +61,7 @@ const updateUserDetails = async (req, res) => {
                     .json({ message: "Email already in use" });
             }
             user.email = normalizedEmail;
+            console.log("Email updated to:", normalizedEmail);
         }
 
         await userRepo.saveUser(user);

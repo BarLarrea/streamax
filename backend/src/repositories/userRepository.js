@@ -3,7 +3,7 @@ import Profile from "../models/profileModel.js";
 import WatchHistory from "../models/watchHistoryModel.js";
 
 export const getUserById = async (id) => {
-    return await User.findById(id);
+    return await User.findById(id).populate("profiles");
 };
 
 export const getUserByUserName = async (userName) => {
@@ -11,7 +11,9 @@ export const getUserByUserName = async (userName) => {
 };
 
 export const getUserByEmail = async (email) => {
-    return await User.findOne({ email });
+    return await User.findOne({ email: email.toLowerCase() }).populate(
+        "profiles"
+    );
 };
 
 export const createUser = async (data) => {
@@ -27,11 +29,13 @@ export const deleteUser = async (id) => {
 };
 
 export const getAllUsers = async () => {
-    return await User.find().select("-password");
+    return await User.find().select("-password").populate("profiles");
 };
 
 export const getAllActiveUsers = async () => {
-    return await User.find({ isActive: true }).select("-password");
+    return await User.find({ isActive: true })
+        .select("-password")
+        .populate("profiles");
 };
 
 export const getAllInactiveUsers = async () => {
