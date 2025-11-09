@@ -9,6 +9,12 @@ import {
     setUpRefreshTokenCookie,
     clearRefreshTokenCookie
 } from "../utils/cookie.js";
+import {
+    removeExpiredSessions,
+    removeOldestSessionIfNeeded
+} from "../utils/sessionUtils.js";
+
+const MAX_USER_SESSIONS = 5;
 
 const registerUser = async (req, res) => {
     const { userName, email, password, adminCode } = req.body;
@@ -91,11 +97,13 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        if (user.refreshTokens.length === 5) {
-            return res.status(403).json({
-                message:
-                    "A user can be logged in on a maximum of 5 devices simultaneously"
-            });
+        user.refreshTokens = removeExpiredSessions(user.refreshTokens);
+
+        if (user.refreshTokens.length >= MAX_USER_SESSIONS) {
+            user.refreshTokens = removeOldestSessionIfNeeded(
+                user.refreshTokens,
+                MAX_USER_SESSIONS
+            );
         }
 
         const accessToken = generateAccessToken(user);
