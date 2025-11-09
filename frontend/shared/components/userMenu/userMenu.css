@@ -8,10 +8,11 @@
 .user-avatar {
     cursor: pointer;
     border-radius: 50%;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
     width: 44px;
     height: 44px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
 .user-avatar:hover {
     transform: scale(1.05);
     box-shadow: 0 0 8px rgba(55, 216, 255, 0.25);
@@ -21,22 +22,26 @@
     position: absolute;
     top: calc(var(--header-height) - 4px);
     right: 0;
+    display: none;
+    flex-direction: column;
+    min-width: 160px;
     background: rgba(28, 31, 41, 0.95);
     border: 1px solid rgba(55, 216, 255, 0.15);
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    display: none;
-    flex-direction: column;
-    min-width: 160px;
     z-index: 2000;
     animation: fadeIn 0.25s ease forwards;
 }
 
+.user-dropdown.show {
+    display: flex;
+}
+
 .user-dropdown a,
 .user-dropdown button {
-    color: var(--text-1);
     background: none;
     border: none;
+    color: var(--text-1);
     text-align: left;
     padding: 0.8rem 1rem;
     font-size: 0.95rem;
@@ -45,19 +50,23 @@
     transition: 0.2s ease;
 }
 
-.user-dropdown button.hidden {
-    display: none;
-}
-
 .user-dropdown a:hover,
 .user-dropdown button:hover {
+    text-decoration: none;
     background: rgba(55, 216, 255, 0.1);
     color: var(--brand-1);
 }
 
-/* Show when active */
-.user-dropdown.show {
+.user-dropdown .logout-btn {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-dropdown .logout-icon {
+    font-size: 1rem;
+    color: #dc3545;
+    transition: color 0.25s ease;
 }
 
 @keyframes fadeIn {
