@@ -1,35 +1,48 @@
-const profilesSection = document.querySelector(".profiles");
-const profilesList = document.querySelector("#profiles-list");
-const profileKicker = document.querySelector(".profiles-kicker");
-const toggleEditBtn = document.getElementById("toggle-edit-mode");
+import { showError } from "../../utils/notifications.js";
 
-const user = JSON.parse(localStorage.getItem("user"));
-const userName = user?.userName || "User";
+// ====== MAIN INITIALIZATION ======
+export async function initProfilesPage() {
+    try {
+        const user = getUserFromStorage();
+        const profiles = formatProfiles(user.profiles);
 
-const profilesData = user
-    ? user.profiles.map((p) => ({
-          id: p._id,
-          name: p.profileName,
-          avatar: p.avatar || "assets/profiles/avatar0.png"
-      }))
-    : [];
-
-// ===== GREETING =====
-const greet = document.querySelector("#user-greeting");
-if (greet) greet.textContent = `Hello, ${userName}!`;
-
-// ===== EMPTY STATE =====
-if (profilesData.length === 0 && profileKicker) {
-    profileKicker.textContent =
-        "No profiles yet - Create your first one to get started!";
+        setupGreeting(user.userName);
+        renderProfiles(profiles);
+        setupEditToggle();
+        setupProfileClickHandler(profiles);
+    } catch (error) {
+        console.error("Error initializing profiles page:", error);
+    }
 }
 
-// ===== CREATE PROFILE CARD =====
-const createProfileCard = (profile) => {
-    const card = document.createElement("div");
-    card.classList.add("profile-card");
-    card.dataset.id = profile.id;
+// ====== HELPERS ======
+function getUserFromStorage() {
+    const data = JSON.parse(localStorage.getItem("user"));
+    if (!data) {
+        showError("Please log in to access profiles.");
+        window.location.hash = "#/login";
+        throw new Error("No user data found");
+    }
+    return data;
+}
 
+function formatProfiles(profiles = []) {
+    return profiles.map((p) => ({
+        id: p._id,
+        name: p.profileName,
+        avatar: p.avatar || "assets/profiles/avatar0.png"
+    }));
+}
+
+function setupGreeting(name) {
+    const greet = document.querySelector("#user-greeting");
+    if (greet) greet.textContent = `Hello, ${name}!`;
+}
+
+function createProfileCard(profile) {
+    const card = document.createElement("div");
+    card.className = "profile-card";
+    card.dataset.id = profile.id;
     card.innerHTML = `
         <img src="${profile.avatar}" alt="${profile.name}'s avatar" class="profile-avatar" />
         <p class="profile-name">${profile.name}</p>
@@ -37,59 +50,62 @@ const createProfileCard = (profile) => {
             <i class="bi bi-pencil"></i>
         </button>
     `;
-
-    // navigate to profile
-    card.addEventListener("click", (e) => {
-        if (e.target.closest(".edit-profile-btn")) return; // skip edit click
-        localStorage.setItem("profileId", profile.id);
-        window.location.hash = "#/home";
-    });
-
-    // edit profile click
-    const editBtn = card.querySelector(".edit-profile-btn");
-    editBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        localStorage.setItem("profileId", profile.id);
-        window.location.hash = "#/edit-profile";
-    });
-
     return card;
-};
+}
 
-// ===== CREATE "ADD PROFILE" CARD =====
-const createAddProfileCard = () => {
+function createAddProfileCard() {
     const card = document.createElement("div");
-    card.classList.add("profile-card", "add-profile");
+    card.className = "profile-card add-profile";
     card.innerHTML = `
         <div class="add-icon">+</div>
         <p class="profile-name">Add Profile</p>
     `;
-    card.addEventListener("click", () => {
-        window.location.hash = "#/create-profile";
-    });
     return card;
-};
+}
 
-// ===== RENDER PROFILES =====
-const renderProfiles = () => {
-    profilesList.innerHTML = "";
+function renderProfiles(profiles) {
+    const list = document.querySelector("#profiles-list");
+    const kicker = document.querySelector(".profiles-kicker");
 
-    profilesData.forEach((profile) => {
-        profilesList.appendChild(createProfileCard(profile));
-    });
-
-    if (profilesData.length < 5) {
-        profilesList.appendChild(createAddProfileCard());
+    list.innerHTML = "";
+    if (!profiles.length) {
+        kicker.textContent =
+            "No profiles yet - Create your first one to get started!";
     }
-};
 
-// ===== TOGGLE EDIT MODE =====
-if (toggleEditBtn && profilesSection) {
-    toggleEditBtn.addEventListener("click", () => {
-        const editing = profilesSection.classList.toggle("editing");
-        toggleEditBtn.textContent = editing ? "Done" : "Edit Profiles";
+    const fragment = document.createDocumentFragment();
+    profiles.forEach((p) => fragment.appendChild(createProfileCard(p)));
+    if (profiles.length < 5) fragment.appendChild(createAddProfileCard());
+    list.appendChild(fragment);
+}
+
+function setupProfileClickHandler(profiles) {
+    const list = document.querySelector("#profiles-list");
+    list.addEventListener("click", (e) => {
+        const card = e.target.closest(".profile-card");
+        if (!card) return;
+
+        const id = card.dataset.id;
+
+        if (card.classList.contains("add-profile")) {
+            window.location.hash = "#/create-profile";
+        } else if (e.target.closest(".edit-profile-btn")) {
+            localStorage.setItem("profileId", id);
+            window.location.hash = "#/edit-profile";
+        } else {
+            localStorage.setItem("profileId", id);
+            window.location.hash = "#/home";
+        }
     });
 }
 
-// ===== INITIAL RENDER =====
-renderProfiles();
+function setupEditToggle() {
+    const toggleBtn = document.getElementById("toggle-edit-mode");
+    const section = document.querySelector(".profiles");
+
+    if (!toggleBtn || !section) return;
+    toggleBtn.addEventListener("click", () => {
+        const editing = section.classList.toggle("editing");
+        toggleBtn.textContent = editing ? "Done" : "Edit Profiles";
+    });
+}
