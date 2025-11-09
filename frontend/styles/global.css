@@ -68,7 +68,7 @@ body {
     filter: saturate(1.03);
 }
 
-/* GLOBAL SPINNER */
+/* ===== GLOBAL SPINNER ===== */
 .spinner-overlay {
     position: fixed;
     inset: 0; /* shorthand for top/right/bottom/left = 0 */
@@ -92,5 +92,93 @@ body {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* ===== CARD (default) ===== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+    padding: 3rem;
+    backdrop-filter: blur(8px);
+    transition: box-shadow 0.3s ease, transform 0.25s ease;
+    gap: 2rem;
+    margin-inline: 1rem;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-1h);
+    transform: translateY(-2px);
+}
+
+/* ===== CARD OUTLINE (border only) ===== */
+.card--outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: none;
+}
+
+/* ===== BUTTONS ====== */
+
+/* ===== CTA BUTTON (used for Login / Register etc.) ===== */
+.btn--cta {
+    background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 0 20px var(--brand-glow-1);
+    display: block;
+    margin-inline: auto;
+}
+
+.btn--cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 25px var(--brand-glow-2);
+}
+
+/* ===== SUBTLE BUTTON (used for edit / secondary actions) ===== */
+.btn--subtle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--brand-1);
+    color: var(--brand-1);
+    border-radius: var(--radius-lg);
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px var(--brand-glow-1);
+    display: block;
+    margin-inline: auto;
+}
+
+.btn--subtle:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-1px);
+}
+
+/* Active states for all buttons */
+.btn--cta:active,
+.btn--subtle:active {
+    transform: translateY(0);
+    opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        max-width: 420px;
+        margin-inline: auto;
+        padding: 1rem;
     }
 }

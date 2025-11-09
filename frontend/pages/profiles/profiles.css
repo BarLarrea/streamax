@@ -5,28 +5,6 @@
     flex: 1;
     padding: 6rem 2rem 3rem;
     overflow-y: auto;
-    background: radial-gradient(
-            circle at top left,
-            var(--brand-glow-1),
-            transparent 60%
-        ),
-        radial-gradient(
-            circle at bottom right,
-            var(--brand-glow-2),
-            transparent 60%
-        ),
-        linear-gradient(to bottom, var(--bg-0), var(--bg-1));
-    background-size: cover;
-    animation: bgShift 10s ease-in-out infinite alternate;
-}
-
-@keyframes bgShift {
-    from {
-        background-position: left top;
-    }
-    to {
-        background-position: right bottom;
-    }
 }
 
 /* ===== HEADER ===== */

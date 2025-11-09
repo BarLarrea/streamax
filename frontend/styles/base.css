@@ -9,21 +9,9 @@
 
 /* Core HTML & BODY setup */
 html,
-body {
-    height: 100%;
-    min-height: 100vh;
-    scroll-behavior: smooth;
-    line-height: 1.5;
-}
+
 
 /* Basic body structure */
-body {
-    display: flex;
-    flex-direction: column;
-    color: var(--text-1);
-    background: var(--bg-0);
-    font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
-}
 
 /* Default text behavior */
 a {
@@ -97,8 +85,7 @@ textarea:focus {
 /* ===== GLOBAL BUTTON STYLE ===== */
 button,
 .btn {
-    width: 100%;
-    padding: 0.95rem;
+    padding: 0.95rem 1.5rem;
     background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
     border: none;
     border-radius: 10px;
@@ -108,10 +95,16 @@ button,
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
 button:hover,
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-1h);
+}
+
+.btn--full {
+    width: 100%;
+    display: block;
 }
 
 /* ===== GLOBAL CARD STYLE ===== */
@@ -127,6 +120,7 @@ button:hover,
     padding: 2rem;
     transition: box-shadow 0.25s ease, transform 0.25s ease;
     margin-inline: auto;
+    box-sizing: border-box;
 }
 .card:hover,
 .auth__card:hover {
