@@ -4,6 +4,7 @@ import loadLoginPage from "./pages/login/index.js";
 import loadRegisterPage from "./pages/register/index.js";
 import loadProfilesPage from "./pages/profiles/index.js";
 import loadCreateProfilePage from "./pages/createProfile/index.js";
+import loadNotFoundPage from "./pages/notFound/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -11,37 +12,72 @@ function getCurrentPage() {
 }
 
 const initApp = async () => {
-    const currentPage = getCurrentPage();
-    console.log("Current page:", currentPage);
+    showGlobalSpinner();
+    try {
+        // === CLEANUP: remove previous layout ===
+        const header = document.querySelector("#app-header");
+        const footer = document.querySelector("#app-footer");
+        const main = document.querySelector("#app-main");
 
-    const noLayoutPages = ["login", "register"];
+        if (header) header.innerHTML = "";
+        if (footer) footer.innerHTML = "";
+        if (main) main.innerHTML = "";
 
-    if (!noLayoutPages.includes(currentPage)) {
-        await loadHeader(currentPage);
-        await loadFooter();
-    }
+        const currentPage = getCurrentPage();
+        console.log("Current page:", currentPage);
 
-    switch (currentPage) {
-        case "login":
-            await loadLoginPage();
-            break;
-        case "register":
-            await loadRegisterPage();
-            break;
-        case "profiles":
-            await loadProfilesPage();
-            break;
-        case "create-profile":
-            await loadCreateProfilePage();
-            break;
-        case "home":
-            await loadHomePage();
-            break;
-        default:
-            console.warn(`No handler for page: ${currentPage}`);
-            break;
+        const noLayoutPages = ["login", "register"];
+
+        //  LOAD HEADER/FOOTER only if page requires layout
+        if (!noLayoutPages.includes(currentPage)) {
+            await loadHeader(currentPage);
+            await loadFooter();
+        }
+
+        switch (currentPage) {
+            case "login":
+                await loadLoginPage();
+                break;
+            case "register":
+                await loadRegisterPage();
+                break;
+            case "profiles":
+                await loadProfilesPage();
+                break;
+            case "create-profile":
+                await loadCreateProfilePage();
+                break;
+            // case "home":
+            //     await loadHomePage();
+            //     break;
+            default:
+                await loadNotFoundPage();
+                break;
+        }
+    } finally {
+        hideGlobalSpinner();
     }
 };
 
+// ===== GLOBAL SPINNER CONTROL =====
+function showGlobalSpinner() {
+    const loader = document.getElementById("global-loader");
+    if (loader) loader.style.display = "flex";
+}
+
+function hideGlobalSpinner() {
+    const loader = document.getElementById("global-loader");
+    if (loader) loader.style.display = "none";
+}
+
+// prevent multiple simultaneous navigations
+let isNavigating = false;
+
+window.addEventListener("hashchange", async () => {
+    if (isNavigating) return;
+    isNavigating = true;
+    await initApp();
+    isNavigating = false;
+});
+
 document.addEventListener("DOMContentLoaded", initApp);
-window.addEventListener("hashchange", initApp);

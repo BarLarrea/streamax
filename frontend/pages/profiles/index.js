@@ -5,7 +5,8 @@ const loadProfilesPage = async () => {
         "./pages/profiles/profiles.html",
         "./pages/profiles/profiles.css"
     );
-    await import("./profiles.js");
+    const module = await import("./profiles.js");
+    await module.initProfilesPage();
 };
 
 export default loadProfilesPage;
