@@ -5,6 +5,7 @@ import loadRegisterPage from "./pages/register/index.js";
 import loadProfilesPage from "./pages/profiles/index.js";
 import loadCreateProfilePage from "./pages/createProfile/index.js";
 import loadNotFoundPage from "./pages/notFound/index.js";
+import loadEditUserPage from "./pages/editUser/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -19,8 +20,6 @@ const initApp = async () => {
         const footer = document.querySelector("#app-footer");
         const main = document.querySelector("#app-main");
 
-        if (header) header.innerHTML = "";
-        if (footer) footer.innerHTML = "";
         if (main) main.innerHTML = "";
 
         const currentPage = getCurrentPage();
@@ -28,10 +27,14 @@ const initApp = async () => {
 
         const noLayoutPages = ["login", "register"];
 
-        //  LOAD HEADER/FOOTER only if page requires layout
         if (!noLayoutPages.includes(currentPage)) {
+            header.style.display = "block";
+            footer.style.display = "block";
             await loadHeader(currentPage);
             await loadFooter();
+        } else {
+            header.style.display = "none";
+            footer.style.display = "none";
         }
 
         switch (currentPage) {
@@ -46,6 +49,9 @@ const initApp = async () => {
                 break;
             case "create-profile":
                 await loadCreateProfilePage();
+                break;
+            case "edit-user":
+                await loadEditUserPage();
                 break;
             // case "home":
             //     await loadHomePage();

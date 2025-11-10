@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
     try {
-        const userId = req.targetUserId;
+        const userId = req.targetUserId; //Get target user ID from middleware
 
         const { userName, email } = req.body;
 
@@ -61,11 +61,13 @@ const updateUserDetails = async (req, res) => {
                     .json({ message: "Email already in use" });
             }
             user.email = normalizedEmail;
+            console.log("Email updated to:", normalizedEmail);
         }
 
         await userRepo.saveUser(user);
 
         return res.status(200).json({
+            success: true,
             message: "User updated successfully",
             user: formatUser(user)
         });
@@ -79,7 +81,7 @@ const updateUserDetails = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
     try {
-        const userId = req.targetUserId;
+        const userId = req.targetUserId; //Get target user ID from middleware
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }
@@ -87,7 +89,7 @@ const deleteUserById = async (req, res) => {
         let deletedProfiles = [];
         let profilesWatchHistoryArchived = [];
 
-        const userProfiles = await userRepo.findProfilesByUserID(userId);
+        const userProfiles = await userRepo.getUserById(userId);
 
         if (userProfiles && userProfiles.length > 0) {
             for (const profile of userProfiles) {
@@ -149,9 +151,9 @@ const changeUserPassword = async (req, res) => {
         const userId = req.targetUserId;
 
         console.log(userId);
-        const { oldPassword, newPassword } = req.body;
+        const { currentPassword, newPassword } = req.body;
 
-        if (!oldPassword || !newPassword) {
+        if (!currentPassword || !newPassword) {
             return res
                 .status(400)
                 .json({ message: "Both old and new passwords are required" });
@@ -162,7 +164,7 @@ const changeUserPassword = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
             return res
                 .status(401)
@@ -181,6 +183,7 @@ const changeUserPassword = async (req, res) => {
         await userRepo.saveUser(user);
 
         return res.status(200).json({
+            success: true,
             message: "Password changed successfully, all profiles logged out"
         });
     } catch (error) {

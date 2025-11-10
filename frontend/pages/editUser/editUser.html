@@ -1,0 +1,120 @@
+<section
+    class="edit-user"
+    data-page="edit-user"
+>
+    <header class="edit-user-header">
+        <h1 class="page-title">Account Settings</h1>
+    </header>
+
+    <div class="card">
+        <h2>User Details</h2>
+        <form id="edit-user-form">
+            <div class="form-group">
+                <label for="userName">User Name </label>
+                <input
+                    id="userName"
+                    type="text"
+                    placeholder="Fetched user name"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email </label>
+                <input
+                    id="email"
+                    type="email"
+                    placeholder="Fetched user email"
+                />
+            </div>
+
+            <button
+                class="btn--subtle"
+                type="submit"
+            >
+                Save Changes
+            </button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Change Password</h2>
+        <form id="change-password-form">
+            <div class="form-group password-group">
+                <label for="currentPassword">Current Password </label>
+                <div class="password-input">
+                    <input
+                        id="currentPassword"
+                        type="password"
+                        placeholder="Enter current password"
+                        required
+                    />
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        title="Show password"
+                    >
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group password-group">
+                <label for="newPassword">New Password </label>
+                <div class="password-input">
+                    <input
+                        id="newPassword"
+                        type="password"
+                        placeholder="Enter new password"
+                        required
+                    />
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        title="Show password"
+                    >
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p class="password-hint">
+                Password must be at least 8 characters and include one uppercase
+                letter, one lowercase letter, one number, and one special
+                character.
+            </p>
+
+            <button
+                class="btn--subtle"
+                type="submit"
+            >
+                Change Password
+            </button>
+        </form>
+    </div>
+    <button
+        class="btn--danger page-action-btn"
+        id="delete-account-btn"
+    >
+        Delete Account
+        <i class="bi bi-trash3"></i>
+    </button>
+
+    <!-- ===== DELETE ACCOUNT MODAL ===== -->
+    <div
+        class="modal-overlay"
+        id="delete-modal"
+    >
+        <div class="modal-card">
+            <h2>Delete Account</h2>
+            <p>
+                Are you sure you want to permanently delete your account?<br />
+                This action cannot be undone.
+            </p>
+
+            <div class="modal-actions">
+                <button class="btn--subtle modal-cancel-btn">Cancel</button>
+                <button class="btn--danger modal-confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</section>

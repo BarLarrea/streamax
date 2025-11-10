@@ -97,8 +97,7 @@ textarea:focus {
 /* ===== GLOBAL BUTTON STYLE ===== */
 button,
 .btn {
-    width: 100%;
-    padding: 0.95rem;
+    padding: 0.95rem 1.5rem;
     background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
     border: none;
     border-radius: 10px;
@@ -108,15 +107,20 @@ button,
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
 button:hover,
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-1h);
 }
 
+.btn--full {
+    width: 100%;
+    display: block;
+}
+
 /* ===== GLOBAL CARD STYLE ===== */
-.card,
-.auth__card {
+.card {
     width: 100%;
     max-width: 380px;
     background: var(--surface);
@@ -127,9 +131,9 @@ button:hover,
     padding: 2rem;
     transition: box-shadow 0.25s ease, transform 0.25s ease;
     margin-inline: auto;
+    box-sizing: border-box;
 }
-.card:hover,
-.auth__card:hover {
+.card:hover {
     box-shadow: var(--shadow-1h);
     transform: translateY(-2px);
 }

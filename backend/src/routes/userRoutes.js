@@ -11,16 +11,12 @@ import {
     changeUserPassword
 } from "../controllers/userController.js";
 
-const userPipeline = [
-    verifyAccessToken,
-    checkUserStatus,
-    setTargetUserId,
-];
+const userPipeline = [verifyAccessToken, checkUserStatus, setTargetUserId];
 const router = express.Router();
 
 router.get("/me", ...userPipeline, getUserById);
 router.patch("/me", ...userPipeline, updateUserDetails);
 router.delete("/me", ...userPipeline, deleteUserById);
-router.put("/me/password", ...userPipeline, changeUserPassword);
+router.patch("/me/password", ...userPipeline, changeUserPassword);
 
 export default router;
