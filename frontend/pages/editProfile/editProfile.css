@@ -1,0 +1,113 @@
+.edit-profile {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    padding: 8rem 2rem 3rem;
+    overflow-y: auto;
+}
+
+.edit-profile-header h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-1);
+    text-shadow: 0 0 2px rgba(0, 234, 255, 0.6), 0 0 2px rgba(0, 234, 255, 0.4),
+        0 0 2px rgba(0, 234, 255, 0.3);
+}
+
+/* identical avatar layout */
+.avatars-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.avatars-list img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.3s ease, box-shadow 0.3s ease,
+        border-color 0.3s ease, filter 0.3s ease;
+}
+
+.avatars-list img:hover {
+    transform: scale(1.08);
+    border-color: var(--brand-1);
+    box-shadow: 0 0 10px rgba(55, 216, 255, 0.4),
+        0 0 20px rgba(55, 216, 255, 0.25);
+    filter: brightness(1.15);
+}
+
+.avatars-list img.selected {
+    transform: scale(1.12);
+    border-color: var(--brand-2);
+    box-shadow: 0 0 12px rgba(55, 216, 255, 0.6),
+        0 0 24px rgba(55, 216, 255, 0.4);
+    filter: brightness(1.25);
+}
+
+/* hidden by default */
+.hidden {
+    display: none;
+}
+
+.current-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.current-avatar-img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    display: inline-block;
+}
+
+.current-avatar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.current-avatar label {
+    margin: 0;
+    white-space: nowrap;
+}
+
+#toggle-avatars-btn {
+    background: none;
+    border: none;
+    color: var(--text-2);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.4rem;
+    padding: 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+#toggle-avatars-btn:hover {
+    color: var(--brand-1);
+    transform: translateY(-1px);
+    text-decoration: underline;
+}
+
+#toggle-avatars-btn:active {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+
+#delete-profile-btn {
+    margin-top: 2rem;
+}
