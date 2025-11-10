@@ -5,7 +5,7 @@ export function formatUser(user) {
         email: user.email,
         profiles:
             user.profiles?.map((profile) => ({
-                id: profile._id,
+                profileId: profile._id,
                 profileName: profile.profileName,
                 avatar: profile.avatar
             })) || []

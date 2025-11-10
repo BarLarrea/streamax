@@ -1,0 +1,110 @@
+<section
+    class="edit-profile"
+    data-page="edit-profile"
+>
+    <header class="edit-profile-header">
+        <h1 class="page-title">Edit Profile</h1>
+    </header>
+
+    <form
+        id="edit-profile-form"
+        class="card"
+        class="edit-profile-form"
+    >
+        <h2>Profile Details</h2>
+        <!-- Profile Name -->
+        <div class="form-group">
+            <label for="profileName">Profile Name</label>
+            <input
+                id="profileName"
+                type="text"
+                placeholder="Fetched profile name"
+            />
+        </div>
+
+        <!-- Current Picture -->
+        <div class="form-group current-avatar">
+            <label>Current Picture</label>
+            <img
+                id="current-profile-picture"
+                src="assets/profile/avatar0.png"
+                alt="Current Profile Picture"
+                class="current-avatar-img"
+            />
+
+            <button
+                type="button"
+                class="btn-toggle-avatars-btn"
+                id="toggle-avatars-btn"
+            >
+                Change Picture
+            </button>
+        </div>
+
+        <div
+            class="form-group avatars-list-container hidden"
+            id="avatars-list-container"
+        >
+            <label>Choose a New Picture:</label>
+            <div class="avatars-list">
+                <img
+                    src="assets/profile/avatar1.png"
+                    alt="Avatar 1"
+                />
+                <img
+                    src="assets/profile/avatar2.png"
+                    alt="Avatar 2"
+                />
+                <img
+                    src="assets/profile/avatar3.png"
+                    alt="Avatar 3"
+                />
+                <img
+                    src="assets/profile/avatar4.png"
+                    alt="Avatar 4"
+                />
+                <img
+                    src="assets/profile/avatar5.png"
+                    alt="Avatar 5"
+                />
+                <img
+                    src="assets/profile/avatar6.png"
+                    alt="Avatar 6"
+                />
+            </div>
+        </div>
+
+        <button
+            class="btn--subtle"
+            type="submit"
+        >
+            Save Changes
+        </button>
+    </form>
+
+    <button
+        class="btn--danger page-action-btn"
+        id="delete-profile-btn"
+    >
+        Delete Profile
+        <i class="bi bi-trash3"></i>
+    </button>
+
+    <!-- ===== DELETE ACCOUNT MODAL ===== -->
+    <div
+        class="modal-overlay"
+        id="delete-modal"
+    >
+        <div class="modal-card">
+            <h2>Delete Account</h2>
+            <p>
+                Are you sure you want to permanently delete your account?<br />
+            </p>
+
+            <div class="modal-actions">
+                <button class="btn--subtle modal-cancel-btn">Cancel</button>
+                <button class="btn--danger modal-confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</section>

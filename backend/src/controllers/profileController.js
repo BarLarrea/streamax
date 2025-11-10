@@ -136,6 +136,7 @@ const updateProfileDetails = async (req, res) => {
         await profileRipo.saveProfile(profile);
 
         return res.status(200).json({
+            success: true,
             message: "Profile updated successfully",
             profile: formatProfile(profile)
         });
@@ -228,6 +229,7 @@ const updateLastWatchedController = async (req, res) => {
         await profileRipo.saveProfile(profile);
 
         return res.status(200).json({
+            success: true,
             message: "Last watched updated successfully",
             profile: formatProfile(profile)
         });
@@ -273,6 +275,7 @@ const toggleLikeContent = async (req, res) => {
         await profileRipo.saveProfile(profile);
 
         return res.status(200).json({
+            success: true,
             message: `Content successfully ${status}`,
             profile: formatProfile(profile)
         });
@@ -286,6 +289,7 @@ const getAllProfiles = async (req, res) => {
     try {
         const profiles = await profileRipo.findAllProfiles();
         return res.status(200).json({
+            success: true,
             message: "All profiles fetched successfully",
             profiles: profiles.map(formatProfile)
         });
