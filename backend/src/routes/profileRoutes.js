@@ -18,32 +18,32 @@ const profilePipeline = [verifyAccessToken, checkUserStatus];
 
 const router = express.Router();
 
-router.post("/", profilePipeline, createProfile);
-router.get("/", profilePipeline, getProfilesByUserID);
+router.post("/", ...profilePipeline, createProfile);
+router.get("/", ...profilePipeline, getProfilesByUserID);
 
 // Protected routes - only the profile owner can access
-router.get("/:id", profilePipeline, verifyProfileOwnership, getProfileById);
+router.get("/:id", ...profilePipeline, verifyProfileOwnership, getProfileById);
 router.patch(
     "/:id",
-    profilePipeline,
+    ...profilePipeline,
     verifyProfileOwnership,
     updateProfileDetails
 );
 router.delete(
     "/:id",
-    profilePipeline,
+    ...profilePipeline,
     verifyProfileOwnership,
     deleteProfileById
 );
 router.put(
     "/last-watched/:id",
-    profilePipeline,
+    ...profilePipeline,
     verifyProfileOwnership,
     updateLastWatchedController
 );
 router.put(
     "/toggle-like/:id",
-    profilePipeline,
+    ...profilePipeline,
     verifyProfileOwnership,
     toggleLikeContent
 );
