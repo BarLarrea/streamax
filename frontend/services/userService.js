@@ -15,6 +15,10 @@ export const changeUserPassword = async (currentPassword, newPassword) => {
         newPassword
     });
 
-    console.log({ redponse });
     return redponse.data;
+};
+
+export const deleteUserAccount = async () => {
+    const response = await api.delete(`${API_URLS.USERS.DELETE}`);
+    return response.data;
 };

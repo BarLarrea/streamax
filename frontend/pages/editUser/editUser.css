@@ -83,3 +83,83 @@
     align-self: center;
     min-width: 160px;
 }
+
+.page-action-btn {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    align-self: center;
+    min-width: 180px;
+}
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    display: none; /* hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Show state */
+.modal-overlay.show {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+/* ===== MODAL CARD ===== */
+.modal-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+    padding: 2.5rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    color: var(--text-1);
+    animation: scaleIn 0.25s ease;
+}
+
+.modal-card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: var(--text-1);
+}
+
+.modal-card p {
+    font-size: 0.95rem;
+    color: var(--text-2);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

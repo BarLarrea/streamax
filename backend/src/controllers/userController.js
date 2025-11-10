@@ -81,7 +81,7 @@ const updateUserDetails = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
     try {
-        const userId = req.targetUserId;
+        const userId = req.targetUserId; //Get target user ID from middleware
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }
@@ -89,7 +89,7 @@ const deleteUserById = async (req, res) => {
         let deletedProfiles = [];
         let profilesWatchHistoryArchived = [];
 
-        const userProfiles = await userRepo.findProfilesByUserID(userId);
+        const userProfiles = await userRepo.getUserById(userId);
 
         if (userProfiles && userProfiles.length > 0) {
             for (const profile of userProfiles) {

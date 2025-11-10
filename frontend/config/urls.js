@@ -12,6 +12,7 @@ export const API_URLS = {
         ROOT: "/users",
         EDIT: "/users/me",
         CH_PSSWORD: "/users/me/password",
+        DELETE: "/users/me",
         BY_ID: (id) => `/users/${id}`
     },
 
