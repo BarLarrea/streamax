@@ -2,12 +2,18 @@ import loadNavBar from "../navBar/index.js";
 import loadUserMenu from "../userMenu/index.js";
 
 export const initAppHeader = async (currentPage) => {
-    const nonNavPages = ["profiles", "create-profile", "edit-user"];
+    const nonNavPages = [
+        "profiles",
+        "create-profile",
+        "edit-user",
+        "edit-profile"
+    ];
     const userMenuPages = [
         "profiles",
         "create-profile",
         "edit-user",
-        "notFound"
+        "notFound",
+        "edit-profile"
     ]; // mabe will add more pages later
 
     if (!nonNavPages.includes(currentPage)) {
