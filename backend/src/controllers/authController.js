@@ -84,6 +84,7 @@ const loginUser = async (req, res) => {
         }
 
         const user = await userRepo.getUserByUserName(userName);
+        console.log("User fetched :", user);
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
         }

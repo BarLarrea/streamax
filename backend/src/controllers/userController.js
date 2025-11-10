@@ -67,6 +67,7 @@ const updateUserDetails = async (req, res) => {
         await userRepo.saveUser(user);
 
         return res.status(200).json({
+            success: true,
             message: "User updated successfully",
             user: formatUser(user)
         });
@@ -150,9 +151,9 @@ const changeUserPassword = async (req, res) => {
         const userId = req.targetUserId;
 
         console.log(userId);
-        const { oldPassword, newPassword } = req.body;
+        const { currentPassword, newPassword } = req.body;
 
-        if (!oldPassword || !newPassword) {
+        if (!currentPassword || !newPassword) {
             return res
                 .status(400)
                 .json({ message: "Both old and new passwords are required" });
@@ -163,7 +164,7 @@ const changeUserPassword = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
             return res
                 .status(401)
@@ -182,6 +183,7 @@ const changeUserPassword = async (req, res) => {
         await userRepo.saveUser(user);
 
         return res.status(200).json({
+            success: true,
             message: "Password changed successfully, all profiles logged out"
         });
     } catch (error) {

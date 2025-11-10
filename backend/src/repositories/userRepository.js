@@ -1,6 +1,4 @@
 import User from "../models/userModel.js";
-import Profile from "../models/profileModel.js";
-import WatchHistory from "../models/watchHistoryModel.js";
 
 export const getUserById = async (id) => {
     return await User.findById(id).populate("profiles");

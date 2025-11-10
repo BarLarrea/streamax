@@ -31,3 +31,20 @@ export const showError = (message = "Something went wrong") => {
         stopOnFocus: true
     }).showToast();
 };
+
+export const showInfo = (message = "Info") => {
+    Toastify({
+        text: message,
+        duration: 3500,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#3498db",
+        style: {
+            color: "#fff",
+            fontWeight: "500",
+            borderRadius: "8px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
+        },
+        stopOnFocus: true
+    }).showToast();
+};

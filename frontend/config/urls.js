@@ -11,6 +11,7 @@ export const API_URLS = {
     USERS: {
         ROOT: "/users",
         EDIT: "/users/me",
+        CH_PSSWORD: "/users/me/password",
         BY_ID: (id) => `/users/${id}`
     },
 
