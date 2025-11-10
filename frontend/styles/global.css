@@ -237,3 +237,72 @@ body {
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    display: none; /* hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Show state */
+.modal-overlay.show {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+.modal-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    padding: 2.5rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    color: #f9f9f9;
+    animation: scaleIn 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.modal-card h2 {
+    font-size: 1.7rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.modal-card p {
+    font-size: 1rem;
+    color: #d6d6d6;
+    font-weight: 400;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+/* Smooth animation */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== ACTION BUTTONS ===== */
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}

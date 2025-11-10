@@ -108,13 +108,28 @@ function handleEditProfile(profileId) {
 /* ---------------- Delete profile ---------------- */
 function handleDeleteProfile(profileId) {
     const deleteBtn = document.getElementById("delete-profile-btn");
-    deleteBtn.addEventListener("click", async () => {
-        try {
-            const confirmed = confirm(
-                "Are you sure you want to delete this profile?"
-            );
-            if (!confirmed) return;
 
+    const modal = document.getElementById("delete-modal");
+    const cancelBtn = modal.querySelector(".modal-cancel-btn");
+    const confirmBtn = modal.querySelector(".modal-confirm-btn");
+
+    // Open modal
+    deleteBtn.addEventListener("click", () => {
+        modal.classList.add("show");
+    });
+
+    // Close modal on Cancel
+    cancelBtn.addEventListener("click", () => {
+        modal.classList.remove("show");
+    });
+
+    // Close on background click
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.remove("show");
+    });
+
+    confirmBtn.addEventListener("click", async () => {
+        try {
             const data = await deleteProfile(profileId);
             if (data.success) {
                 showSuccess("Profile deleted successfully!");
