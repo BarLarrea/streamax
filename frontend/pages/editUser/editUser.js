@@ -4,6 +4,8 @@ import {
     changeUserPassword,
     deleteUserAccount
 } from "../../services/userService.js";
+import { showSpinner, hideSpinner } from "../../utils/loading.js";
+import { validatePassword } from "../../utils/validation.js";
 
 const editForm = document.getElementById("edit-user-form");
 const editUserName = document.querySelector("#userName");
@@ -47,17 +49,28 @@ async function handleeditUserDetails() {
 
         const updateduserName = editUserName.value;
         const updatedemail = editUserEmail.value;
+        const submitBtn = editForm.querySelector("button[type='submit']");
+
+        if (!updateduserName || !updatedemail) {
+            showError("Please fill out all fields before saving.");
+            return;
+        }
 
         try {
+            submitBtn.disabled = true;
+            showSpinner();
+
             const data = await editUser(updateduserName, updatedemail);
             if (data.success) {
                 showSuccess("User updated successfully!");
             }
-
             localStorage.setItem("user", JSON.stringify(data.user));
         } catch (error) {
             const message = error.response?.data?.message || error.message;
             showError(`Update failed: ${message}`);
+        } finally {
+            hideSpinner();
+            submitBtn.disabled = false;
         }
     });
 }
@@ -70,8 +83,33 @@ async function handlechangeUserPassword() {
 
         const currentPasswordInput = document.getElementById("currentPassword");
         const newPasswordInput = document.getElementById("newPassword");
+        const submitBtn = editPasswordForm.querySelector(
+            "button[type='submit']"
+        );
+
+        if (!currentPasswordInput.value || !newPasswordInput.value) {
+            showError("Please fill out all fields before changing password.");
+            return;
+        }
+
+        if (!validatePassword(newPasswordInput.value)) {
+            showError(
+                "New password must be at least 8 characters long, contain uppercase and lowercase letters, a number, a special character, and have no spaces."
+            );
+            return;
+        }
+
+        if (currentPasswordInput.value === newPasswordInput.value) {
+            showError(
+                "New password must be different from the current password."
+            );
+            return;
+        }
 
         try {
+            submitBtn.disabled = true;
+            showSpinner();
+
             const data = await changeUserPassword(
                 currentPasswordInput.value,
                 newPasswordInput.value
@@ -81,7 +119,7 @@ async function handlechangeUserPassword() {
 
             if (data.success) {
                 showSuccess("Password changed successfully!");
-                localStorage.setItem("passwordChanged", "true");
+                editPasswordForm.reset();
             }
 
             currentPasswordInput.value = "";
@@ -89,6 +127,9 @@ async function handlechangeUserPassword() {
         } catch (error) {
             const message = error.response?.data?.message || error.message;
             showError(`Password change failed: ${message}`);
+        } finally {
+            hideSpinner();
+            submitBtn.disabled = false;
         }
     });
 }
@@ -118,6 +159,9 @@ async function handleDeleteUserAccount() {
     confirmBtn.addEventListener("click", async () => {
         try {
             modal.classList.remove("show");
+            confirmBtn.disabled = true;
+            showSpinner();
+
             const data = await deleteUserAccount();
             if (data.success) {
                 localStorage.clear();
@@ -127,6 +171,9 @@ async function handleDeleteUserAccount() {
         } catch (error) {
             const message = error.response?.data?.message || error.message;
             showError(`Account deletion failed: ${message}`);
+        } finally {
+            hideSpinner();
+            confirmBtn.disabled = false;
         }
     });
 }

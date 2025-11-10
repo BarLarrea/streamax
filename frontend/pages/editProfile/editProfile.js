@@ -14,10 +14,6 @@ export const initEditProfilePage = async () => {
 
         const profile = JSON.parse(localStorage.getItem("selectedProfile"));
 
-        // await new Promise((resolve) => setTimeout(resolve, 250));
-
-        console.log("Editing profile:", profile);
-
         // === Load current profile data ===
         profileNameInput.value = profile.profileName || "";
         currentProfileImg.src = profile.avatar || "assets/profile/avatar0.png";
@@ -59,11 +55,19 @@ function handleEditProfile(profileId) {
     const editProfileForm = document.getElementById("edit-profile-form");
     const profileNameInput = document.getElementById("profileName");
     const avatars = document.querySelectorAll(".avatars-list img");
+    const currentProfileImg = document.getElementById(
+        "current-profile-picture"
+    );
+
     editProfileForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const updatedName = profileNameInput.value.trim();
         const updatedAvatar = selectedAvatar || currentProfileImg.src;
+
+        const submitBtn = editProfileForm.querySelector(
+            "button[type='submit']"
+        );
 
         if (!updatedName) {
             showError("Please enter a profile name.");
@@ -71,6 +75,8 @@ function handleEditProfile(profileId) {
         }
 
         try {
+            submitBtn.disabled = true;
+            showSpinner();
             const data = await editProfile(
                 profileId,
                 updatedName,
@@ -101,6 +107,9 @@ function handleEditProfile(profileId) {
         } catch (error) {
             const message = error.response?.data?.message || error.message;
             showError(`Update failed: ${message}`);
+        } finally {
+            hideSpinner();
+            submitBtn.disabled = false;
         }
     });
 }
@@ -130,6 +139,10 @@ function handleDeleteProfile(profileId) {
 
     confirmBtn.addEventListener("click", async () => {
         try {
+            modal.classList.remove("show");
+            confirmBtn.disabled = true;
+            showSpinner();
+
             const data = await deleteProfile(profileId);
             if (data.success) {
                 showSuccess("Profile deleted successfully!");
@@ -147,6 +160,9 @@ function handleDeleteProfile(profileId) {
         } catch (error) {
             const message = error.response?.data?.message || error.message;
             showError(`Profile deletion failed: ${message}`);
+        } finally {
+            hideSpinner();
+            confirmBtn.disabled = false;
         }
     });
 }
