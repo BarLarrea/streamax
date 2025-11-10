@@ -55,7 +55,7 @@ const createProfile = async () => {
     };
 
     document
-        .querySelector(".submit-button")
+        .querySelector(".btn--subtle")
         .addEventListener("click", handleSubmit);
 };
 

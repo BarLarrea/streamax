@@ -5,54 +5,55 @@
     <header class="create-profile-header">
         <h1>Create a New Profile</h1>
     </header>
+    <div class="card">
+        <form class="create-profile-form">
+            <div class="form-group">
+                <label for="profile-name">Profile Name:</label>
+                <input
+                    type="text"
+                    id="profileName"
+                    name="profileName"
+                    placeholder="Enter profile name"
+                    required
+                />
+            </div>
 
-    <form class="create-profile-form">
-        <div class="form-group">
-            <label for="profile-name">Profile Name:</label>
-            <input
-                type="text"
-                id="profileName"
-                name="profileName"
-                placeholder="Enter profile name"
-                required
-            />
-        </div>
+            <div class="form-group">
+                <label for="profile-picture">Chose a picture:</label>
+                <picture class="avatars-list">
+                    <img
+                        src="assets/profile/avatar1.png"
+                        alt="Profile Picture"
+                    />
+                    <img
+                        src="assets/profile/avatar2.png"
+                        alt="Profile Picture"
+                    />
+                    <img
+                        src="assets/profile/avatar3.png"
+                        alt="Profile Picture"
+                    />
+                    <img
+                        src="assets/profile/avatar4.png"
+                        alt="Profile Picture"
+                    />
+                    <img
+                        src="assets/profile/avatar5.png"
+                        alt="Profile Picture"
+                    />
+                    <img
+                        src="assets/profile/avatar6.png"
+                        alt="Profile Picture"
+                    />
+                </picture>
+            </div>
 
-        <div class="form-group">
-            <label for="profile-picture">Chose a picture:</label>
-            <picture class="avatars-list">
-                <img
-                    src="assets/profile/avatar1.png"
-                    alt="Profile Picture"
-                />
-                <img
-                    src="assets/profile/avatar2.png"
-                    alt="Profile Picture"
-                />
-                <img
-                    src="assets/profile/avatar3.png"
-                    alt="Profile Picture"
-                />
-                <img
-                    src="assets/profile/avatar4.png"
-                    alt="Profile Picture"
-                />
-                <img
-                    src="assets/profile/avatar5.png"
-                    alt="Profile Picture"
-                />
-                <img
-                    src="assets/profile/avatar6.png"
-                    alt="Profile Picture"
-                />
-            </picture>
-        </div>
-
-        <button
-            type="submit"
-            class="submit-button"
-        >
-            Create Profile
-        </button>
-    </form>
+            <button
+                class="btn--subtle"
+                type="submit"
+            >
+                Create Profile
+            </button>
+        </form>
+    </div>
 </section>
