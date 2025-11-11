@@ -8,8 +8,6 @@ const loadPage = async (htmlPath, cssPath) => {
         const main = document.querySelector("#app-main");
         main.innerHTML = html;
 
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-
         const oldPageCss = document.querySelector("link[data-page-style]");
         if (oldPageCss) oldPageCss.remove();
 
@@ -25,6 +23,8 @@ const loadPage = async (htmlPath, cssPath) => {
                 document.head.appendChild(link);
             });
         }
+
+        await new Promise((resolve) => requestAnimationFrame(resolve));
 
         console.log(` Loaded page: ${htmlPath}`);
         return true;

@@ -7,6 +7,7 @@ import loadCreateProfilePage from "./pages/createProfile/index.js";
 import loadNotFoundPage from "./pages/notFound/index.js";
 import loadEditUserPage from "./pages/editUser/index.js";
 import loadEditProfilePage from "./pages/editProfile/index.js";
+import loadAdminPage from "./pages/admin/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -24,6 +25,7 @@ const initApp = async () => {
         if (main) main.innerHTML = "";
 
         const currentPage = getCurrentPage();
+
         console.log("Current page:", currentPage);
 
         const noLayoutPages = ["login", "register"];
@@ -56,6 +58,9 @@ const initApp = async () => {
                 break;
             case "edit-profile":
                 await loadEditProfilePage();
+                break;
+            case "admin-page":
+                await loadAdminPage();
                 break;
             // case "home":
             //     await loadHomePage();

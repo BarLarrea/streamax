@@ -3,6 +3,7 @@ export function formatUser(user) {
         userId: user._id,
         userName: user.userName,
         email: user.email,
+        isAdmin: user.isAdmin,
         profiles:
             user.profiles?.map((profile) => ({
                 profileId: profile._id,

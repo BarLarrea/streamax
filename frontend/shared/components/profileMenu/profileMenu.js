@@ -1,12 +1,24 @@
 import { logoutUser } from "../../../services/authService.js";
 import { showSuccess, showError } from "../../../utils/notifications.js";
 
-export const initUserMenu = () => {
-    const avatar = document.getElementById("user-avatar");
-    const dropdown = document.getElementById("user-dropdown");
+export const initProfileMenu = () => {
+    const avatar = document.getElementById("profile-avatar");
+    const dropdown = document.getElementById("profile-dropdown");
     const logoutBtn = document.getElementById("logout-btn");
-    const adminDashboardLink = document.querySelector(".admin-dashboard-ref");
 
+    // === Set profile image dynamically ===
+    try {
+        const selectedProfile = JSON.parse(
+            localStorage.getItem("selectedProfile")
+        );
+        if (selectedProfile?.avatar && avatar) {
+            avatar.src = selectedProfile.avatar;
+        }
+    } catch (err) {
+        console.warn("No selectedProfile found in localStorage.");
+    }
+
+    // === Toggle dropdown ===
     if (avatar && dropdown) {
         const toggleDropdown = (e) => {
             e.stopPropagation();
@@ -20,9 +32,10 @@ export const initUserMenu = () => {
         };
 
         avatar.addEventListener("click", toggleDropdown);
-        document.addEventListener("click", closeDropdown, { once: true });
+        document.addEventListener("click", closeDropdown);
     }
 
+    // === Handle logout ===
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
             try {
@@ -35,11 +48,5 @@ export const initUserMenu = () => {
                 showError("Logout failed. Please try again.");
             }
         });
-    }
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (adminDashboardLink) {
-        adminDashboardLink.style.display =
-            user && user.isAdmin ? "block" : "none";
     }
 };

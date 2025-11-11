@@ -1,10 +1,10 @@
-export const showSuccess = (message = "Success!") => {
+const showToast = (message, color, duration = 3000) => {
     Toastify({
         text: message,
-        duration: 3000,
+        duration,
         gravity: "top",
         position: "right",
-        backgroundColor: "#2ecc71",
+        backgroundColor: color,
         style: {
             color: "#fff",
             fontWeight: "500",
@@ -15,36 +15,11 @@ export const showSuccess = (message = "Success!") => {
     }).showToast();
 };
 
-export const showError = (message = "Something went wrong") => {
-    Toastify({
-        text: message,
-        duration: 4000,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "#e74c3c",
-        style: {
-            color: "#fff",
-            fontWeight: "500",
-            borderRadius: "8px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
-        },
-        stopOnFocus: true
-    }).showToast();
-};
+export const showSuccess = (message = "Success!") =>
+    showToast(message, "#2ecc71", 3500);
 
-export const showInfo = (message = "Info") => {
-    Toastify({
-        text: message,
-        duration: 3500,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "#3498db",
-        style: {
-            color: "#fff",
-            fontWeight: "500",
-            borderRadius: "8px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
-        },
-        stopOnFocus: true
-    }).showToast();
-};
+export const showError = (message = "Something went wrong") =>
+    showToast(message, "#e74c3c", 3500);
+
+export const showInfo = (message = "Info") =>
+    showToast(message, "#3498db", 3500);

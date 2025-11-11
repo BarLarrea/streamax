@@ -1,8 +1,8 @@
-import loadePage from "../../utils/loadPage.js";
+import loadPage from "../../utils/loadPage.js";
 import createProfile from "./createProfile.js";
 
 const loadCreateProfilePage = async () => {
-    await loadePage(
+    await loadPage(
         "./pages/createProfile/createProfile.html",
         "./pages/createProfile/createProfile.css"
     );

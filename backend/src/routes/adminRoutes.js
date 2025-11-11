@@ -50,8 +50,14 @@ router.get("/profiles", ...adminPipeline, getAllProfiles);
 //
 // Content Management
 //
-router.post("/contents", ...adminPipeline, createContent);
-router.put("/contents/:id", ...adminPipeline, updateContent);
+router.post(
+    "/contents",
+    verifyAccessToken,
+    checkUserStatus,
+    isAdmin,
+    createContent
+);
+router.patch("/contents/:id", ...adminPipeline, updateContent);
 router.delete("/contents/:id", ...adminPipeline, deleteContentById);
 
 export default router;

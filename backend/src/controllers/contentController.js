@@ -6,6 +6,9 @@ import { formatContentByType } from "../utils/contentFormatter.js";
 // ==================== ADMIN ACTIONS ====================
 const createContent = async (req, res) => {
     try {
+        console.log("headers:", req.headers["content-type"]);
+        console.log("body:", req.body);
+
         const { type } = req.body;
         if (!type) {
             return res.status(400).json({ message: "Type is required" });
@@ -13,11 +16,14 @@ const createContent = async (req, res) => {
 
         // Filter body to only include allowed fields for the specified type
         const filteredBody = filterAllowedFieldsByType(type, req.body);
+
         if (!filteredBody) {
             return res.status(400).json({ message: "Invalid content type" });
         }
 
         const contentData = buildContentByType(filteredBody);
+
+        console.log("contentData:", contentData);
 
         if (!contentData.valid) {
             return res.status(400).json({ message: contentData.error });
@@ -26,6 +32,7 @@ const createContent = async (req, res) => {
         const newContent = await contentRepo.createContent(contentData.data);
 
         return res.status(201).json({
+            success: true,
             message: `Content of type '${type}' created successfully!`,
             content: newContent
         });
@@ -74,6 +81,7 @@ const updateContent = async (req, res) => {
         });
 
         return res.status(200).json({
+            success: true,
             message: "Content updated successfully",
             content: updatedContent
         });
@@ -107,6 +115,7 @@ const deleteContentById = async (req, res) => {
         );
 
         return res.status(200).json({
+            success: true,
             message: "Content deleted successfully",
             deletedContent
         });
@@ -200,7 +209,7 @@ const getContentById = async (req, res) => {
 
         return res
             .status(200)
-            .json({ content: formatContentByType(result.data) });
+            .json({ success: true, content: formatContentByType(result.data) });
     } catch (error) {
         console.error("Error fetching content by ID:", error);
         return res.status(500).json({ message: "Server error" });

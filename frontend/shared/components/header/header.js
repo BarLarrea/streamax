@@ -1,26 +1,20 @@
 import loadNavBar from "../navBar/index.js";
 import loadUserMenu from "../userMenu/index.js";
+import loadProfileMenu from "../profileMenu/index.js";
 
 export const initAppHeader = async (currentPage) => {
-    const nonNavPages = [
+    const userLevelPages = [
         "profiles",
         "create-profile",
         "edit-user",
-        "edit-profile"
-    ];
-    const userMenuPages = [
-        "profiles",
-        "create-profile",
-        "edit-user",
-        "notFound",
-        "edit-profile"
-    ]; // mabe will add more pages later
+        "edit-profile",
+        "admin-page"
+    ]; // Use user menu without nav bar
 
-    if (!nonNavPages.includes(currentPage)) {
-        await loadNavBar();
-    }
-
-    if (userMenuPages.includes(currentPage)) {
-        await loadUserMenu();
+    if (userLevelPages.includes(currentPage)) {
+        loadUserMenu();
+    } else {
+        loadProfileMenu();
+        loadNavBar();
     }
 };

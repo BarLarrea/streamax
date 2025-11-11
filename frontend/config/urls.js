@@ -8,21 +8,29 @@ export const API_URLS = {
         REFRESH: "/auth/refresh"
     },
 
-    USERS: {
-        ROOT: "/users",
-        EDIT: "/users/me",
-        CH_PSSWORD: "/users/me/password",
-        DELETE: "/users/me",
-        BY_ID: (id) => `/users/${id}`
-    },
-
-    PROFILES: {
-        ROOT: "/profiles",
-        BY_ID: (id) => `/profiles/${id}`
+    ADMIN: {
+        ROOT: "/admin",
+        CONTENT: {
+            CREATE: "/contents",
+            BY_ID: (id) => `/contents/${id}`
+        },
+        USERS: {
+            ROOT: "/users",
+            BY_ID: (id) => `/users/${id}`,
+            CHANGE_STATUS: (id) => `/users/${id}/status`,
+            MAKE_ADMIN: (id) => `/users/${id}/make-admin`,
+            REVOKE_ADMIN: (id) => `/users/${id}/revoke-admin`
+        },
+        PROFILES: {
+            ROOT: "/profiles"
+        }
     },
 
     CONTENT: {
         ROOT: "/content",
-        SEARCH: (query) => `/content/search?q=${encodeURIComponent(query)}`
+        SEARCH: (query) => `/content/search?q=${encodeURIComponent(query)}`,
+        BY_ID: (id) => `/content/${id}`,
+        SERIES_SEASONS: (seriesId) => `/content/series/${seriesId}/seasons`,
+        SEASON_EPISODES: (seasonId) => `/content/seasons/${seasonId}/episodes`
     }
 };
