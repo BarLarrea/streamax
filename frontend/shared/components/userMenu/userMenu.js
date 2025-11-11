@@ -1,22 +1,26 @@
 import { logoutUser } from "../../../services/authService.js";
 import { showSuccess, showError } from "../../../utils/notifications.js";
 
-export const initUserMenu = async () => {
+export const initUserMenu = () => {
     const avatar = document.getElementById("user-avatar");
     const dropdown = document.getElementById("user-dropdown");
     const logoutBtn = document.getElementById("logout-btn");
+    const adminDashboardLink = document.querySelector(".admin-dashboard-ref");
 
     if (avatar && dropdown) {
-        avatar.addEventListener("click", (e) => {
+        const toggleDropdown = (e) => {
             e.stopPropagation();
             dropdown.classList.toggle("show");
-        });
+        };
 
-        document.addEventListener("click", (e) => {
+        const closeDropdown = (e) => {
             if (!dropdown.contains(e.target) && !avatar.contains(e.target)) {
                 dropdown.classList.remove("show");
             }
-        });
+        };
+
+        avatar.addEventListener("click", toggleDropdown);
+        document.addEventListener("click", closeDropdown, { once: true });
     }
 
     if (logoutBtn) {
@@ -31,5 +35,11 @@ export const initUserMenu = async () => {
                 showError("Logout failed. Please try again.");
             }
         });
+    }
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (adminDashboardLink) {
+        adminDashboardLink.style.display =
+            user && user.isAdmin ? "block" : "none";
     }
 };
