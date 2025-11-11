@@ -75,6 +75,8 @@
 @media (max-width: 700px) {
     .menu-toggle {
         display: block;
+        margin-left: rem;
+        margin-right: 3.5rem;
     }
 
     .nav {
@@ -88,6 +90,7 @@
         background: rgba(28, 31, 41, 0.98);
         padding: 1rem 0;
         border-top: 1px solid rgba(55, 216, 255, 0.15);
+        top: var(--header-height);
     }
 
     .nav.open {
