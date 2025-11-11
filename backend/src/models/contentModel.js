@@ -56,7 +56,10 @@ contentSchema.index(
     { collectionId: 1 },
     {
         unique: true,
-        partialFilterExpression: { type: { $in: ["movie", "series"] } }
+        partialFilterExpression: {
+            type: { $in: ["movie", "series"] },
+            collectionId: { $exists: true, $ne: null }
+        }
     }
 );
 

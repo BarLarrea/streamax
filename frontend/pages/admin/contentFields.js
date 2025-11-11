@@ -89,39 +89,62 @@ export function getFieldsForType(type) {
             return `
                 <div class="form-group">
                     <label>Title</label>
-                    <input name="title" type="text" placeholder="Enter the movie title" required />
+                    <input name="title" type="text" placeholder="Enter movie title" required />
                 </div>
-
+        
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea name="description" required></textarea>
+                    <textarea name="description" placeholder="Short synopsis" required></textarea>
                 </div>
-
-                ${genresDropdown}
-
+        
                 <div class="form-group">
-                    <label>Duration (seconds)</label>
-                    <input name="duration" type="number" min="1" placeholder="e.g. 5400 for 1.5h" required />
+                    <label>Alternative Titles</label>
+                    <input name="alternativeTitles" type="text" placeholder="Comma-separated titles" />
+                    <p class="hint">Optional — e.g. Inception, Origine</p>
                 </div>
-
+        
+                <div class="form-group">
+                    <label>Actors</label>
+                    <input name="actors" type="text" placeholder="Comma-separated actors" />
+                    <p class="hint">e.g. Leonardo DiCaprio, Tom Hardy</p>
+                </div>
+        
+                <div class="form-group">
+                    <label>Directors</label>
+                    <input name="directors" type="text" placeholder="Comma-separated directors" />
+                    <p class="hint">e.g. Christopher Nolan</p>
+                </div>
+        
+                ${genresDropdown}
+        
+                <div class="form-group">
+                    <label>Duration (sec)</label>
+                    <input name="duration" type="number" min="1" required />
+                </div>
+        
                 <div class="form-group">
                     <label>Video URL</label>
                     <input name="videoUrl" type="text" placeholder="https://..." required />
                 </div>
-
+        
                 <div class="form-group">
                     <label>Poster URL</label>
                     <input name="posterUrl" type="text" placeholder="https://..." />
                 </div>
-
+        
                 <div class="form-group">
                     <label>Trailer URL</label>
                     <input name="trailerUrl" type="text" placeholder="optional" />
                 </div>
-
+        
                 <div class="form-group">
                     <label>Release Year</label>
                     <input name="releaseYear" type="number" min="1900" max="${new Date().getFullYear()}" required />
+                </div>
+        
+                <div class="form-group">
+                    <label>Collection ID (optional)</label>
+                    <input name="collectionId" type="text" placeholder="Related collection ObjectId" />
                 </div>
             `;
 

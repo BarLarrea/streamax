@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 // ----- MOVIE -----
 export const buildMovieData = (body) => {
     const {
@@ -27,6 +29,12 @@ export const buildMovieData = (body) => {
         };
     }
 
+    // Defensive fix for invalid or empty ObjectId
+    const validCollectionId =
+        collectionId && mongoose.isValidObjectId(collectionId)
+            ? collectionId
+            : undefined;
+
     const contentData = {
         type: "movie",
         title,
@@ -38,7 +46,7 @@ export const buildMovieData = (body) => {
         trailerUrl,
         releaseYear,
         posterUrl,
-        collectionId
+        collectionId: validCollectionId
     };
 
     return { valid: true, data: contentData };
@@ -88,6 +96,13 @@ export const buildSeasonData = (body) => {
         };
     }
 
+    if (!mongoose.isValidObjectId(seriesId)) {
+        return {
+            valid: false,
+            error: "Invalid seriesId format — must be a valid ObjectId"
+        };
+    }
+
     const contentData = {
         type: "season",
         title,
@@ -125,6 +140,13 @@ export const buildEpisodeData = (body) => {
             valid: false,
             error: "Episode must include title, seriesId, seasonId, episodeNumber, duration, and videoUrl"
         };
+    }
+
+    if (!mongoose.isValidObjectId(seriesId)) {
+        return { valid: false, error: "Invalid seriesId format" };
+    }
+    if (!mongoose.isValidObjectId(seasonId)) {
+        return { valid: false, error: "Invalid seasonId format" };
     }
 
     const contentData = {

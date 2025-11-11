@@ -11,10 +11,7 @@ export function formContentToJSON(form) {
                 .map((opt) => opt.value.trim())
                 .filter((v) => v.length > 0);
 
-            // Always ensure it's an array, never a string
-            data[element.name] = Array.isArray(selected)
-                ? selected
-                : [selected];
+            data[element.name] = selected;
             continue;
         }
 
@@ -35,7 +32,17 @@ export function formContentToJSON(form) {
         data[element.name] = element.value.trim();
     }
 
-    // Clean up empty strings → remove them
+    // ====== Convert comma-separated lists to arrays ======
+    ["actors", "directors", "alternativeTitles"].forEach((key) => {
+        if (data[key] && typeof data[key] === "string") {
+            data[key] = data[key]
+                .split(",")
+                .map((v) => v.trim())
+                .filter((v) => v.length > 0);
+        }
+    });
+
+    // ====== Clean up empty strings ======
     Object.keys(data).forEach((key) => {
         const val = data[key];
         if (
@@ -47,7 +54,7 @@ export function formContentToJSON(form) {
         }
     });
 
-    // Defensive fix: if genres accidentally serialized as a string
+    // ====== Defensive fix for genres ======
     if (typeof data.genres === "string") {
         try {
             const parsed = JSON.parse(data.genres);
