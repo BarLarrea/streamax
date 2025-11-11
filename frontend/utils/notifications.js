@@ -19,7 +19,7 @@ export const showSuccess = (message = "Success!") =>
     showToast(message, "#2ecc71", 3500);
 
 export const showError = (message = "Something went wrong") =>
-    showToast(message, "#e74c3c", 3000);
+    showToast(message, "#e74c3c", 3500);
 
 export const showInfo = (message = "Info") =>
     showToast(message, "#3498db", 3500);

@@ -6,6 +6,9 @@ import { formatContentByType } from "../utils/contentFormatter.js";
 // ==================== ADMIN ACTIONS ====================
 const createContent = async (req, res) => {
     try {
+        console.log("headers:", req.headers["content-type"]);
+        console.log("body:", req.body);
+
         const { type } = req.body;
         if (!type) {
             return res.status(400).json({ message: "Type is required" });
@@ -13,11 +16,14 @@ const createContent = async (req, res) => {
 
         // Filter body to only include allowed fields for the specified type
         const filteredBody = filterAllowedFieldsByType(type, req.body);
+
         if (!filteredBody) {
             return res.status(400).json({ message: "Invalid content type" });
         }
 
         const contentData = buildContentByType(filteredBody);
+
+        console.log("contentData:", contentData);
 
         if (!contentData.valid) {
             return res.status(400).json({ message: contentData.error });

@@ -35,7 +35,7 @@ export function initGenreDropdown() {
         const selected = Array.from(selectedBox.querySelectorAll(".tag")).map(
             (t) => t.textContent.replace("×", "").trim()
         );
-        hiddenInput.value = selected.join(",");
+        hiddenInput.value = JSON.stringify(selected);
     }
 
     document.addEventListener("click", (e) => {
@@ -57,8 +57,6 @@ export function getFieldsForType(type) {
         "Horror",
         "Mystery",
         "Romance",
-        "Sci-Fi",
-        "Thriller",
         "Documentary",
         "Animation",
         "Crime",

@@ -6,11 +6,13 @@ import api from "./api.js";
 =========================== */
 
 /* Create new content */
-export const createContentService = async (formData) => {
+export const createContentService = async (contentData) => {
     const res = await api.post(
         `${API_URLS.ADMIN.ROOT}${API_URLS.ADMIN.CONTENT.CREATE}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        contentData,
+        {
+            headers: { "Content-Type": "application/json" } // 👈 הוספה מפורשת
+        }
     );
     return res.data;
 };
@@ -19,8 +21,7 @@ export const createContentService = async (formData) => {
 export const updateContentService = async (id, formData) => {
     const res = await api.patch(
         `${API_URLS.ADMIN.ROOT}${API_URLS.ADMIN.CONTENT.BY_ID(id)}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        formData
     );
     return res.data;
 };

@@ -1,4 +1,5 @@
 import { getFieldsForType, initGenreDropdown } from "./contentFields.js";
+import { formContentToJSON } from "../../utils/formContentToJSON.js";
 import { showSuccess, showError } from "../../utils/notifications.js";
 import {
     createContentService,
@@ -8,8 +9,8 @@ import {
 
 export const initAdminPage = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = Boolean(user && (user.role === "admin" || user.isAdmin));
-    if (!isAdmin) {
+
+    if (user && !user.isAdmin) {
         showError("Access denied: Admins only.");
         setTimeout(() => {
             window.location.hash = "#/profiles";
@@ -30,10 +31,13 @@ export const initAdminPage = async () => {
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const formData = new FormData(form);
+
+        const contentData = formContentToJSON(form);
+        console.log("Final contentData before POST:", contentData);
+        console.log("Is FormData?", contentData instanceof FormData);
 
         try {
-            await createContentService(formData);
+            await createContentService(contentData);
             showSuccess("Content created successfully!");
             form.reset();
             dynamicFields.innerHTML = "";

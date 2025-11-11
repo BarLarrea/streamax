@@ -44,5 +44,7 @@ export const filterAllowedFieldsByType = (type, body) => {
         return current;
     }, {});
 
+    filtered.type = type;
+
     return filtered;
 };
