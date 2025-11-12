@@ -12,6 +12,7 @@ export const API_URLS = {
         ROOT: "/admin",
         CONTENT: {
             CREATE: "/contents",
+            IMPORT_OMDb_META: "/import-metadata",
             BY_ID: (id) => `/contents/${id}`
         },
         USERS: {

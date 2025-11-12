@@ -15,6 +15,15 @@ export function formContentToJSON(form) {
             continue;
         }
 
+        if (form.querySelector("#genres-hidden")) {
+            try {
+                const parsed = JSON.parse(
+                    form.querySelector("#genres-hidden").value
+                );
+                if (Array.isArray(parsed)) data.genres = parsed;
+            } catch {}
+        }
+
         // ====== Handle checkboxes ======
         if (element.type === "checkbox") {
             data[element.name] = element.checked;
@@ -65,6 +74,14 @@ export function formContentToJSON(form) {
                 .map((g) => g.trim())
                 .filter((g) => g.length > 0);
         }
+    }
+
+    // ====== Convert language list ======
+    if (data.language && typeof data.language === "string") {
+        data.language = data.language
+            .split(",")
+            .map((l) => l.trim())
+            .filter((l) => l.length > 0);
     }
 
     return data;

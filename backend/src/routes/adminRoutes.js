@@ -19,7 +19,8 @@ import { getAllProfiles } from "../controllers/profileController.js";
 import {
     createContent,
     updateContent,
-    deleteContentById
+    deleteContentById,
+    importExternalMetadata
 } from "../controllers/contentController.js";
 
 const adminPipeline = [
@@ -57,6 +58,14 @@ router.post(
     isAdmin,
     createContent
 );
+router.get(
+    "/import-metadata",
+    verifyAccessToken,
+    checkUserStatus,
+    isAdmin,
+    importExternalMetadata
+);
+
 router.patch("/contents/:id", ...adminPipeline, updateContent);
 router.delete("/contents/:id", ...adminPipeline, deleteContentById);
 

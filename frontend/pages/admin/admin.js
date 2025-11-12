@@ -1,164 +1,149 @@
 import { getFieldsForType, initGenreDropdown } from "./contentFields.js";
 import { formContentToJSON } from "../../utils/formContentToJSON.js";
 import { showSuccess, showError } from "../../utils/notifications.js";
+import { showSpinner, hideSpinner } from "../../utils/loading.js";
 import {
     createContentService,
-    searchContentService,
-    updateContentService
+    importExternalMetadataService
 } from "../../services/contentService.js";
 
 export const initAdminPage = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-
     if (user && !user.isAdmin) {
         showError("Access denied: Admins only.");
-        setTimeout(() => {
-            window.location.hash = "#/profiles";
-        }, 300);
+        setTimeout(() => (window.location.hash = "#/profiles"), 300);
         return;
     }
 
     const typeSelect = document.getElementById("type");
     const dynamicFields = document.getElementById("dynamic-fields");
     const form = document.getElementById("add-content-form");
+    const metadataContainer = document.getElementById("metadata-btn-container");
 
-    // --- Dynamic create form ---
+    // === TYPE SELECTION ===
     typeSelect.addEventListener("change", () => {
         const type = typeSelect.value;
+
+        // reset area
+        dynamicFields.innerHTML = "";
+        metadataContainer.classList.add("hidden");
+
+        if (!type) return;
+
+        // load fields
         dynamicFields.innerHTML = getFieldsForType(type);
         initGenreDropdown();
+
+        // show metadata fetcher only for movie/series
+        if (type === "movie" || type === "series") {
+            metadataContainer.classList.remove("hidden");
+        }
     });
 
+    // === FETCH METADATA ===
+    document
+        .getElementById("fetchMetadataBtn")
+        ?.addEventListener("click", async () => {
+            const titleInput = document.querySelector('input[name="title"]');
+            const title = titleInput?.value.trim();
+            if (!title) {
+                showError("Please enter a title first.");
+                return;
+            }
+
+            try {
+                showSpinner();
+                const res = await importExternalMetadataService(title);
+                const data = res.metadata;
+
+                // fill values if exist
+                const map = {
+                    description: data.description,
+                    releaseYear: data.releaseYear,
+                    duration: data.duration,
+                    posterUrl: data.posterUrl
+                };
+
+                Object.entries(map).forEach(([id, val]) => {
+                    const el = document.querySelector(`[name="${id}"]`);
+                    if (el && val && !el.value) el.value = val;
+                });
+
+                // fill genres
+                if (Array.isArray(data.genres) && data.genres.length > 0) {
+                    const hiddenInput =
+                        document.getElementById("genres-hidden");
+                    const selectedBox =
+                        document.getElementById("selected-genres");
+                    selectedBox.innerHTML = "";
+                    data.genres.forEach((g) => {
+                        const tag = document.createElement("div");
+                        tag.className = "tag";
+                        tag.innerHTML = `${g} <span>×</span>`;
+                        selectedBox.appendChild(tag);
+                    });
+                    hiddenInput.value = JSON.stringify(data.genres);
+                }
+
+                // fill actors and directors
+                if (Array.isArray(data.actors) && data.actors.length > 0) {
+                    const actorsInput = document.querySelector(
+                        'input[name="actors"]'
+                    );
+                    if (actorsInput) actorsInput.value = data.actors.join(", ");
+                }
+                if (Array.isArray(data.director) && data.director.length > 0) {
+                    const directorsInput = document.querySelector(
+                        'input[name="directors"]'
+                    );
+                    if (directorsInput)
+                        directorsInput.value = data.director.join(", ");
+                }
+
+                // fill rating
+                if (data.rating) {
+                    const ratingInput = document.querySelector(
+                        'input[name="rating"]'
+                    );
+                    if (ratingInput) ratingInput.value = data.rating;
+                }
+
+                // fill language
+                if (Array.isArray(data.language) && data.language.length > 0) {
+                    const langInput = document.querySelector(
+                        'input[name="language"]'
+                    );
+                    if (langInput) langInput.value = data.language.join(", ");
+                }
+
+                showSuccess(`Metadata loaded for "${data.title}"`);
+            } catch (error) {
+                console.error("Failed to fetch metadata:", error);
+                showError("Failed to fetch metadata. Please try again.");
+            } finally {
+                hideSpinner();
+            }
+        });
+
+    // === CREATE CONTENT ===
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const contentData = formContentToJSON(form);
-        console.log("Final contentData before POST:", contentData);
-        console.log("Is FormData?", contentData instanceof FormData);
-
         try {
+            showSpinner();
+            const contentData = formContentToJSON(form);
+            console.log("Final contentData before POST:", contentData);
+
             await createContentService(contentData);
             showSuccess("Content created successfully!");
             form.reset();
             dynamicFields.innerHTML = "";
+            metadataContainer.classList.add("hidden");
         } catch (err) {
             console.error(err);
             showError("Failed to create content.");
+        } finally {
+            hideSpinner();
         }
     });
-
-    // --- Search + Edit section ---
-    const searchInput = document.getElementById("searchTitle");
-    const searchBtn = document.getElementById("searchBtn");
-    const searchResults = document.getElementById("searchResults");
-    const editFormContainer = document.getElementById("editFormContainer");
-
-    searchBtn.addEventListener("click", async () => {
-        const query = searchInput.value.trim();
-        if (!query) {
-            showError("Please enter a title to search.");
-            return;
-        }
-
-        try {
-            const results = await searchContentService(query);
-            renderSearchResults(results);
-        } catch (err) {
-            console.error(err);
-            showError("Failed to search content.");
-        }
-    });
-
-    // --- Render results ---
-    function renderSearchResults(results) {
-        searchResults.innerHTML = "";
-        editFormContainer.innerHTML = "";
-
-        if (!results || results.length === 0) {
-            searchResults.innerHTML = `<p>No content found.</p>`;
-            return;
-        }
-
-        results.forEach((item) => {
-            const card = document.createElement("div");
-            card.classList.add("card", "card--outline");
-
-            card.innerHTML = `
-                <h3>${item.title}</h3>
-                <p><strong>Type:</strong> ${item.type}</p>
-                <p><strong>Year:</strong> ${item.releaseYear || "—"}</p>
-                <button class="btn--subtle edit-btn" data-id="${
-                    item._id
-                }">Edit</button>
-            `;
-            searchResults.appendChild(card);
-        });
-
-        // Add listeners to Edit buttons
-        document.querySelectorAll(".edit-btn").forEach((btn) => {
-            btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
-                const item = results.find((r) => r._id === id);
-                openEditForm(item);
-            });
-        });
-    }
-
-    // --- Render Edit Form ---
-    function openEditForm(item) {
-        editFormContainer.innerHTML = `
-            <div class="card admin-section">
-                <h2>Edit: ${item.title}</h2>
-                <form id="edit-content-form">
-                    <div class="form-group">
-                        <label for="editTitle">Title</label>
-                        <input id="editTitle" name="title" type="text" value="${
-                            item.title
-                        }" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="editDescription">Description</label>
-                        <textarea id="editDescription" name="description">${
-                            item.description || ""
-                        }</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="editGenres">Genres</label>
-                        <input id="editGenres" name="genres" type="text" value="${(
-                            item.genres || []
-                        ).join(", ")}" />
-                    </div>
-
-                    <button type="submit" class="btn--cta">Save Changes</button>
-                </form>
-            </div>
-        `;
-
-        const editForm = document.getElementById("edit-content-form");
-        editForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const updatedData = {
-                title: document.getElementById("editTitle").value.trim(),
-                description: document
-                    .getElementById("editDescription")
-                    .value.trim(),
-                genres: document
-                    .getElementById("editGenres")
-                    .value.split(",")
-                    .map((g) => g.trim())
-            };
-
-            try {
-                await updateContentService(item._id, updatedData);
-                showSuccess("Content updated successfully!");
-                editFormContainer.innerHTML = "";
-                searchBtn.click(); // Refresh results
-            } catch (err) {
-                console.error(err);
-                showError("Failed to update content.");
-            }
-        });
-    }
 };

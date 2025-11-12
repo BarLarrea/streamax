@@ -2,6 +2,7 @@ import * as contentRepo from "../repositories/contentRepository.js";
 import { filterAllowedFieldsByType } from "../services/contentFilter.js";
 import { buildContentByType } from "../services/contentBuilder.js";
 import { formatContentByType } from "../utils/contentFormatter.js";
+import axios from "axios";
 
 // ==================== ADMIN ACTIONS ====================
 const createContent = async (req, res) => {
@@ -333,7 +334,89 @@ const getEpisodesBySeasonId = async (req, res) => {
 // ==================== EXTERNAL SOURCES ====================
 // (Data import or external API integration)
 
-const importExternalMetadata = async (req, res) => {};
+const importExternalMetadata = async (req, res) => {
+    try {
+        const { title } = req.query;
+
+        if (!title || !title.trim()) {
+            return res
+                .status(400)
+                .json({ message: "Title query parameter is required" });
+        }
+
+        console.log(
+            `Admin ${
+                req.user?.id || "unknown"
+            } requested metadata for: '${title}'`
+        );
+
+        const response = await axios.get("https://www.omdbapi.com/", {
+            params: {
+                t: title.trim(),
+                apikey: process.env.OMDB_API_KEY
+            }
+        });
+
+        const data = response.data;
+
+        if (data.Response === "False") {
+            return res.status(404).json({
+                success: false,
+                message: `No metadata found for title '${title}'`
+            });
+        }
+
+        // === Map OMDb fields to StreaMax schema ===
+        const mappedMetadata = {
+            type: data.Type || "movie",
+            title: data.Title,
+            description: data.Plot !== "N/A" ? data.Plot : "",
+            releaseYear: parseInt(data.Year) || null,
+            genres: data.Genre
+                ? data.Genre.split(",").map((g) => g.trim().toLowerCase())
+                : [],
+            posterUrl:
+                data.Poster && data.Poster !== "N/A"
+                    ? data.Poster
+                    : "defaultPoster.png",
+            duration: data.Runtime?.replace(" min", "") || null,
+            imdbRating: data.imdbRating || null,
+            rottenTomatoes:
+                data.Ratings?.find((r) => r.Source === "Rotten Tomatoes")
+                    ?.Value || null,
+            director:
+                data.Director && data.Director !== "N/A"
+                    ? data.Director.split(",").map((d) => d.trim())
+                    : [],
+            actors:
+                data.Actors && data.Actors !== "N/A"
+                    ? data.Actors.split(",").map((a) => a.trim())
+                    : [],
+            rating: data.imdbRating ? Number(data.imdbRating) : null,
+            language:
+                data.Language && data.Language !== "N/A"
+                    ? data.Language.split(",").map((l) => l.trim())
+                    : []
+        };
+
+        console.log("Fetched metadata:", mappedMetadata.title);
+
+        return res.status(200).json({
+            success: true,
+            source: "OMDb",
+            message: `Metadata fetched successfully for '${title}'`,
+            metadata: mappedMetadata
+        });
+    } catch (error) {
+        console.error("Error fetching external metadata:", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Server error — failed to fetch external metadata",
+            error: error.message
+        });
+    }
+};
+
 const refreshExternalRatings = async (req, res) => {};
 
 export {

@@ -11,9 +11,25 @@ export const createContentService = async (contentData) => {
         `${API_URLS.ADMIN.ROOT}${API_URLS.ADMIN.CONTENT.CREATE}`,
         contentData,
         {
-            headers: { "Content-Type": "application/json" } // 👈 הוספה מפורשת
+            headers: { "Content-Type": "application/json" }
         }
     );
+    return res.data;
+};
+
+/* Fetch external metadata (IMDb / Rotten Tomatoes) */
+export const importExternalMetadataService = async (title) => {
+    if (!title || !title.trim()) {
+        throw new Error("Title is required to fetch metadata.");
+    }
+
+    const res = await api.get(
+        `${API_URLS.ADMIN.ROOT}${API_URLS.ADMIN.CONTENT.IMPORT_OMDb_META}`,
+        {
+            params: { title: title.trim() }
+        }
+    );
+
     return res.data;
 };
 
