@@ -12,6 +12,8 @@ export const formattedMovie = (movie) => ({
     posterUrl: movie.posterUrl,
     createdAt: movie.createdAt,
     updatedAt: movie.updatedAt,
+    actors: movie.actors,
+    directors: movie.directors,
     language: movie.language,
     rating: movie.rating,
     collection: movie.collectionId
@@ -35,6 +37,8 @@ export const formattedSeries = (series) => ({
     posterUrl: series.posterUrl,
     createdAt: series.createdAt,
     updatedAt: series.updatedAt,
+    actors: series.actors,
+    directors: series.directors,
     language: series.language,
     rating: series.rating,
     collection: series.collectionId

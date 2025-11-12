@@ -90,19 +90,33 @@ export const initAdminPage = async () => {
                     hiddenInput.value = JSON.stringify(data.genres);
                 }
 
-                // fill actors and directors
+                // fill actors
                 if (Array.isArray(data.actors) && data.actors.length > 0) {
                     const actorsInput = document.querySelector(
                         'input[name="actors"]'
                     );
                     if (actorsInput) actorsInput.value = data.actors.join(", ");
                 }
-                if (Array.isArray(data.director) && data.director.length > 0) {
+
+                // fill directors (support string or array)
+                if (Array.isArray(data.director)) {
                     const directorsInput = document.querySelector(
                         'input[name="directors"]'
                     );
                     if (directorsInput)
                         directorsInput.value = data.director.join(", ");
+                } else if (
+                    typeof data.director === "string" &&
+                    data.director.trim()
+                ) {
+                    const directorsInput = document.querySelector(
+                        'input[name="directors"]'
+                    );
+                    if (directorsInput)
+                        directorsInput.value = data.director
+                            .split(",")
+                            .map((d) => d.trim())
+                            .join(", ");
                 }
 
                 // fill rating
@@ -192,6 +206,7 @@ export const initAdminPage = async () => {
         }
     });
 
+    // RENDER RESULTS
     function renderSearchResults(contents) {
         searchResults.innerHTML = "";
 
@@ -212,50 +227,92 @@ export const initAdminPage = async () => {
         // add listeners to Edit buttons
         document.querySelectorAll(".edit-btn").forEach((btn) =>
             btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
+                const id = e.currentTarget.dataset.id;
                 await openEditForm(id);
             })
         );
     }
 
-    // use getContentById API
+    // EDIT FORM (use getContentById API)
     async function openEditForm(id) {
         try {
             showSpinner();
+
             const res = await getContentByIdService(id);
             const content = res.content;
 
             contentDetailsContainer.innerHTML = `
-                <h3>Edit: ${content.title}</h3>
-                <form id="edit-content-form">
-                    ${getFieldsForType(content.type)}
+            <h3>Edit: ${content.title}</h3>
+            <form id="edit-content-form">
+                <input type="hidden" name="type" value="${content.type}" />
+                ${getFieldsForType(content.type)}
+                <div class="form-actions">
                     <button type="submit" class="btn--cta">Save Changes</button>
+                    <button type="button" id="cancelEditBtn" class="btn--subtle">Cancel</button>
                     <button type="button" id="deleteContentBtn" class="btn--danger">Delete</button>
-                </form>
-            `;
+                </div>
+            </form>
+        `;
 
             contentDetailsContainer.classList.remove("hidden");
             initGenreDropdown();
 
-            Object.keys(content).forEach((key) => {
+            Object.entries(content).forEach(([key, value]) => {
                 const input = contentDetailsContainer.querySelector(
                     `[name="${key}"]`
                 );
-                if (input && content[key]) {
-                    if (Array.isArray(content[key])) {
-                        input.value = content[key].join(", ");
-                    } else {
-                        input.value = content[key];
-                    }
+                if (!input) return;
+
+                // handle array fields like actors, directors, genres, language
+                if (Array.isArray(value)) {
+                    input.value = value.join(", ");
+                } else if (typeof value === "object" && value !== null) {
+                    return;
+                } else {
+                    input.value = value ?? "";
                 }
             });
 
-            // Add listeners for save/delete
+            if (Array.isArray(content.genres) && content.genres.length > 0) {
+                const hiddenInput = document.getElementById("genres-hidden");
+                const selectedBox = document.getElementById("selected-genres");
+                selectedBox.innerHTML = "";
+                content.genres.forEach((g) => {
+                    const tag = document.createElement("div");
+                    tag.className = "tag";
+                    tag.innerHTML = `${g} <span>×</span>`;
+                    selectedBox.appendChild(tag);
+                });
+                hiddenInput.value = JSON.stringify(content.genres);
+            }
+
             const editForm = document.getElementById("edit-content-form");
             const deleteBtn = document.getElementById("deleteContentBtn");
+            const cancelBtn = document.getElementById("cancelEditBtn");
 
-            editForm.addEventListener("submit", (e) => handleSaveEdit(e, id));
-            deleteBtn.addEventListener("click", () => handleDeleteContent(id));
+            if (editForm) {
+                editForm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSaveEdit(e, id);
+                });
+            }
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteContent(id);
+                });
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    contentDetailsContainer.classList.add("hidden");
+                });
+            }
         } catch (error) {
             console.error("Failed to load content for editing:", error);
             showError("Failed to load content.");
@@ -264,6 +321,7 @@ export const initAdminPage = async () => {
         }
     }
 
+    // DELETE CONTENT
     async function handleDeleteContent(id) {
         const confirmDelete = confirm(
             "Are you sure you want to delete this content?"
@@ -273,12 +331,99 @@ export const initAdminPage = async () => {
         try {
             showSpinner();
             await deleteContentService(id);
+
             showSuccess("Content deleted successfully!");
+
             contentDetailsContainer.classList.add("hidden");
+
+            // Remove the deleted content's card from the search results
+            const cardToRemove = document
+                .querySelector(`.edit-btn[data-id="${id}"]`)
+                ?.closest(".card");
+
+            if (cardToRemove) cardToRemove.remove();
+
+            // Clear search input field
+            const searchInput = document.getElementById("searchTitle");
+            if (searchInput) searchInput.value = "";
+
+            // Clear search results container
             searchResults.innerHTML = "";
         } catch (error) {
             console.error("Delete failed:", error);
-            showError("Failed to delete content.");
+
+            const serverMessage =
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to delete content.";
+
+            showError(serverMessage);
+        } finally {
+            hideSpinner();
+        }
+    }
+
+    // === UPDATE (EDIT) EXISTING CONTENT ===
+    async function handleSaveEdit(e, id) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        try {
+            showSpinner();
+
+            // Convert form data to object
+            const form = e.target;
+            const updatedData = formContentToJSON(form);
+
+            // Ensure type is always included
+            const typeInput = form.querySelector('input[name="type"]');
+            if (typeInput && typeInput.value) {
+                updatedData.type = typeInput.value;
+            }
+
+            // Remove empty fields to avoid overwriting existing data
+            Object.keys(updatedData).forEach((key) => {
+                const val = updatedData[key];
+                if (
+                    val === "" ||
+                    val === null ||
+                    (Array.isArray(val) && val.length === 0)
+                ) {
+                    delete updatedData[key];
+                }
+            });
+
+            // Convert comma-separated string fields into arrays
+            ["actors", "directors", "genres", "language"].forEach((field) => {
+                if (
+                    updatedData[field] &&
+                    typeof updatedData[field] === "string"
+                ) {
+                    updatedData[field] = updatedData[field]
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter(Boolean);
+                }
+            });
+
+            console.log("Updating content:", id, updatedData);
+
+            // Send update request to server
+            const res = await updateContentService(id, updatedData);
+
+            // Feedback and refresh
+            showSuccess(res.message || "Content updated successfully!");
+            document.getElementById("searchBtn").click();
+            contentDetailsContainer.classList.add("hidden");
+        } catch (error) {
+            console.error("Update failed:", error);
+
+            const serverMessage =
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to update content.";
+
+            showError(serverMessage);
         } finally {
             hideSpinner();
         }

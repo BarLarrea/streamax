@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Content from "../models/contentModel.js";
 import { isValidId } from "../utils/dalUtils.js";
 
@@ -30,15 +29,15 @@ export const getContentById = async (contentId) => {
     const content = await Content.findById(contentId)
         .populate({
             path: "collectionId",
-            select: "title _id"
+            select: "_id title"
         })
         .populate({
             path: "seriesId",
-            select: "title posterUrl releaseYear"
+            select: "_id title posterUrl releaseYear"
         })
         .populate({
             path: "seasonId",
-            select: "title seasonNumber"
+            select: "_id title seasonNumber"
         })
         .lean();
 

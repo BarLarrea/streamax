@@ -13,6 +13,8 @@ export const buildMovieData = (body) => {
         releaseYear,
         posterUrl,
         collectionId,
+        directors,
+        actors,
         language,
         rating
     } = body;
@@ -49,6 +51,8 @@ export const buildMovieData = (body) => {
         releaseYear,
         posterUrl,
         collectionId: validCollectionId,
+        directors,
+        actors,
         language,
         rating
     };
@@ -66,6 +70,8 @@ export const buildSeriesData = (body) => {
         releaseYear,
         trailerUrl,
         posterUrl,
+        directors,
+        actors,
         language,
         rating
     } = body;
@@ -86,6 +92,8 @@ export const buildSeriesData = (body) => {
         releaseYear,
         trailerUrl,
         posterUrl,
+        directors,
+        actors,
         language,
         rating
     };

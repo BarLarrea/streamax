@@ -42,7 +42,7 @@ export function formContentToJSON(form) {
     }
 
     // ====== Convert comma-separated lists to arrays ======
-    ["actors", "directors", "alternativeTitles"].forEach((key) => {
+    ["actors", "directors", "Director", "alternativeTitles"].forEach((key) => {
         if (data[key] && typeof data[key] === "string") {
             data[key] = data[key]
                 .split(",")
@@ -50,6 +50,12 @@ export function formContentToJSON(form) {
                 .filter((v) => v.length > 0);
         }
     });
+
+    // ✅ Normalize `Director` → `directors`
+    if (data.Director && !data.directors) {
+        data.directors = data.Director;
+        delete data.Director;
+    }
 
     // ====== Clean up empty strings ======
     Object.keys(data).forEach((key) => {

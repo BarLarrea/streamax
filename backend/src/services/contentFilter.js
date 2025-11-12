@@ -10,6 +10,8 @@ const allowedFieldsByType = {
         "releaseYear",
         "posterUrl",
         "collectionId",
+        "directors",
+        "actors",
         "language",
         "rating"
     ],
@@ -21,6 +23,8 @@ const allowedFieldsByType = {
         "releaseYear",
         "posterUrl",
         "trailerUrl",
+        "directors",
+        "actors",
         "language",
         "rating"
     ],
