@@ -51,20 +51,24 @@ const updateContent = async (req, res) => {
         }
 
         const existingContent = await contentRepo.getContentById(id);
-        if (!existingContent) {
+        if (existingContent.status !== "ok") {
             return res.status(404).json({ message: "Content not found" });
         }
 
         // Filter body to only include allowed fields for the specified type
         const filteredBody = filterAllowedFieldsByType(
-            existingContent.type,
+            existingContent.data.type,
             req.body
         );
+
         if (!filteredBody) {
             return res.status(400).json({ message: "Invalid content type" });
         }
 
-        if (filteredBody.type && filteredBody.type !== existingContent.type) {
+        if (
+            filteredBody.type &&
+            filteredBody.type !== existingContent.data.type
+        ) {
             return res
                 .status(400)
                 .json({ message: "Content type cannot be changed" });
@@ -77,7 +81,7 @@ const updateContent = async (req, res) => {
         }
 
         const updatedContent = await contentRepo.updateContent(id, {
-            ...existingContent.toObject(),
+            ...existingContent.data,
             ...filteredBody
         });
 
@@ -418,7 +422,7 @@ const importExternalMetadata = async (req, res) => {
     }
 };
 
-const refreshExternalRatings = async (req, res) => {};
+const refreshExternalRatings = async (req, res) => {}; // Future feature
 
 export {
     createContent,
