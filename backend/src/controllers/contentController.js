@@ -135,8 +135,7 @@ const deleteContentById = async (req, res) => {
 // Get all contents with dynamic filters + pagination
 const getAllContents = async (req, res) => {
     try {
-        const { type, genres, releaseYear, actors, directors, limit, page } =
-            req.query;
+        const { type, genres, actors, directors, limit, page } = req.query;
 
         // --- Dynamic Filters ---
         const filters = {};
@@ -197,6 +196,8 @@ const getContentById = async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: "Content ID is required" });
         }
+
+        console.log({ id });
 
         const result = await contentRepo.getContentById(id);
 

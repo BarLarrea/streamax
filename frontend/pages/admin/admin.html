@@ -59,4 +59,39 @@
             </button>
         </form>
     </div>
+
+    <!-- ===== DIVIDER ===== -->
+    <div class="divider"></div>
+
+    <!-- ===== MANAGE CONTENT ===== -->
+    <div class="card admin-section">
+        <h2>Manage Existing Content</h2>
+        <p class="section-description">
+            Search existing content to edit or delete entries.
+        </p>
+
+        <div class="form-group search-bar">
+            <input
+                type="text"
+                id="searchTitle"
+                placeholder="Search by title..."
+            />
+            <button
+                id="searchBtn"
+                class="btn--subtle"
+                type="button"
+            >
+                Search
+            </button>
+        </div>
+
+        <div
+            id="searchResults"
+            class="search-results"
+        ></div>
+        <div
+            id="contentDetailsContainer"
+            class="content-details hidden"
+        ></div>
+    </div>
 </section>

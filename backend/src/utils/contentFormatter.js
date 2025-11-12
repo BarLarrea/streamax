@@ -1,6 +1,7 @@
 // ----- MOVIE -----
 export const formattedMovie = (movie) => ({
-    movieId: movie._id,
+    type: movie.type,
+    id: movie._id,
     title: movie.title,
     alternativeTitles: movie.alternativeTitles,
     description: movie.description,
@@ -11,6 +12,8 @@ export const formattedMovie = (movie) => ({
     posterUrl: movie.posterUrl,
     createdAt: movie.createdAt,
     updatedAt: movie.updatedAt,
+    language: movie.language,
+    rating: movie.rating,
     collection: movie.collectionId
         ? {
               collectionId: movie.collectionId?._id || movie.collectionId,
@@ -22,7 +25,8 @@ export const formattedMovie = (movie) => ({
 
 // ----- SERIES -----
 export const formattedSeries = (series) => ({
-    seriesId: series._id,
+    type: series.type,
+    id: series._id,
     title: series.title,
     alternativeTitles: series.alternativeTitles,
     description: series.description,
@@ -31,6 +35,8 @@ export const formattedSeries = (series) => ({
     posterUrl: series.posterUrl,
     createdAt: series.createdAt,
     updatedAt: series.updatedAt,
+    language: series.language,
+    rating: series.rating,
     collection: series.collectionId
         ? {
               collectionId: series.collectionId?._id || series.collectionId,
@@ -42,7 +48,8 @@ export const formattedSeries = (series) => ({
 
 // ----- SEASON -----
 export const formattedSeason = (season) => ({
-    seasonId: season._id,
+    type: season.type,
+    id: season._id,
     title: season.title,
     seasonNumber: season.seasonNumber,
     description: season.description,
@@ -60,7 +67,8 @@ export const formattedSeason = (season) => ({
 
 // ----- EPISODE -----
 export const formattedEpisode = (episode) => ({
-    episodeId: episode._id,
+    type: episode.type,
+    id: episode._id,
     title: episode.title,
     episodeNumber: episode.episodeNumber,
     description: episode.description,
@@ -85,7 +93,8 @@ export const formattedEpisode = (episode) => ({
 
 // ----- COLLECTION -----
 export const formattedCollection = (collection) => ({
-    collectionId: collection._id,
+    type: collection.type,
+    id: collection._id,
     title: collection.title,
     description: collection.description,
     releaseYear: collection.releaseYear,

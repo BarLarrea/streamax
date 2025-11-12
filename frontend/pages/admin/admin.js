@@ -2,9 +2,14 @@ import { getFieldsForType, initGenreDropdown } from "./contentFields.js";
 import { formContentToJSON } from "../../utils/formContentToJSON.js";
 import { showSuccess, showError } from "../../utils/notifications.js";
 import { showSpinner, hideSpinner } from "../../utils/loading.js";
+
 import {
     createContentService,
-    importExternalMetadataService
+    importExternalMetadataService,
+    searchContentService,
+    getContentByIdService,
+    updateContentService,
+    deleteContentService
 } from "../../services/contentService.js";
 
 export const initAdminPage = async () => {
@@ -146,4 +151,136 @@ export const initAdminPage = async () => {
             hideSpinner();
         }
     });
+
+    // === SEARCH EXISTING CONTENT ===
+    const searchInput = document.getElementById("searchTitle");
+    const searchBtn = document.getElementById("searchBtn");
+    const searchResults = document.getElementById("searchResults");
+    const contentDetailsContainer = document.getElementById(
+        "contentDetailsContainer"
+    );
+
+    searchBtn.addEventListener("click", async () => {
+        const query = searchInput.value.trim();
+        if (!query) {
+            showError("Please enter a title to search.");
+            return;
+        }
+
+        try {
+            showSpinner();
+            const res = await searchContentService(query);
+
+            if (!res.contents || res.contents.length === 0) {
+                searchResults.innerHTML = `<p>No content found.</p>`;
+                contentDetailsContainer.classList.add("hidden");
+                return;
+            }
+
+            renderSearchResults(res.contents);
+        } catch (error) {
+            console.error("Search failed:", error);
+
+            const serverMessage =
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to search content.";
+
+            showError(serverMessage);
+        } finally {
+            hideSpinner();
+        }
+    });
+
+    function renderSearchResults(contents) {
+        searchResults.innerHTML = "";
+
+        contents.forEach((item) => {
+            const card = document.createElement("div");
+            card.classList.add("card", "card--outline");
+            card.innerHTML = `
+                <h3>${item.title}</h3>
+                <p><strong>Type:</strong> ${item.type}</p>
+                <p><strong>Year:</strong> ${item.releaseYear || "—"}</p>
+                <button class="btn--subtle edit-btn" data-id="${
+                    item.id
+                }">Edit</button>
+            `;
+            searchResults.appendChild(card);
+        });
+
+        // add listeners to Edit buttons
+        document.querySelectorAll(".edit-btn").forEach((btn) =>
+            btn.addEventListener("click", async (e) => {
+                const id = e.target.dataset.id;
+                await openEditForm(id);
+            })
+        );
+    }
+
+    // use getContentById API
+    async function openEditForm(id) {
+        try {
+            showSpinner();
+            const res = await getContentByIdService(id);
+            const content = res.content;
+
+            contentDetailsContainer.innerHTML = `
+                <h3>Edit: ${content.title}</h3>
+                <form id="edit-content-form">
+                    ${getFieldsForType(content.type)}
+                    <button type="submit" class="btn--cta">Save Changes</button>
+                    <button type="button" id="deleteContentBtn" class="btn--danger">Delete</button>
+                </form>
+            `;
+
+            contentDetailsContainer.classList.remove("hidden");
+            initGenreDropdown();
+
+            Object.keys(content).forEach((key) => {
+                const input = contentDetailsContainer.querySelector(
+                    `[name="${key}"]`
+                );
+                if (input && content[key]) {
+                    if (Array.isArray(content[key])) {
+                        input.value = content[key].join(", ");
+                    } else {
+                        input.value = content[key];
+                    }
+                }
+            });
+
+            // Add listeners for save/delete
+            const editForm = document.getElementById("edit-content-form");
+            const deleteBtn = document.getElementById("deleteContentBtn");
+
+            editForm.addEventListener("submit", (e) => handleSaveEdit(e, id));
+            deleteBtn.addEventListener("click", () => handleDeleteContent(id));
+        } catch (error) {
+            console.error("Failed to load content for editing:", error);
+            showError("Failed to load content.");
+        } finally {
+            hideSpinner();
+        }
+    }
+
+    async function handleDeleteContent(id) {
+        const confirmDelete = confirm(
+            "Are you sure you want to delete this content?"
+        );
+        if (!confirmDelete) return;
+
+        try {
+            showSpinner();
+            await deleteContentService(id);
+            showSuccess("Content deleted successfully!");
+            contentDetailsContainer.classList.add("hidden");
+            searchResults.innerHTML = "";
+        } catch (error) {
+            console.error("Delete failed:", error);
+            showError("Failed to delete content.");
+        } finally {
+            hideSpinner();
+        }
+    }
 };

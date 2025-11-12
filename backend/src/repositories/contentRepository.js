@@ -46,6 +46,8 @@ export const getContentById = async (contentId) => {
         return { status: "not_found", data: null };
     }
 
+    console.log({ content });
+
     return { status: "ok", data: content };
 };
 
@@ -71,33 +73,25 @@ export const getAllContents = async (filters = {}, skip, limit) => {
 export const searchContents = async (query, limit, skip) => {
     const regex = new RegExp(query, "i"); // case-insensitive search
 
+    const filter = {
+        $or: [
+            { title: regex },
+            { alternativeTitles: regex },
+            { genres: regex },
+            { actors: regex },
+            { directors: regex }
+        ]
+    };
+
     const [contents, totalDocuments] = await Promise.all([
-        Content.find({
-            $or: [
-                { title: regex },
-                { alternativeTitles: regex },
-                { genres: regex },
-                { releaseYear: regex },
-                { actors: regex },
-                { directors: regex }
-            ]
-        })
+        Content.find(filter)
             .skip(skip)
             .limit(limit)
             .sort({ releaseYear: -1 }) // Newest first
             .lean(),
-
-        Content.countDocuments({
-            $or: [
-                { title: regex },
-                { alternativeTitles: regex },
-                { genres: regex },
-                { releaseYear: regex },
-                { actors: regex },
-                { directors: regex }
-            ]
-        })
+        Content.countDocuments(filter)
     ]);
+
     return { contents, totalDocuments };
 };
 
