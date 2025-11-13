@@ -27,11 +27,39 @@ export const API_URLS = {
         }
     },
 
+    /* ---------- Public Content Endpoints ---------- */
     CONTENT: {
         ROOT: "/content",
         SEARCH: (query) => `/content/search?q=${encodeURIComponent(query)}`,
         BY_ID: (id) => `/content/${id}`,
         SERIES_SEASONS: (seriesId) => `/content/series/${seriesId}/seasons`,
         SEASON_EPISODES: (seasonId) => `/content/seasons/${seasonId}/episodes`
+    },
+
+    /* ---------- Profile Endpoints ---------- */
+    PROFILES: {
+        ROOT: "/profiles",
+        BY_ID: (id) => `/profiles/${id}`,
+        CREATE: "/profiles",
+        UPDATE: (id) => `/profiles/${id}`,
+        DELETE: (id) => `/profiles/${id}`,
+        LAST_WATCHED: (id) => `/profiles/last-watched/${id}`,
+        TOGGLE_LIKE: (id) => `/profiles/toggle-like/${id}`
+    },
+
+    /* ---------- Watch History Endpoints ---------- */
+    WATCH_HISTORY: {
+        ROOT: "/watch-history",
+        BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`,
+        BY_CONTENT: (contentId) => `/watch-history/content/${contentId}`,
+        RECORD: (profileId, contentId) =>
+            `/watch-history/${profileId}/${contentId}`,
+        COMPLETED: (profileId) => `/watch-history/completed/${profileId}`,
+        WATCHING_NOW: (profileId) => `/watch-history/watching-now/${profileId}`,
+        UPDATE_PROGRESS: "/watch-history/progress",
+        ARCHIVE_BY_PROFILE: (profileId) =>
+            `/watch-history/archive/${profileId}`,
+        DELETE_BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`,
+        POPULAR: "/watch-history/popular"
     }
 };

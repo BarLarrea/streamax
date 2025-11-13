@@ -1,9 +1,7 @@
 import { API_URLS } from "../config/urls.js";
 import api from "./api.js";
 
-/* ===========================
-   ADMIN AREA (requires admin)
-=========================== */
+// ======= ADMIN AREA (requires admin) ======= //
 
 /* Create new content */
 export const createContentService = async (contentData) => {
@@ -50,9 +48,7 @@ export const deleteContentService = async (id) => {
     return res.data;
 };
 
-/* ================================
-   PUBLIC / USER / PROFILE CONTENT
-=================================== */
+// ===== PUBLIC / USER / PROFILE CONTENT ====== //
 
 /* Search content */
 export const searchContentService = async (query) => {
@@ -71,6 +67,28 @@ export const getContentByIdService = async (id) => {
     const res = await api.get(API_URLS.CONTENT.BY_ID(id));
     return res.data;
 };
+
+/* Get contents filtered by genres */
+export const getContentsByGenresService = async (
+    genres,
+    page = 1,
+    limit = 20
+) => {
+    const res = await api.get(API_URLS.CONTENT.ROOT, {
+        params: { genres: genres.join(","), page, limit }
+    });
+    return res.data;
+};
+
+/* Get all contents with pagination (used for Popular & New by Genre) */
+export const getAllContentsPagedService = async (page = 1, limit = 60) => {
+    const res = await api.get(API_URLS.CONTENT.ROOT, {
+        params: { page, limit }
+    });
+    return res.data;
+};
+
+// ====== HIERARCHY ===== //
 
 /* Get all seasons for a specific series */
 export const getSeasonsBySeriesService = async (seriesId) => {
