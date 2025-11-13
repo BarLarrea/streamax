@@ -1,0 +1,48 @@
+.carousel {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.carousel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 1rem;
+}
+
+.carousel__title {
+    font-size: 1.4rem;
+    color: var(--text-1);
+    font-weight: 600;
+}
+
+.carousel__controls {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.carousel__arrow {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-1);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: 0.25s ease, transform 0.2s ease;
+}
+.carousel__arrow:hover {
+    background: var(--brand-1);
+    transform: scale(1.05);
+}
+
+.carousel__track-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 1rem;
+}
+.carousel__track {
+    display: flex;
+    gap: 1rem;
+}
