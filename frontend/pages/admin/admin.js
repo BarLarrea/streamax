@@ -220,23 +220,47 @@ export const initAdminPage = async () => {
     function renderSearchResults(contents) {
         searchResults.innerHTML = "";
 
+        // === Render all content cards ===
         contents.forEach((item) => {
             const card = document.createElement("div");
             card.classList.add("card", "card--outline");
             card.innerHTML = `
-                <h3>${item.title}</h3>
-                <p><strong>Type:</strong> ${item.type}</p>
-                <p><strong>Year:</strong> ${item.releaseYear || "—"}</p>
-                <button class="btn--subtle edit-btn" data-id="${
-                    item.id
-                }">Edit</button>
+                <div class="card-content">
+                    <div class="card-text">
+                        <h3>${item.title}</h3>
+                        <p><strong>Type:</strong> ${item.type}</p>
+                        <p><strong>Year:</strong> ${item.releaseYear || "—"}</p>
+                        <button class="btn--subtle edit-btn" data-id="${
+                            item.id
+                        }">Edit</button>
+                    </div>
+                    ${
+                        item.posterUrl
+                            ? `<div class="card-thumb">
+                                    <img src="${item.posterUrl}" alt="${item.title} poster" />
+                               </div>`
+                            : ""
+                    }
+                </div>
             `;
             searchResults.appendChild(card);
         });
 
-        // add listeners to Edit buttons
+        // === "Close Results" button ===
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "✕ Close";
+        closeBtn.className = "btn--subtle btn--small close-results-btn";
+        closeBtn.addEventListener("click", () => {
+            searchResults.innerHTML = "";
+            contentDetailsContainer.classList.add("hidden");
+            searchInput.value = ""; // clear search bar
+        });
+        searchResults.appendChild(closeBtn);
+
+        // === Attach listeners to Edit buttons ===
         document.querySelectorAll(".edit-btn").forEach((btn) =>
             btn.addEventListener("click", async (e) => {
+                e.stopPropagation();
                 const id = e.currentTarget.dataset.id;
                 await openEditForm(id);
             })
