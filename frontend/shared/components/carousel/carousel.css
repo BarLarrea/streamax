@@ -1,48 +1,138 @@
+/* =======================
+   Carousel Base
+======================= */
 .carousel {
     width: 100%;
     margin-bottom: 2rem;
+    position: relative;
 }
 
+/* =======================
+   Header + Title
+======================= */
 .carousel__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-inline: 1rem;
+    margin-bottom: 0.25rem;
 }
 
 .carousel__title {
     font-size: 1.4rem;
     color: var(--text-1);
     font-weight: 600;
+    letter-spacing: 0.3px;
 }
 
+/* =======================
+   Controls (Arrows)
+======================= */
 .carousel__controls {
     display: flex;
+    align-items: center;
     gap: 0.4rem;
+    position: relative;
+    z-index: 3;
 }
 
+/* Arrows */
 .carousel__arrow {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     border: none;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
     cursor: pointer;
-    transition: 0.25s ease, transform 0.2s ease;
+
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    color: var(--text-1);
+
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: all 0.25s ease;
 }
+
 .carousel__arrow:hover {
     background: var(--brand-1);
+    color: #fff;
     transform: scale(1.05);
 }
 
+.carousel__arrow:active {
+    transform: scale(0.93);
+    background: var(--brand-2);
+}
+
+/* Optional: hide arrows if no content */
+.carousel:has(.carousel-empty) .carousel__arrow {
+    display: none;
+}
+
+/* =======================
+   Track + Scroll
+======================= */
 .carousel__track-wrapper {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
     padding: 1rem;
+    position: relative;
 }
+
 .carousel__track {
     display: flex;
     gap: 1rem;
+    align-items: stretch;
+}
+
+/* Hide scrollbars (cross-browser) */
+.carousel__track-wrapper::-webkit-scrollbar {
+    display: none;
+}
+.carousel__track-wrapper {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* =======================
+   Empty State
+======================= */
+.carousel-empty {
+    font-size: 0.95rem;
+    color: var(--text-3);
+    padding: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+/* =======================
+   Responsiveness
+======================= */
+@media (max-width: 768px) {
+    .carousel__title {
+        font-size: 1.2rem;
+    }
+
+    .carousel__arrow {
+        width: 42px;
+        height: 42px;
+        font-size: 1.4rem;
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .carousel__track-wrapper {
+        padding-inline: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel__arrow {
+        width: 46px;
+        height: 46px;
+        font-size: 1.5rem;
+    }
 }
