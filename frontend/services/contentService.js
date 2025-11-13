@@ -80,10 +80,14 @@ export const getContentsByGenresService = async (
     return res.data;
 };
 
-/* Get all contents with pagination (used for Popular & New by Genre) */
-export const getAllContentsPagedService = async (page = 1, limit = 60) => {
+/* Get all contents with pagination and optional filters/sorting */
+export const getAllContentsPagedService = async (
+    page = 1,
+    limit = 60,
+    params = {}
+) => {
     const res = await api.get(API_URLS.CONTENT.ROOT, {
-        params: { page, limit }
+        params: { page, limit, ...params }
     });
     return res.data;
 };

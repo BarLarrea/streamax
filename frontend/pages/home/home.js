@@ -175,51 +175,61 @@ async function loadPopularShelf(root) {
 }
 
 /* =======================================================================
-   Shelf 4: New by Genre
+   Shelf 4: Recently Added by Genre (resilient to empty genres)
 ======================================================================= */
 async function loadGenreShelves(root) {
-    try {
-        const res = await getAllContentsPagedService(1, 60);
-        const list = res.contents || [];
+    const genres = [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Drama",
+        "Fantasy",
+        "Horror",
+        "Romance",
+        "Sci-Fi",
+        "Thriller",
+        "Documentary",
+        "Animation",
+        "Crime",
+        "Family"
+    ];
 
-        const genreMap = new Map();
-        list.forEach((c) => {
-            (c.genres || []).forEach((g) => {
-                const key = String(g).toLowerCase();
-                if (!genreMap.has(key)) genreMap.set(key, []);
-                genreMap.get(key).push(c);
+    for (const genre of genres) {
+        const shelfSelector = `#shelf-${genre.toLowerCase()}`;
+        await appendShelf(
+            root,
+            shelfSelector,
+            `Recently Added in ${capitalize(genre)}`
+        );
+
+        try {
+            const res = await getAllContentsPagedService(1, 10, {
+                genres: genre,
+                sortBy: "createdAt"
             });
-        });
 
-        if (!genreMap.size) {
-            const shelfSelector = "#shelf-new";
-            await appendShelf(root, shelfSelector, "New by Genre");
-            appendEmptyMessage(shelfSelector, "No genres found.");
-            return;
-        }
+            const list = res.contents || [];
 
-        for (const [genre, arr] of genreMap.entries()) {
-            arr.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0));
-            const top = arr.slice(0, 10);
+            if (!list.length) {
+                appendEmptyMessage(shelfSelector, "No recent content found.");
+                continue;
+            }
 
-            const shelfSelector = `#shelf-${genre}`;
-            await appendShelf(
-                root,
-                shelfSelector,
-                `New in ${capitalize(genre)}`
-            );
-
-            const cards = top.map((c) =>
+            const cards = list.map((c) =>
                 renderContentCard(c, { viewState: "new", clickable: true })
             );
-
             renderCards(`${shelfSelector} .carousel__track`, cards);
+        } catch (err) {
+            // Handle "no content found" (404) gracefully
+            if (err.response?.status === 404) {
+                appendEmptyMessage(shelfSelector, "No recent content found.");
+                continue;
+            }
+
+            // Real error (server/network)
+            console.error(`Error loading genre "${genre}":`, err);
+            appendEmptyMessage(shelfSelector, "Unable to load this genre.");
         }
-    } catch (err) {
-        console.error("Error loading new-by-genre shelves:", err);
-        const shelfSelector = "#shelf-new";
-        await appendShelf(root, shelfSelector, "New by Genre");
-        appendEmptyMessage(shelfSelector, "Unable to load genre shelves.");
     }
 }
 
