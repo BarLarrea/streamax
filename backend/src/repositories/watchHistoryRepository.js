@@ -103,13 +103,21 @@ export const getWatchHistoryByProfileId = async (profileId) => {
 
     const result = await WatchHistory.find(
         { profileId },
-        "contentId progress isCompleted"
+        "contentId type durationAtWatch progress isCompleted updatedAt"
     )
+        .populate({
+            path: "contentId",
+            select: "title type posterUrl duration description releaseYear genres"
+        })
         .lean()
         .sort({ updatedAt: -1 });
 
+    if (!result) {
+        return { status: "error", data: null };
+    }
+
     if (result.length === 0) {
-        return { status: "not_found", data: [] };
+        return { status: "empty", data: [] };
     }
 
     return { status: "success", data: result };
@@ -151,20 +159,28 @@ export const getWatchHistoryRecord = async (profileId, contentId) => {
     return { status: "success", data: record };
 };
 
-export const getCompletedContents = async (profileId) => {
+export const getCompletedContentsByProfileId = async (profileId) => {
     if (!isValidId(profileId)) {
         return { status: "invalid_id", data: null };
     }
 
     const result = await WatchHistory.find(
         { profileId, isCompleted: true },
-        "contentId type durationAtWatch progress updatedAt"
+        "contentId durationAtWatch progress updatedAt completedAt"
     )
+        .populate({
+            path: "contentId",
+            select: "title type posterUrl duration description releaseYear genres"
+        })
         .lean()
-        .sort({ updatedAt: -1 });
+        .sort({ completedAt: -1 });
 
-    if (!result || result.length === 0) {
-        return { status: "not_found", data: [] };
+    if (!result) {
+        return { status: "error", data: null };
+    }
+
+    if (result.length === 0) {
+        return { status: "empty", data: [] };
     }
 
     return { status: "success", data: result };
@@ -183,12 +199,61 @@ export const getWatchingNow = async (profileId) => {
         },
         "contentId type durationAtWatch progress updatedAt"
     )
+        .populate({
+            path: "contentId",
+            select: "title type posterUrl duration description releaseYear genres" //Reduse API calls in front
+        })
         .lean()
         .sort({ updatedAt: -1 });
 
-    if (!result || result.length === 0) {
-        return { status: "not_found", data: [] };
+    if (!result) {
+        return { status: "error", data: null };
+    }
+
+    if (result.length === 0) {
+        return { status: "empty", data: [] };
     }
 
     return { status: "success", data: result };
+};
+
+export const aggregatePopularContents = async (limit = 20) => {
+    try {
+        const result = await WatchHistory.aggregate([
+            {
+                $group: {
+                    _id: "$contentId",
+                    watchCount: { $sum: 1 }
+                }
+            },
+            { $sort: { watchCount: -1 } },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: "contents",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "content"
+                }
+            },
+            { $unwind: "$content" },
+            {
+                $project: {
+                    _id: 0,
+                    contentId: "$_id",
+                    watchCount: 1,
+                    "content._id": 1,
+                    "content.title": 1,
+                    "content.type": 1,
+                    "content.posterUrl": 1,
+                    "content.genres": 1,
+                    "content.releaseYear": 1
+                }
+            }
+        ]);
+        return result;
+    } catch (error) {
+        console.error("Error aggregating popular contents:", error);
+        return [];
+    }
 };

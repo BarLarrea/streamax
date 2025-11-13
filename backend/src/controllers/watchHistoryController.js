@@ -330,10 +330,16 @@ export const getWatchingNow = async (req, res) => {
             profileId
         );
 
-        if (status !== "success") {
-            return res
-                .status(404)
-                .json({ message: "No active watch records found" });
+        if (status === "error") {
+            return res.status(500).json({ message: "Database query failed" });
+        }
+
+        if (status === "empty") {
+            return res.status(200).json({
+                success: true,
+                message: "No active watch records found",
+                data: []
+            });
         }
 
         return res.status(200).json({
@@ -343,6 +349,33 @@ export const getWatchingNow = async (req, res) => {
         });
     } catch (error) {
         console.error("Error in getWatchingNow:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getPopularContents = async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 20;
+        const result = await watchHistoryRepo.aggregatePopularContents(limit);
+
+        if (!result.length) {
+            return res.status(200).json({
+                success: true,
+                message: "No popular content found",
+                data: []
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Popular contents retrieved successfully",
+            data: result.map((r) => ({
+                watchCount: r.watchCount,
+                ...r.content
+            }))
+        });
+    } catch (error) {
+        console.error("Error in getPopularContents:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };

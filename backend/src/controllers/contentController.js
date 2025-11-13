@@ -139,7 +139,8 @@ const deleteContentById = async (req, res) => {
 // Get all contents with dynamic filters + pagination
 const getAllContents = async (req, res) => {
     try {
-        const { type, genres, actors, directors, limit, page } = req.query;
+        const { type, genres, releaseYear, actors, directors, limit, page } =
+            req.query;
 
         // --- Dynamic Filters ---
         const filters = {};
