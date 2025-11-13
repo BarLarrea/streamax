@@ -12,7 +12,11 @@ export const buildMovieData = (body) => {
         trailerUrl,
         releaseYear,
         posterUrl,
-        collectionId
+        collectionId,
+        directors,
+        actors,
+        language,
+        rating
     } = body;
 
     if (
@@ -46,7 +50,11 @@ export const buildMovieData = (body) => {
         trailerUrl,
         releaseYear,
         posterUrl,
-        collectionId: validCollectionId
+        collectionId: validCollectionId,
+        directors,
+        actors,
+        language,
+        rating
     };
 
     return { valid: true, data: contentData };
@@ -61,7 +69,11 @@ export const buildSeriesData = (body) => {
         genres,
         releaseYear,
         trailerUrl,
-        posterUrl
+        posterUrl,
+        directors,
+        actors,
+        language,
+        rating
     } = body;
 
     if (!title || !description || !genres?.length || !releaseYear) {
@@ -79,7 +91,11 @@ export const buildSeriesData = (body) => {
         genres: genres.map((g) => g.toLowerCase()),
         releaseYear,
         trailerUrl,
-        posterUrl
+        posterUrl,
+        directors,
+        actors,
+        language,
+        rating
     };
 
     return { valid: true, data: contentData };

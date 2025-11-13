@@ -17,6 +17,8 @@ const contentSchema = new mongoose.Schema(
         actors: [String],
         directors: [String],
         posterUrl: { type: String, default: "defaultPoster.png" },
+        language: [String],
+        rating: { type: Number }, // IMDb rating
 
         // Movie and Episode only
         duration: Number,

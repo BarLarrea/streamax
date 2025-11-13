@@ -1,6 +1,7 @@
 // Converts a form's fields into a clean JSON object
 export function formContentToJSON(form) {
     const data = {};
+    const genresHidden = form.querySelector("#genres-hidden");
 
     for (const element of form.elements) {
         if (!element.name || element.disabled) continue;
@@ -13,6 +14,13 @@ export function formContentToJSON(form) {
 
             data[element.name] = selected;
             continue;
+        }
+
+        if (genresHidden) {
+            try {
+                const parsed = JSON.parse(genresHidden.value);
+                if (Array.isArray(parsed)) data.genres = parsed;
+            } catch {}
         }
 
         // ====== Handle checkboxes ======
@@ -33,7 +41,7 @@ export function formContentToJSON(form) {
     }
 
     // ====== Convert comma-separated lists to arrays ======
-    ["actors", "directors", "alternativeTitles"].forEach((key) => {
+    ["actors", "directors", "Director", "alternativeTitles"].forEach((key) => {
         if (data[key] && typeof data[key] === "string") {
             data[key] = data[key]
                 .split(",")
@@ -65,6 +73,14 @@ export function formContentToJSON(form) {
                 .map((g) => g.trim())
                 .filter((g) => g.length > 0);
         }
+    }
+
+    // ====== Convert language list ======
+    if (data.language && typeof data.language === "string") {
+        data.language = data.language
+            .split(",")
+            .map((l) => l.trim())
+            .filter((l) => l.length > 0);
     }
 
     return data;

@@ -112,7 +112,6 @@ export function getFieldsForType(type) {
                 <div class="form-group">
                     <label>Directors</label>
                     <input name="directors" type="text" placeholder="Comma-separated directors" />
-                    <p class="hint">e.g. Christopher Nolan</p>
                 </div>
         
                 ${genresDropdown}
@@ -141,7 +140,17 @@ export function getFieldsForType(type) {
                     <label>Release Year</label>
                     <input name="releaseYear" type="number" min="1900" max="${new Date().getFullYear()}" required />
                 </div>
-        
+
+                <div class="form-group">
+                    <label>IMDb Rating</label>
+                    <input name="rating" type="number" min="0" max="10" step="0.1" placeholder="e.g. 8.7" />
+                </div>
+
+                <div class="form-group">
+                    <label>Language</label>
+                    <input name="language" type="text" placeholder="e.g. English, French" />
+                </div>
+
                 <div class="form-group">
                     <label>Collection ID (optional)</label>
                     <input name="collectionId" type="text" placeholder="Related collection ObjectId" />
@@ -176,6 +185,22 @@ export function getFieldsForType(type) {
                 <div class="form-group">
                     <label>Trailer URL</label>
                     <input name="trailerUrl" type="text" placeholder="optional" />
+                </div>
+
+                <div class="form-group">
+                    <label>Actors</label>
+                    <input name="actors" type="text" placeholder="Comma-separated actors" />
+                    <p class="hint">e.g. Leonardo DiCaprio, Tom Hardy</p>
+                </div>
+
+                <div class="form-group">
+                    <label>IMDb Rating</label>
+                    <input name="rating" type="number" min="0" max="10" step="0.1" placeholder="e.g. 8.7" />
+                </div>
+
+                <div class="form-group">
+                    <label>Language</label>
+                    <input name="language" type="text" placeholder="e.g. English, French" />
                 </div>
             `;
 

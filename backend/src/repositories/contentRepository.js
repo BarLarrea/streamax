@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Content from "../models/contentModel.js";
 import { isValidId } from "../utils/dalUtils.js";
 
@@ -30,21 +29,23 @@ export const getContentById = async (contentId) => {
     const content = await Content.findById(contentId)
         .populate({
             path: "collectionId",
-            select: "title _id"
+            select: "_id title"
         })
         .populate({
             path: "seriesId",
-            select: "title posterUrl releaseYear"
+            select: "_id title posterUrl releaseYear"
         })
         .populate({
             path: "seasonId",
-            select: "title seasonNumber"
+            select: "_id title seasonNumber"
         })
         .lean();
 
     if (!content) {
         return { status: "not_found", data: null };
     }
+
+    console.log({ content });
 
     return { status: "ok", data: content };
 };
@@ -71,33 +72,25 @@ export const getAllContents = async (filters = {}, skip, limit) => {
 export const searchContents = async (query, limit, skip) => {
     const regex = new RegExp(query, "i"); // case-insensitive search
 
+    const filter = {
+        $or: [
+            { title: regex },
+            { alternativeTitles: regex },
+            { genres: regex },
+            { actors: regex },
+            { directors: regex }
+        ]
+    };
+
     const [contents, totalDocuments] = await Promise.all([
-        Content.find({
-            $or: [
-                { title: regex },
-                { alternativeTitles: regex },
-                { genres: regex },
-                { releaseYear: regex },
-                { actors: regex },
-                { directors: regex }
-            ]
-        })
+        Content.find(filter)
             .skip(skip)
             .limit(limit)
             .sort({ releaseYear: -1 }) // Newest first
             .lean(),
-
-        Content.countDocuments({
-            $or: [
-                { title: regex },
-                { alternativeTitles: regex },
-                { genres: regex },
-                { releaseYear: regex },
-                { actors: regex },
-                { directors: regex }
-            ]
-        })
+        Content.countDocuments(filter)
     ]);
+
     return { contents, totalDocuments };
 };
 

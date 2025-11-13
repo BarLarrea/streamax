@@ -9,7 +9,11 @@ const allowedFieldsByType = {
         "trailerUrl",
         "releaseYear",
         "posterUrl",
-        "collectionId"
+        "collectionId",
+        "directors",
+        "actors",
+        "language",
+        "rating"
     ],
     series: [
         "title",
@@ -18,7 +22,11 @@ const allowedFieldsByType = {
         "genres",
         "releaseYear",
         "posterUrl",
-        "trailerUrl"
+        "trailerUrl",
+        "directors",
+        "actors",
+        "language",
+        "rating"
     ],
     season: ["title", "seriesId", "seasonNumber", "releaseYear", "trailerUrl"],
     episode: [

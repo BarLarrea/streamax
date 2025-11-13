@@ -2,73 +2,102 @@
     class="admin-page"
     data-page="admin-page"
 >
-    <div class="container admin-container">
-        <!-- ===== HEADER ===== -->
-        <header class="admin-header">
-            <h1>Admin Dashboard</h1>
-        </header>
+    <!-- ===== HEADER ===== -->
+    <header class="admin-header">
+        <h1>Admin Dashboard</h1>
+    </header>
 
-        <!-- ===== ADD CONTENT ===== -->
-        <div class="card admin-section">
-            <h2>Add New Content</h2>
-            <form id="add-content-form">
-                <div class="form-group">
-                    <label for="type">Type</label>
-                    <select
-                        id="type"
-                        name="type"
-                        required
-                    >
-                        <option value="">Select type</option>
-                        <option value="movie">Movie</option>
-                        <option value="series">Series</option>
-                        <option value="season">Season</option>
-                        <option value="episode">Episode</option>
-                        <option value="collection">Collection</option>
-                    </select>
-                </div>
+    <!-- ===== ADD NEW CONTENT ===== -->
+    <div class="card admin-section">
+        <h2>Add New Content</h2>
 
-                <div id="dynamic-fields"></div>
-
-                <button
-                    type="submit"
-                    class="btn--subtle"
+        <form id="add-content-form">
+            <!-- TYPE SELECT -->
+            <div class="form-group">
+                <label for="type">Type</label>
+                <select
+                    id="type"
+                    name="type"
+                    required
                 >
-                    Create Content
-                </button>
-            </form>
-        </div>
-
-        <!-- ===== DIVIDER ===== -->
-        <div class="divider"></div>
-
-        <!-- ===== EDIT CONTENT ===== -->
-        <div class="card admin-section">
-            <h2>Edit or Delete Existing Content</h2>
-            <p class="section-description">
-                Search by title to find an existing movie, series, or episode.
-            </p>
-
-            <div class="form-group search-bar">
-                <input
-                    type="text"
-                    id="searchTitle"
-                    placeholder="Search by title..."
-                />
-                <button
-                    id="searchBtn"
-                    class="btn--subtle"
-                >
-                    Search
-                </button>
+                    <option value="">Select type</option>
+                    <option value="movie">Movie</option>
+                    <option value="series">Series</option>
+                    <option value="season">Season</option>
+                    <option value="episode">Episode</option>
+                    <option value="collection">Collection</option>
+                </select>
             </div>
 
+            <!-- FETCH METADATA BUTTON (appears for movie/series) -->
             <div
-                id="searchResults"
-                class="search-results"
-            ></div>
+                id="metadata-btn-container"
+                class="form-group hidden fetch-bar"
+            >
+                <div class="fetch-bar-inner">
+                    <button
+                        type="button"
+                        id="fetchMetadataBtn"
+                        class="btn--cta"
+                    >
+                        Fetch Metadata (IMDb / Rotten)
+                    </button>
+                    <small class="hint">
+                        Fill in the title first, then click to fech metadata
+                    </small>
+                </div>
+            </div>
 
-            <div id="editFormContainer"></div>
+            <!-- DYNAMIC FIELDS -->
+            <div id="dynamic-fields"></div>
+
+            <button
+                type="submit"
+                class="btn--cta"
+            >
+                Create Content
+            </button>
+        </form>
+    </div>
+
+    <!-- ===== DIVIDER ===== -->
+    <div class="divider"></div>
+
+    <!-- ===== MANAGE CONTENT ===== -->
+    <div class="card admin-section">
+        <h2>Manage Existing Content</h2>
+        <p class="section-description">
+            Search existing content to edit or delete entries.
+        </p>
+
+        <div class="form-group search-bar">
+            <input
+                type="text"
+                id="searchTitle"
+                placeholder="Search by title..."
+            />
+            <button
+                id="searchBtn"
+                class="btn--subtle"
+                type="button"
+            >
+                Search
+            </button>
         </div>
+
+        <div
+            id="searchResults"
+            class="search-results"
+        ></div>
+
+        <div
+            id="contentDetailsContainer"
+            class="content-details hidden"
+        ></div>
+
+        <div
+            id="contentDetailsContainer"
+            class="content-details hidden"
+        ></div>
     </div>
 </section>
