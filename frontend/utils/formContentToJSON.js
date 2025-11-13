@@ -1,6 +1,7 @@
 // Converts a form's fields into a clean JSON object
 export function formContentToJSON(form) {
     const data = {};
+    const genresHidden = form.querySelector("#genres-hidden");
 
     for (const element of form.elements) {
         if (!element.name || element.disabled) continue;
@@ -15,11 +16,9 @@ export function formContentToJSON(form) {
             continue;
         }
 
-        if (form.querySelector("#genres-hidden")) {
+        if (genresHidden) {
             try {
-                const parsed = JSON.parse(
-                    form.querySelector("#genres-hidden").value
-                );
+                const parsed = JSON.parse(genresHidden.value);
                 if (Array.isArray(parsed)) data.genres = parsed;
             } catch {}
         }
@@ -50,12 +49,6 @@ export function formContentToJSON(form) {
                 .filter((v) => v.length > 0);
         }
     });
-
-    // ✅ Normalize `Director` → `directors`
-    if (data.Director && !data.directors) {
-        data.directors = data.Director;
-        delete data.Director;
-    }
 
     // ====== Clean up empty strings ======
     Object.keys(data).forEach((key) => {
