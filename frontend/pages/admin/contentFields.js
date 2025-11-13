@@ -112,7 +112,6 @@ export function getFieldsForType(type) {
                 <div class="form-group">
                     <label>Directors</label>
                     <input name="directors" type="text" placeholder="Comma-separated directors" />
-                    <p class="hint">e.g. Christopher Nolan</p>
                 </div>
         
                 ${genresDropdown}
@@ -186,6 +185,12 @@ export function getFieldsForType(type) {
                 <div class="form-group">
                     <label>Trailer URL</label>
                     <input name="trailerUrl" type="text" placeholder="optional" />
+                </div>
+
+                <div class="form-group">
+                    <label>Actors</label>
+                    <input name="actors" type="text" placeholder="Comma-separated actors" />
+                    <p class="hint">e.g. Leonardo DiCaprio, Tom Hardy</p>
                 </div>
 
                 <div class="form-group">

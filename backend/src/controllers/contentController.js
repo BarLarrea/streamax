@@ -341,7 +341,7 @@ const getEpisodesBySeasonId = async (req, res) => {
 
 const importExternalMetadata = async (req, res) => {
     try {
-        const { title } = req.query;
+        const { title, type } = req.query;
 
         if (!title || !title.trim()) {
             return res
@@ -358,6 +358,7 @@ const importExternalMetadata = async (req, res) => {
         const response = await axios.get("https://www.omdbapi.com/", {
             params: {
                 t: title.trim(),
+                type: type || undefined,
                 apikey: process.env.OMDB_API_KEY
             }
         });

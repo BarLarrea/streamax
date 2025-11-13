@@ -58,8 +58,18 @@ export const initAdminPage = async () => {
 
             try {
                 showSpinner();
-                const res = await importExternalMetadataService(title);
+                const type = typeSelect.value;
+                const res = await importExternalMetadataService(title, type);
                 const data = res.metadata;
+
+                // Update title if OMDb returned a more complete one
+                if (data.title && data.title.trim() && data.title !== title) {
+                    titleInput.value = data.title;
+                }
+
+                if (data.duration) {
+                    data.duration = parseInt(data.duration) * 60 || null;
+                }
 
                 // fill values if exist
                 const map = {

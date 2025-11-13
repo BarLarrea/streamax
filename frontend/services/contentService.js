@@ -18,7 +18,7 @@ export const createContentService = async (contentData) => {
 };
 
 /* Fetch external metadata (IMDb / Rotten Tomatoes) */
-export const importExternalMetadataService = async (title) => {
+export const importExternalMetadataService = async (title, type) => {
     if (!title || !title.trim()) {
         throw new Error("Title is required to fetch metadata.");
     }
@@ -26,7 +26,7 @@ export const importExternalMetadataService = async (title) => {
     const res = await api.get(
         `${API_URLS.ADMIN.ROOT}${API_URLS.ADMIN.CONTENT.IMPORT_OMDb_META}`,
         {
-            params: { title: title.trim() }
+            params: { title: title.trim(), type }
         }
     );
 
