@@ -10,10 +10,27 @@
         id="profile-dropdown"
         class="profile-dropdown"
     >
-        <a href="#/profiles">Go to Profiles</a>
+        <!-- Switch Profile Section -->
+        <div class="dropdown-section">
+            <p class="dropdown-title">Switch Profile</p>
+            <div
+                id="profile-switch-list"
+                class="profile-switch-list"
+            ></div>
+        </div>
+
+        <!-- Go to Profile Management -->
+        <button
+            id="manage-profiles-btn"
+            class="dropdown-item"
+        >
+            Manage Profiles
+        </button>
+
+        <!-- Logout -->
         <button
             id="logout-btn"
-            class="logout-btn"
+            class="dropdown-item logout-btn"
         >
             <i class="bi bi-box-arrow-right logout-icon"></i>
             Logout

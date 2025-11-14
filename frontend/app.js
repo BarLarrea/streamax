@@ -10,6 +10,7 @@ import loadEditProfilePage from "./pages/editProfile/index.js";
 import loadAdminPage from "./pages/admin/index.js";
 import loadHomePage from "./pages/home/index.js";
 import loadGenrePage from "./pages/genre/index.js";
+import loadContentPage from "./pages/content/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -81,6 +82,9 @@ const initApp = async () => {
                 break;
             case "genre":
                 await loadGenrePage();
+                break;
+            case "content":
+                await loadContentPage();
                 break;
             default:
                 await loadNotFoundPage();

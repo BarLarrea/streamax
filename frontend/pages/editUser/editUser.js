@@ -8,8 +8,8 @@ import { showSpinner, hideSpinner } from "../../utils/loading.js";
 import { validatePassword } from "../../utils/validation.js";
 
 const editForm = document.getElementById("edit-user-form");
-const editUserName = document.querySelector("#userName");
-const editUserEmail = document.querySelector("#email");
+
+console.log("INIT EDIT USER LOADED");
 
 export const initEditUserPage = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -18,6 +18,8 @@ export const initEditUserPage = async () => {
         showError("User not found in session. Please log in again.");
         window.location.href = "#/login";
     }
+    const editUserName = document.querySelector("#userName");
+    const editUserEmail = document.querySelector("#email");
 
     editUserName.value = user.userName.trim();
     editUserEmail.value = user.email.trim();
@@ -44,6 +46,10 @@ export const initEditUserPage = async () => {
 };
 
 async function handleeditUserDetails() {
+    const editForm = document.getElementById("edit-user-form");
+    const editUserName = document.querySelector("#userName");
+    const editUserEmail = document.querySelector("#email");
+
     editForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 

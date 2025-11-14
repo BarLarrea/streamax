@@ -24,7 +24,9 @@ const loadPage = async (htmlPath, cssPath) => {
             });
         }
 
-        await new Promise((resolve) => requestAnimationFrame(resolve));
+        // Allow DOM + CSS reflow to complete
+        await new Promise((r) => requestAnimationFrame(r));
+        await new Promise((r) => requestAnimationFrame(r));
 
         console.log(` Loaded page: ${htmlPath}`);
         return true;

@@ -1,0 +1,225 @@
+/* =========================================
+   CONTENT PAGE – Fresh Modern Makeover
+   ========================================= */
+
+.content-page {
+    padding: 1.5rem 1.5rem 3rem;
+    color: #e5eaf3; /* צבע טקסט חלבי */
+}
+
+/* ===== HERO WRAPPER ===== */
+.content-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: stretch;
+    margin-bottom: 2.5rem;
+}
+
+/* ===== POSTER WRAP ===== */
+.content-hero__poster-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+
+    /* אפקט זכוכית */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    transition: transform 0.2s ease;
+}
+
+.content-hero__poster-wrap:hover {
+    transform: scale(1.015);
+}
+
+.content-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.95;
+}
+
+/* ===== DETAILS SECTION ===== */
+.content-hero__details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    justify-content: center;
+}
+
+/* ===== TYPE PILL ===== */
+.type-pill {
+    padding: 0.32rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(6px);
+    color: #d2dbff;
+}
+
+.series-badge {
+    font-size: 0.8rem;
+    color: #98a7c8;
+}
+
+/* ===== TITLE ===== */
+.content-title {
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #f3f6ff;
+}
+
+/* ===== DESCRIPTION ===== */
+.content-description {
+    font-size: 1rem;
+    color: #d3d9e7;
+    line-height: 1.55;
+    max-width: 65ch;
+}
+
+/* ===== META CHIPS (YEAR / DURATION / RATING) ===== */
+.content-meta-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.meta-chip {
+    padding: 0.25rem 0.65rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    font-size: 0.78rem;
+    color: #b8c4dd;
+}
+
+/* ===== META GRID ===== */
+.content-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
+}
+
+.meta-row {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.meta-label {
+    min-width: 90px;
+    font-weight: 500;
+    color: #99a6c5;
+}
+
+.meta-value {
+    color: #e7ebf5;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.content-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+/* PLAY BUTTON – Blue Soft Glow */
+.content-actions .btn--primary {
+    background: linear-gradient(135deg, #4c8dff, #6ea8ff);
+    color: #fff;
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+
+    box-shadow: 0 0 14px rgba(110, 168, 255, 0.45);
+    transition: 0.25s ease;
+}
+
+#play-btn i {
+    font-size: 1.2rem;
+    margin-right: 8px;
+    position: relative;
+    top: 1px;
+}
+
+.content-actions .btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(120, 178, 255, 0.55);
+}
+
+/* SUBTLE BUTTON (LIKE) – Milky Glass */
+.content-actions .btn--subtle {
+    padding: 0.6rem 1.3rem;
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.05);
+    color: #c8d7ff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+
+    transition: 0.25s ease;
+}
+
+.content-actions .btn--subtle:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+/* LIKE BUTTON – Liked State */
+#like-btn.btn--liked {
+    color: #8cbcfe;
+    border-color: rgba(140, 188, 254, 0.45);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 10px rgba(140, 188, 254, 0.35);
+}
+
+#like-btn i {
+    font-size: 1.2rem;
+    margin-right: 6px;
+}
+
+/* ===== SECTIONS ===== */
+.content-section {
+    margin-top: 3rem;
+    padding: 0.5rem 0;
+}
+
+.section-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #dfe5f3;
+}
+
+.section-header {
+    margin-bottom: 1rem;
+}
+
+#seasons-carousel .content-card,
+#episodes-carousel .content-card {
+    max-width: 250px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 630px) {
+    .content-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .content-page {
+        padding-inline: 1rem;
+    }
+}

@@ -8,6 +8,13 @@ export const API_URLS = {
         REFRESH: "/auth/refresh"
     },
 
+    USERS: {
+        ME: "/users/me",
+        UPDATE: "/users/me",
+        DELETE: "/users/me",
+        CHANGE_PASSWORD: "/users/me/password"
+    },
+
     ADMIN: {
         ROOT: "/admin",
         CONTENT: {
@@ -45,6 +52,7 @@ export const API_URLS = {
         UPDATE: (id) => `/profiles/${id}`,
         DELETE: (id) => `/profiles/${id}`,
         LAST_WATCHED: (id) => `/profiles/last-watched/${id}`,
+        TOGGLE_LIKE: (id) => `/profiles/toggle-like/${id}`,
         TOGGLE_LIKE: (id) => `/profiles/toggle-like/${id}`,
         WITH_CONTENT: (id) => `/profiles/${id}/with-content`
     },

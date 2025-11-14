@@ -8,7 +8,6 @@ import {
     getPopularContentsService
 } from "../../services/watchHistoryService.js";
 import {
-    getContentByIdService,
     getContentsByGenresService,
     getAllContentsPagedService
 } from "../../services/contentService.js";
