@@ -1,0 +1,38 @@
+<section
+    class="genre-page"
+    data-page="genre"
+>
+    <header class="genre-header">
+        <h1 id="genre-title"></h1>
+    </header>
+
+    <div class="genre-filters">
+        <select id="genre-select">
+            <option value="">Select Genre...</option>
+        </select>
+
+        <select id="sort-select">
+            <option value="createdAt-desc">Newest</option>
+            <option value="rating-desc">Rating</option>
+            <option value="popularity-desc">Popularity</option>
+        </select>
+
+        <select id="watched-select">
+            <option value="all">All</option>
+            <option value="watched">Watched</option>
+            <option value="unwatched">Not Watched</option>
+        </select>
+    </div>
+
+    <div
+        id="genre-content-list"
+        class="genre-list"
+    ></div>
+
+    <div
+        id="genre-loading"
+        class="genre-loading hidden"
+    >
+        Loading…
+    </div>
+</section>

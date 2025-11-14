@@ -248,7 +248,19 @@ async function appendShelf(root, selector, title) {
     const shelf = document.querySelector(selector);
     if (shelf) {
         const titleEl = shelf.querySelector(".carousel__title");
-        if (titleEl) titleEl.textContent = title;
+        if (titleEl) {
+            titleEl.textContent = title;
+
+            // ===== CLICK TO NAVIGATE TO GENRE PAGE =====
+            const match = title.match(/in (.+)$/i);
+            if (match) {
+                const genre = match[1].trim().toLowerCase();
+                titleEl.style.cursor = "pointer";
+                titleEl.addEventListener("click", () => {
+                    window.location.hash = `#/genre/${genre}`;
+                });
+            }
+        }
     }
 }
 

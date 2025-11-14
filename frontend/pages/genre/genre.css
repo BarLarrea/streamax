@@ -1,0 +1,82 @@
+/* ===============================
+   Genre Page Layout
+================================== */
+.genre-page {
+    /* Bring page closer to header */
+    padding-top: calc(var(--header-height) + 0.3rem);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-bottom: 2rem;
+
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* ===============================
+   Page Title
+================================== */
+#genre-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-1);
+
+    /* Larger bottom spacing below title */
+    margin-bottom: 1.1rem;
+}
+
+/* ===============================
+   Filters Bar
+================================== */
+.genre-filters {
+    display: flex;
+    gap: 0.75rem;
+
+    /* More space under filters before the cards */
+    margin-bottom: 1.8rem;
+
+    width: 100%;
+}
+
+/* Dropdown styling stays the same */
+.genre-filters select {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 0.55rem 0.9rem;
+    border-radius: 8px;
+    color: var(--text-1);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.2s ease, border-color 0.2s ease;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 2rem;
+}
+
+.genre-filters select:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--brand-1);
+}
+
+/* ===============================
+   Content Grid
+================================== */
+.genre-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+
+.genre-page .content-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: unset;
+    display: block;
+}
+
+.genre-page .content-card .thumb {
+    width: 100%;
+}

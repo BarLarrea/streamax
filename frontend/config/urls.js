@@ -30,6 +30,7 @@ export const API_URLS = {
     /* ---------- Public Content Endpoints ---------- */
     CONTENT: {
         ROOT: "/content",
+        GENRE: "/content/genre",
         SEARCH: (query) => `/content/search?q=${encodeURIComponent(query)}`,
         BY_ID: (id) => `/content/${id}`,
         SERIES_SEASONS: (seriesId) => `/content/series/${seriesId}/seasons`,
@@ -39,8 +40,8 @@ export const API_URLS = {
     /* ---------- Profile Endpoints ---------- */
     PROFILES: {
         ROOT: "/profiles",
-        BY_ID: (id) => `/profiles/${id}`,
         CREATE: "/profiles",
+        BY_ID: (id) => `/profiles/${id}`,
         UPDATE: (id) => `/profiles/${id}`,
         DELETE: (id) => `/profiles/${id}`,
         LAST_WATCHED: (id) => `/profiles/last-watched/${id}`,
@@ -51,16 +52,16 @@ export const API_URLS = {
     /* ---------- Watch History Endpoints ---------- */
     WATCH_HISTORY: {
         ROOT: "/watch-history",
+        UPDATE_PROGRESS: "/watch-history/progress",
+        POPULAR: "/watch-history/popular",
         BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`,
         BY_CONTENT: (contentId) => `/watch-history/content/${contentId}`,
         RECORD: (profileId, contentId) =>
             `/watch-history/${profileId}/${contentId}`,
         COMPLETED: (profileId) => `/watch-history/completed/${profileId}`,
         WATCHING_NOW: (profileId) => `/watch-history/watching-now/${profileId}`,
-        UPDATE_PROGRESS: "/watch-history/progress",
         ARCHIVE_BY_PROFILE: (profileId) =>
             `/watch-history/archive/${profileId}`,
-        DELETE_BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`,
-        POPULAR: "/watch-history/popular"
+        DELETE_BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`
     }
 };

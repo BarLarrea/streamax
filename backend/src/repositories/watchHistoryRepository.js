@@ -258,3 +258,12 @@ export const aggregatePopularContents = async (limit = 20) => {
         return [];
     }
 };
+
+export const getCompletedContentIds = async (profileId) => {
+    const records = await WatchHistory.find(
+        { profileId, isCompleted: true },
+        "contentId"
+    ).lean();
+
+    return records.map((r) => r.contentId.toString());
+};
