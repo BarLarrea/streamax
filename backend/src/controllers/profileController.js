@@ -299,6 +299,26 @@ const getAllProfiles = async (req, res) => {
     }
 };
 
+const getProfileWithContent = async (req, res) => {
+    try {
+        const { profileId } = req.params;
+
+        const profile = await profileRipo.findProfileWithContent(profileId);
+        if (!profile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile with content fetched successfully",
+            profile
+        });
+    } catch (error) {
+        console.error("Error in getProfileWithContent:", error.message);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
 export {
     createProfile,
     getProfileById,
@@ -307,5 +327,6 @@ export {
     deleteProfileById,
     updateLastWatchedController,
     toggleLikeContent,
-    getAllProfiles
+    getAllProfiles,
+    getProfileWithContent
 };

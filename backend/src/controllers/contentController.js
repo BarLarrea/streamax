@@ -136,10 +136,20 @@ const deleteContentById = async (req, res) => {
 // ==================== PUBLIC READ ACTIONS ====================
 // (Endpoints accessible to all users)
 
-// Get all contents with dynamic filters + pagination
+// Get all contents with dynamic filters + pagination + sorting
 const getAllContents = async (req, res) => {
     try {
-        const { type, genres, actors, directors, limit, page } = req.query;
+        const {
+            type,
+            genres,
+            releaseYear,
+            actors,
+            directors,
+            limit,
+            page,
+            sortBy,
+            sortOrder
+        } = req.query;
 
         // --- Dynamic Filters ---
         const filters = {};
@@ -164,11 +174,17 @@ const getAllContents = async (req, res) => {
         const limitNum = Number(limit) || 20;
         const skip = (pageNum - 1) * limitNum;
 
+        // --- Sorting ---
+        // Default: newest first
+        const sortField = sortBy || "createdAt";
+        const order = sortOrder === "asc" ? 1 : -1;
+
         // --- Query ---
         const { contents, totalDocuments } = await contentRepo.getAllContents(
             filters,
             skip,
-            limitNum
+            limitNum,
+            { [sortField]: order }
         );
 
         if (totalDocuments === 0) {
@@ -182,6 +198,7 @@ const getAllContents = async (req, res) => {
         return res.status(200).json({
             success: true,
             filters,
+            sort: { sortField, order },
             page: pageNum,
             limit: limitNum,
             totalDocuments,

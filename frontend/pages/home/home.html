@@ -1,25 +1,17 @@
-<section class="home">
-    <div class="home-hero">
-        <h1 class="home-title">Welcome to <span>StreaMax</span></h1>
-        <p class="home-subtitle">
-            Discover, watch, and enjoy your favorite movies and series — all in
-            one place.
-        </p>
-
-        <button
-            class="home-btn"
-            id="explore-btn"
+<section
+    class="home"
+    data-page="home"
+>
+    <div class="container">
+        <!-- Shelves will be appended dynamically here -->
+        <main
+            id="home-root"
+            class="home__root"
         >
-            Start Watching
-        </button>
-    </div>
-
-    <div class="home-featured">
-        <h2 class="section-title">Featured Now</h2>
-        <div class="featured-grid">
-            <div class="featured-card">🔥 Trending</div>
-            <div class="featured-card">🎬 New Releases</div>
-            <div class="featured-card">⭐ Top Rated</div>
-        </div>
+            <div class="loader-wrapper hidden">
+                <div class="spinner"></div>
+            </div>
+            <!-- JS will inject the shelves dynamically -->
+        </main>
     </div>
 </section>

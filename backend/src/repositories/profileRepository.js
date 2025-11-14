@@ -19,3 +19,16 @@ export const findProfilesByUserID = async (userId) => {
 export const findAndDeleteProfileById = async (id) => {
     return await Profile.findByIdAndDelete(id).populate("userId");
 };
+
+export const findProfileWithContent = async (id) => {
+    return await Profile.findById(id)
+        .populate({
+            path: "likedContent",
+            select: "title type posterUrl genres releaseYear rating"
+        })
+        .populate({
+            path: "lastWatched.contentId",
+            select: "title type posterUrl genres releaseYear rating duration"
+        })
+        .lean();
+};

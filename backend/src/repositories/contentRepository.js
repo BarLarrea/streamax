@@ -50,15 +50,15 @@ export const getContentById = async (contentId) => {
     return { status: "ok", data: content };
 };
 
-export const getAllContents = async (filters = {}, skip, limit) => {
+export const getAllContents = async (
+    filters = {},
+    skip = 0,
+    limit = 20,
+    sort = { releaseYear: -1 } // default sort
+) => {
     try {
-        // Apply options (limit, skip, select)
         const [contents, totalDocuments] = await Promise.all([
-            Content.find(filters)
-                .skip(skip)
-                .limit(limit)
-                .sort({ releaseYear: -1 }) // default sort
-                .lean(),
+            Content.find(filters).sort(sort).skip(skip).limit(limit).lean(),
             Content.countDocuments(filters)
         ]);
 

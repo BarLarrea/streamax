@@ -8,6 +8,7 @@ import loadNotFoundPage from "./pages/notFound/index.js";
 import loadEditUserPage from "./pages/editUser/index.js";
 import loadEditProfilePage from "./pages/editProfile/index.js";
 import loadAdminPage from "./pages/admin/index.js";
+import loadHomePage from "./pages/home/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -62,9 +63,9 @@ const initApp = async () => {
             case "admin-page":
                 await loadAdminPage();
                 break;
-            // case "home":
-            //     await loadHomePage();
-            //     break;
+            case "home":
+                await loadHomePage();
+                break;
             default:
                 await loadNotFoundPage();
                 break;

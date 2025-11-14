@@ -11,7 +11,8 @@ import {
     updateProfileDetails,
     deleteProfileById,
     updateLastWatchedController,
-    toggleLikeContent
+    toggleLikeContent,
+    getProfileWithContent
 } from "../controllers/profileController.js";
 
 const profilePipeline = [verifyAccessToken, checkUserStatus];
@@ -46,6 +47,12 @@ router.put(
     ...profilePipeline,
     verifyProfileOwnership,
     toggleLikeContent
+);
+
+router.get(
+    "/:profileId/with-content",
+    ...profilePipeline,
+    getProfileWithContent
 );
 
 export default router;
