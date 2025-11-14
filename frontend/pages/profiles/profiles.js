@@ -78,24 +78,41 @@ function renderProfiles(profiles) {
 
 function setupProfileClickHandler(profiles) {
     const list = document.querySelector("#profiles-list");
+
     list.addEventListener("click", (e) => {
         const card = e.target.closest(".profile-card");
         if (!card) return;
 
         const profileId = card.dataset.profileId;
 
+        // Navigate to create-profile
         if (card.classList.contains("add-profile")) {
             window.location.hash = "#/create-profile";
-        } else if (e.target.closest(".edit-profile-btn")) {
+            return;
+        }
+
+        // Edit profile
+        if (e.target.closest(".edit-profile-btn")) {
             const profile = profiles.find(
                 (p) => String(p.profileId) === String(profileId)
             );
             localStorage.setItem("selectedProfile", JSON.stringify(profile));
             window.location.hash = "#/edit-profile";
-        } else {
-            localStorage.setItem("profileId", profileId);
-            window.location.hash = "#/home";
+            return;
         }
+
+        // ===== Normal profile selection (go to home) =====
+        const profile = profiles.find(
+            (p) => String(p.profileId) === String(profileId)
+        );
+
+        if (profile) {
+            localStorage.setItem("profileId", profileId);
+            localStorage.setItem("profileAvatar", profile.avatar);
+            localStorage.setItem("profileName", profile.profileName);
+        }
+
+        window.location.hash = "#/home";
     });
 }
 

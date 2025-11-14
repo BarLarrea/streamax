@@ -8,13 +8,15 @@ import {
     getContentById,
     searchContents,
     getSeasonsBySeriesId,
-    getEpisodesBySeasonId
+    getEpisodesBySeasonId,
+    getContentsByGenre
 } from "../controllers/contentController.js";
 
 const router = express.Router();
 
 const contentPipeline = [verifyAccessToken, checkUserStatus];
 
+router.get("/genre", ...contentPipeline, getContentsByGenre);
 router.get("/search", ...contentPipeline, searchContents);
 router.get("/", ...contentPipeline, getAllContents);
 router.get("/:id", ...contentPipeline, getContentById);
@@ -25,7 +27,7 @@ router.get(
 );
 router.get(
     "/seasons/:seasonId/episodes",
-    contentPipeline,
+    ...contentPipeline,
     getEpisodesBySeasonId
 );
 

@@ -3,6 +3,7 @@ import { filterAllowedFieldsByType } from "../services/contentFilter.js";
 import { buildContentByType } from "../services/contentBuilder.js";
 import { formatContentByType } from "../utils/contentFormatter.js";
 import axios from "axios";
+import { getCompletedContentIds } from "../repositories/watchHistoryRepository.js";
 
 // ==================== ADMIN ACTIONS ====================
 const createContent = async (req, res) => {
@@ -286,6 +287,87 @@ const searchContents = async (req, res) => {
     }
 };
 
+const getContentsByGenre = async (req, res) => {
+    try {
+        const {
+            genre,
+            page = 1,
+            limit = 20,
+            sortBy,
+            sortOrder,
+            watched,
+            profileId
+        } = req.query;
+
+        if (!genre) {
+            return res.status(400).json({ message: "Genre is required" });
+        }
+
+        const pageNum = Number(page);
+        const limitNum = Number(limit);
+        const skip = (pageNum - 1) * limitNum;
+
+        /* -------------------------------------------
+           Sorting
+        -------------------------------------------- */
+        let sort = {};
+        if (sortBy === "rating") sort = { rating: -1 };
+        else if (sortBy === "popularity") sort = { watchCount: -1 };
+        else sort = { createdAt: -1 };
+
+        /* -------------------------------------------
+           Base genre filter
+        -------------------------------------------- */
+        const baseFilter = {
+            genres: { $in: [genre.toLowerCase()] }
+        };
+
+        let idFilter = {};
+
+        /* -------------------------------------------
+           Watched / Unwatched logic
+        -------------------------------------------- */
+        if (profileId && watched !== "all") {
+            const completedIds = await getCompletedContentIds(profileId);
+
+            if (watched === "true") {
+                idFilter._id = { $in: completedIds };
+            }
+
+            if (watched === "false") {
+                idFilter._id = { $nin: completedIds };
+            }
+        }
+
+        const finalFilter = { ...baseFilter, ...idFilter };
+
+        /* -------------------------------------------
+           Repo calls instead of direct DB access
+        -------------------------------------------- */
+        const totalDocuments = await contentRepo.countContents(finalFilter);
+
+        const contents = await contentRepo.getContents(
+            finalFilter,
+            skip,
+            limitNum,
+            sort
+        );
+
+        return res.status(200).json({
+            success: true,
+            genre,
+            page: pageNum,
+            limit: limitNum,
+            totalDocuments,
+            totalPages: Math.ceil(totalDocuments / limitNum),
+            contents: contents.map(formatContentByType)
+        });
+    } catch (error) {
+        console.error("Error fetching genre contents:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
 // ==================== HIERARCHY ACTIONS ====================
 // (Series -> Seasons -> Episodes)
 
@@ -452,5 +534,6 @@ export {
     getSeasonsBySeriesId,
     getEpisodesBySeasonId,
     importExternalMetadata,
-    refreshExternalRatings
+    refreshExternalRatings,
+    getContentsByGenre
 };

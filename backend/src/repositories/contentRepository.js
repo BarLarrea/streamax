@@ -94,6 +94,34 @@ export const searchContents = async (query, limit, skip) => {
     return { contents, totalDocuments };
 };
 
+export const getContentsByGenreAdvanced = async (
+    genre,
+    filters = {},
+    skip = 0,
+    limit = 20,
+    sort = { createdAt: -1 }
+) => {
+    const query = {
+        genres: { $in: [genre.toLowerCase()] },
+        ...filters
+    };
+
+    const [contents, totalDocuments] = await Promise.all([
+        Content.find(query).sort(sort).skip(skip).limit(limit).lean(),
+        Content.countDocuments(query)
+    ]);
+
+    return { contents, totalDocuments };
+};
+
+export const countContents = async (filter) => {
+    return await Content.countDocuments(filter);
+};
+
+export const getContents = async (filter, skip, limit, sort) => {
+    return await Content.find(filter).sort(sort).skip(skip).limit(limit).lean();
+};
+
 // ==================== HIERARCHY ====================
 
 export const getSeasonsBySeriesId = async (seriesId) => {

@@ -1,6 +1,8 @@
 import { API_URLS } from "../config/urls.js";
 import api from "./api.js";
 
+console.log("%cLOADED contentService.js (THE REAL ONE)", "color: #00ff00");
+
 // ======= ADMIN AREA (requires admin) ======= //
 
 /* Create new content */
@@ -89,6 +91,29 @@ export const getAllContentsPagedService = async (
     const res = await api.get(API_URLS.CONTENT.ROOT, {
         params: { page, limit, ...params }
     });
+    return res.data;
+};
+
+export const getContentsByGenreService = async (
+    genre,
+    page = 1,
+    limit = 20,
+    sortBy,
+    sortOrder,
+    watched
+) => {
+    const profileId = localStorage.getItem("profileId");
+
+    const params = { genre, page, limit, sortBy, sortOrder, profileId };
+
+    if (watched !== undefined) {
+        params.watched = watched;
+    }
+
+    console.log("Genre params:", params);
+
+    const res = await api.get(API_URLS.CONTENT.GENRE, { params });
+
     return res.data;
 };
 

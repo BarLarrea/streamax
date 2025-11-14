@@ -9,10 +9,23 @@ import loadEditUserPage from "./pages/editUser/index.js";
 import loadEditProfilePage from "./pages/editProfile/index.js";
 import loadAdminPage from "./pages/admin/index.js";
 import loadHomePage from "./pages/home/index.js";
+import loadGenrePage from "./pages/genre/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
-    return hash.replace("#/", "");
+    let page = hash.replace("#/", "");
+
+    // Remove query params if exist
+    if (page.includes("?")) {
+        page = page.split("?")[0];
+    }
+
+    // Remove secondary segments
+    if (page.includes("/")) {
+        page = page.split("/")[0];
+    }
+
+    return page;
 }
 
 const initApp = async () => {
@@ -65,6 +78,9 @@ const initApp = async () => {
                 break;
             case "home":
                 await loadHomePage();
+                break;
+            case "genre":
+                await loadGenrePage();
                 break;
             default:
                 await loadNotFoundPage();

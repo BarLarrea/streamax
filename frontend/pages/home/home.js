@@ -1,5 +1,6 @@
 import loadCarousel from "../../shared/components/carousel/index.js";
 import { renderContentCard } from "../../shared/components/contentCard/renderContentCard.js";
+import { showSpinner, hideSpinner } from "../../utils/loading.js";
 
 import { getProfileWithContentService } from "../../services/profileService.js";
 import {
@@ -42,6 +43,7 @@ async function loadContinueWatchingShelf(root, profileId) {
     await appendShelf(root, shelfSelector, "Continue Watching");
 
     try {
+        showSpinner();
         const response = await getWatchingNowService(profileId);
         const records = Array.isArray(response?.data) ? response.data : [];
 
@@ -80,6 +82,8 @@ async function loadContinueWatchingShelf(root, profileId) {
             shelfSelector,
             "Unable to load your recent progress."
         );
+    } finally {
+        hideSpinner();
     }
 }
 
@@ -91,6 +95,7 @@ async function loadRecommendedShelf(root, profileId) {
     await appendShelf(root, shelfSelector, "Recommended for You");
 
     try {
+        showSpinner();
         // Fetch populated profile (includes likedContent + lastWatched.contentId)
         const { profile } = await getProfileWithContentService(profileId);
 
@@ -143,6 +148,8 @@ async function loadRecommendedShelf(root, profileId) {
             shelfSelector,
             "Unable to load personalized recommendations."
         );
+    } finally {
+        hideSpinner();
     }
 }
 
@@ -154,6 +161,7 @@ async function loadPopularShelf(root) {
     await appendShelf(root, shelfSelector, "Popular Now");
 
     try {
+        showSpinner();
         const popularContents = await getPopularContentsService();
         if (!Array.isArray(popularContents) || !popularContents.length) {
             appendEmptyMessage(shelfSelector, "No popular content available.");
@@ -173,6 +181,8 @@ async function loadPopularShelf(root) {
             shelfSelector,
             "Unable to load popular content at the moment."
         );
+    } finally {
+        hideSpinner();
     }
 }
 
@@ -205,6 +215,7 @@ async function loadGenreShelves(root) {
         );
 
         try {
+            showSpinner();
             const res = await getAllContentsPagedService(1, 10, {
                 genres: genre,
                 sortBy: "createdAt"
@@ -231,6 +242,8 @@ async function loadGenreShelves(root) {
             // Real error (server/network)
             console.error(`Error loading genre "${genre}":`, err);
             appendEmptyMessage(shelfSelector, "Unable to load this genre.");
+        } finally {
+            hideSpinner();
         }
     }
 }
@@ -248,7 +261,19 @@ async function appendShelf(root, selector, title) {
     const shelf = document.querySelector(selector);
     if (shelf) {
         const titleEl = shelf.querySelector(".carousel__title");
-        if (titleEl) titleEl.textContent = title;
+        if (titleEl) {
+            titleEl.textContent = title;
+
+            // ===== CLICK TO NAVIGATE TO GENRE PAGE =====
+            const match = title.match(/in (.+)$/i);
+            if (match) {
+                const genre = match[1].trim().toLowerCase();
+                titleEl.style.cursor = "pointer";
+                titleEl.addEventListener("click", () => {
+                    window.location.hash = `#/genre/${genre}`;
+                });
+            }
+        }
     }
 }
 
