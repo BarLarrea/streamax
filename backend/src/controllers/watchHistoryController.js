@@ -5,53 +5,72 @@ import { getContentById } from "../repositories/contentRepository.js";
 // ==================== CREATE / UPDATE / DELETE ====================
 
 export const createWatchHistoryRecord = async (req, res) => {
+    let profileId;
+    let contentId;
+
     try {
-        const { profileId, contentId } = req.body;
+        // Extract early, so they'll exist for the catch block
+        ({ profileId, contentId } = req.body);
+
         if (!profileId || !contentId) {
-            return res
-                .status(400)
-                .json({ message: "profileId and contentId are required" });
+            return res.status(400).json({
+                message: "profileId and contentId are required"
+            });
         }
 
         const content = await getContentById(contentId);
-        if (!content) {
+
+        if (content.status !== "ok") {
             return res.status(404).json({ message: "Content not found" });
         }
 
-        if (content.type !== "movie" && content.type !== "episode") {
+        if (content.data.type !== "movie" && content.data.type !== "episode") {
             return res.status(400).json({ message: "Invalid content type" });
         }
 
+        // Try to create a new record
         const { status, data } =
             await watchHistoryRepo.createWatchHistoryRecord(
                 profileId,
                 contentId,
-                content.type,
-                content.duration
+                content.data.type,
+                content.data.duration
             );
 
         if (status === "invalid_id") {
-            return res
-                .status(400)
-                .json({ message: "Invalid profileId or contentId" });
+            return res.status(400).json({
+                message: "Invalid profileId or contentId"
+            });
         }
 
+        // Success → return new record
         return res.status(201).json({
             success: true,
             message: "Watch history record created",
             data: watchHistoryFormatter(data)
         });
     } catch (error) {
+        // ⚠️ Handle duplicate key
         if (error.code === 11000) {
             console.log(
-                "Duplicate watch history record creation attempt:",
-                error.keyValue
+                "Duplicate record detected. Returning existing record."
             );
-            return res.json({
-                message: "Duplicate watch history record",
-                duplicateKey: error.keyValue
-            });
+
+            // 🔥 Get the existing record instead of failing
+            const existing = await watchHistoryRepo.getWatchHistoryRecord(
+                profileId,
+                contentId
+            );
+
+            if (existing.status === "success") {
+                return res.status(200).json({
+                    success: true,
+                    message: "Watch history record already exists",
+                    data: watchHistoryFormatter(existing.data)
+                });
+            }
         }
+
         console.error("Error in createWatchHistoryRecord:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
@@ -122,7 +141,7 @@ export const updateProgress = async (req, res) => {
                 .json({ message: "Watch history record not found" });
         }
 
-        const duration = watchHistoryRecord.data.durationAtWatch;
+        const duration = watchHistoryRecord.data.duration;
 
         if (!duration || isNaN(duration)) {
             return res.status(400).json({
@@ -133,7 +152,17 @@ export const updateProgress = async (req, res) => {
         let repoRes = {};
         let action = "";
 
-        if (numericProgress >= duration || duration - numericProgress <= 120) {
+        console.log({ numericProgress });
+
+        // if (numericProgress >= duration || duration - numericProgress <= 120)
+        // The real condition - will be used when we insert full-length content instead of mock
+
+        const mockContentDutatin = 556;
+
+        if (
+            numericProgress >= mockContentDutatin ||
+            mockContentDutatin - numericProgress <= 20
+        ) {
             repoRes = await watchHistoryRepo.markAsCompleted(
                 profileId,
                 contentId
@@ -154,7 +183,6 @@ export const updateProgress = async (req, res) => {
             data: watchHistoryFormatter(repoRes.data)
         });
     } catch (error) {
-        console.error("Error in updateProgress:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -275,9 +303,13 @@ export const getWatchHistoryRecord = async (req, res) => {
         }
 
         if (status === "not_found") {
-            return res
-                .status(404)
-                .json({ message: "Watch history record not found" });
+            return res.status(200).json({
+                success: true,
+                message: "Watch history record not found",
+                data: {
+                    progress: 0
+                }
+            });
         }
 
         return res.status(200).json({

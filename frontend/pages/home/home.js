@@ -9,7 +9,8 @@ import {
 } from "../../services/watchHistoryService.js";
 import {
     getContentsByGenresService,
-    getAllContentsPagedService
+    getAllContentsPagedService,
+    getContentByIdService
 } from "../../services/contentService.js";
 
 /* =======================================================================
@@ -35,7 +36,7 @@ export async function initHomePage() {
 }
 
 /* =======================================================================
-   Shelf 1: Continue Watching (uses backend isCompleted flag)
+   Shelf 1: Continue Watching (LOCAL STORAGE ONLY)
 ======================================================================= */
 async function loadContinueWatchingShelf(root, profileId) {
     const shelfSelector = "#shelf-continue";
@@ -43,10 +44,10 @@ async function loadContinueWatchingShelf(root, profileId) {
 
     try {
         showSpinner();
-        const response = await getWatchingNowService(profileId);
-        const records = Array.isArray(response?.data) ? response.data : [];
 
-        if (!records.length) {
+        // 1) Get local profile
+        const stored = localStorage.getItem("selectedProfile");
+        if (!stored) {
             appendEmptyMessage(
                 shelfSelector,
                 "No items to continue. Start watching something!"
@@ -54,29 +55,51 @@ async function loadContinueWatchingShelf(root, profileId) {
             return;
         }
 
-        const cards = records
-            .filter((r) => r?.contentId)
-            .map((r) => {
-                const content = r.contentId; // already populated
-                const duration = r.durationAtWatch || content.duration || 0;
-                const progress = Math.max(0, r.progress ?? 0);
+        const profile = JSON.parse(stored);
+        const lastWatched = Array.isArray(profile.lastWatched)
+            ? profile.lastWatched
+            : [];
 
-                // use backend flag
-                const viewState = r.isCompleted ? "completed" : "in_progress";
+        // 2) Nothing?
+        if (!lastWatched.length) {
+            appendEmptyMessage(
+                shelfSelector,
+                "No items to continue. Start watching something!"
+            );
+            return;
+        }
+
+        // 3) Fetch content details for each record
+        const cards = await Promise.all(
+            lastWatched.map(async (item) => {
+                const res = await getContentByIdService(item.contentId);
+                const content = res.content || res.data?.content;
+                if (!content) return null;
 
                 return renderContentCard(content, {
-                    viewState,
-                    progressSeconds: progress,
-                    durationSeconds: duration,
+                    viewState: "in_progress",
+                    progressSeconds: item.progress,
+                    durationSeconds: item.duration,
                     onContinue: (c) => {
                         window.location.hash = `#/content/${c._id}`;
                     }
                 });
-            });
+            })
+        );
 
-        renderCards(`${shelfSelector} .carousel__track`, cards);
+        const validCards = cards.filter(Boolean);
+
+        if (!validCards.length) {
+            appendEmptyMessage(
+                shelfSelector,
+                "No items to continue. Start watching something!"
+            );
+            return;
+        }
+
+        renderCards(`${shelfSelector} .carousel__track`, validCards);
     } catch (err) {
-        console.error("Error fetching watching now:", err);
+        console.error("Error loading local Continue Watching:", err);
         appendEmptyMessage(
             shelfSelector,
             "Unable to load your recent progress."
@@ -192,17 +215,16 @@ async function loadGenreShelves(root) {
     const genres = [
         "Action",
         "Adventure",
+        "Crime",
         "Comedy",
         "Drama",
-        "Fantasy",
-        "Horror",
-        "Romance",
-        "Sci-Fi",
         "Thriller",
-        "Documentary",
+        "Fantasy",
         "Animation",
-        "Crime",
-        "Family"
+        "Romance",
+        "Documentary",
+        "Family",
+        "Horror"
     ];
 
     for (const genre of genres) {

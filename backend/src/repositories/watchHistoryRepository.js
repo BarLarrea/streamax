@@ -3,14 +3,21 @@ import { isValidId } from "../utils/dalUtils.js";
 
 // ==================== CREATE / UPDATE / DELETE ====================
 
-export const createWatchHistoryRecord = async (profileId, contentId) => {
+export const createWatchHistoryRecord = async (
+    profileId,
+    contentId,
+    type,
+    duration
+) => {
     if (!isValidId(profileId) || !isValidId(contentId)) {
         return { status: "invalid_id", data: null };
     }
 
     const newRecord = await WatchHistory.create({
         profileId,
-        contentId
+        contentId,
+        type,
+        duration
     });
 
     return { status: "success", data: newRecord.toObject() }; // if the create isnt success, an error will be thrown and it will be catched in the controller
@@ -101,10 +108,10 @@ export const getWatchHistoryByProfileId = async (profileId) => {
         return { status: "invalid_id", data: null };
     }
 
-    const records = await WatchHistory.find(
-        { profileId },
-        "contentId type durationAtWatch progress isCompleted updatedAt"
-    )
+    const result = await WatchHistory.find({
+        profileId,
+        isArchived: false
+    })
         .populate({
             path: "contentId",
             select: "title type posterUrl duration description releaseYear genres"
@@ -195,14 +202,15 @@ export const getWatchingNow = async (profileId) => {
     const result = await WatchHistory.find(
         {
             profileId,
+            isArchived: false,
             isCompleted: false,
-            progress: { $gt: 0 } // watched at least a bit
+            progress: { $gt: 0 }
         },
-        "contentId type durationAtWatch progress updatedAt"
+        "contentId type duration progress updatedAt"
     )
         .populate({
             path: "contentId",
-            select: "title type posterUrl duration description releaseYear genres" //Reduse API calls in front
+            select: "title type posterUrl duration description releaseYear genres"
         })
         .lean()
         .sort({ updatedAt: -1 });

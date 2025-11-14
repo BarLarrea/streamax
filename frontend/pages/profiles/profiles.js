@@ -109,7 +109,7 @@ function setupProfileClickHandler(profiles) {
         if (profile) {
             localStorage.setItem("profileId", profileId);
             localStorage.setItem("profileAvatar", profile.avatar);
-            localStorage.setItem("profileName", profile.profileName);
+            localStorage.setItem("selectedProfile", JSON.stringify(profile));
         }
 
         window.location.hash = "#/home";

@@ -20,7 +20,7 @@ const watchHistorySchema = new mongoose.Schema(
             required: true
         },
 
-        durationAtWatch: {
+        duration: {
             type: Number,
             required: true
         }, // helps to avoid approaching the db to get content duration each time

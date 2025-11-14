@@ -1,11 +1,26 @@
 import User from "../models/userModel.js";
+import Profile from "../models/profileModel.js";
 
 export const getUserById = async (id) => {
     return await User.findById(id).populate("profiles");
 };
 
 export const getUserByUserName = async (userName) => {
-    return await User.findOne({ userName }).populate("profiles");
+    const user = await User.findOne({ userName }).populate("profiles");
+    if (!user) return null;
+
+    await Profile.populate(user.profiles, [
+        {
+            path: "likedContent",
+            select: "title type posterUrl genres releaseYear rating"
+        },
+        {
+            path: "lastWatched.contentId",
+            select: "title type posterUrl duration genres releaseYear"
+        }
+    ]);
+
+    return user;
 };
 
 export const getUserByEmail = async (email) => {

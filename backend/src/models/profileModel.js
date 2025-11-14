@@ -29,10 +29,14 @@ const profileSchema = new mongoose.Schema(
                         ref: "Content",
                         required: true
                     },
-                    progress: {
+
+                    duration: {
                         type: Number,
-                        default: 0
+                        required: true
                     },
+
+                    progress: { type: Number, default: 0 }, // seconds
+
                     updatedAt: {
                         type: Date,
                         default: Date.now

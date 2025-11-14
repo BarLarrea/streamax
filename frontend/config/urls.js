@@ -30,7 +30,8 @@ export const API_URLS = {
             REVOKE_ADMIN: (id) => `/users/${id}/revoke-admin`
         },
         PROFILES: {
-            ROOT: "/profiles"
+            ROOT: "/profiles",
+            UPDATE_LAST_WATCHED: (id) => `/profiles/last-watched/${id}`
         }
     },
 
@@ -70,6 +71,10 @@ export const API_URLS = {
         WATCHING_NOW: (profileId) => `/watch-history/watching-now/${profileId}`,
         ARCHIVE_BY_PROFILE: (profileId) =>
             `/watch-history/archive/${profileId}`,
-        DELETE_BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`
+        DELETE_BY_PROFILE: (profileId) => `/watch-history/profile/${profileId}`,
+        UPDATE_LAST_WATCHED: (profileId, contentId) =>
+            `/watch-history/last-watched/${profileId}/${contentId}`,
+        LAST_PROGRESS: (profileId, contentId) =>
+            `/watch-history/${profileId}/${contentId}`
     }
 };

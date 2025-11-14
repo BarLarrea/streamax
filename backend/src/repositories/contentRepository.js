@@ -45,8 +45,6 @@ export const getContentById = async (contentId) => {
         return { status: "not_found", data: null };
     }
 
-    console.log({ content });
-
     return { status: "ok", data: content };
 };
 

@@ -60,3 +60,17 @@ export const toggleLikeService = async (profileId, contentId) => {
     });
     return res.data;
 };
+
+export async function updateProfileLastWatchedService(
+    profileId,
+    contentId,
+    progress,
+    duration
+) {
+    const res = await api.put(API_URLS.PROFILES.LAST_WATCHED(profileId), {
+        contentId,
+        progress,
+        duration
+    });
+    return res.data.profile;
+}

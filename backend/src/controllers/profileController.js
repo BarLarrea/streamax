@@ -183,11 +183,12 @@ const deleteProfileById = async (req, res) => {
     }
 };
 
-const updateLastWatched = (profile, contentId, progress) => {
+const updateLastWatched = (profile, contentId, progress, duration) => {
     console.log("Updating last watched:", {
         profileId: profile._id,
         contentId,
-        progress
+        progress,
+        duration
     });
     const index = profile.lastWatched.findIndex(
         (object) => object.contentId.toString() === contentId.toString()
@@ -207,6 +208,7 @@ const updateLastWatched = (profile, contentId, progress) => {
         profile.lastWatched.push({
             contentId,
             progress,
+            duration,
             updatedAt: new Date()
         });
     }
@@ -214,7 +216,7 @@ const updateLastWatched = (profile, contentId, progress) => {
 
 const updateLastWatchedController = async (req, res) => {
     try {
-        const { contentId, progress } = req.body;
+        const { contentId, progress, duration } = req.body;
 
         if (!contentId || progress == null) {
             return res
@@ -224,7 +226,7 @@ const updateLastWatchedController = async (req, res) => {
 
         const profile = req.profile;
 
-        updateLastWatched(profile, contentId, progress);
+        updateLastWatched(profile, contentId, progress, duration);
 
         await profileRipo.saveProfile(profile);
 
