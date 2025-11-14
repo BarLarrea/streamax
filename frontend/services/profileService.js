@@ -48,3 +48,8 @@ export const updateLastWatchedService = async (
     });
     return res.data;
 };
+
+export const getProfileWithContentService = async (profileId) => {
+    const res = await api.get(`${API_URLS.PROFILES.WITH_CONTENT(profileId)}`);
+    return res.data;
+};

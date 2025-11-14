@@ -1,7 +1,7 @@
 import loadCarousel from "../../shared/components/carousel/index.js";
 import { renderContentCard } from "../../shared/components/contentCard/renderContentCard.js";
 
-import { getProfileByIdService } from "../../services/profileService.js";
+import { getProfileWithContentService } from "../../services/profileService.js";
 import {
     getWatchingNowService,
     getPopularContentsService
@@ -35,7 +35,7 @@ export async function initHomePage() {
 }
 
 /* =======================================================================
-   Shelf 1: Continue Watching
+   Shelf 1: Continue Watching (uses backend isCompleted flag)
 ======================================================================= */
 async function loadContinueWatchingShelf(root, profileId) {
     const shelfSelector = "#shelf-continue";
@@ -54,28 +54,22 @@ async function loadContinueWatchingShelf(root, profileId) {
         }
 
         const cards = records
-            .filter((x) => x?.contentId)
+            .filter((r) => r?.contentId)
             .map((r) => {
-                const progress = Math.max(
-                    0,
-                    Math.floor((r.progress ?? 0) / 10) * 10
-                );
-                const duration =
-                    r.durationAtWatch || r.contentId?.duration || 0;
-                const safeProgress = Math.min(progress, duration);
+                const content = r.contentId; // already populated
+                const duration = r.durationAtWatch || content.duration || 0;
+                const progress = Math.max(0, r.progress ?? 0);
 
-                // finished? "completed" : "in_progress"
-                const viewState =
-                    duration - safeProgress <= 120
-                        ? "completed"
-                        : "in_progress";
+                // use backend flag
+                const viewState = r.isCompleted ? "completed" : "in_progress";
 
-                return renderContentCard(r.contentId, {
+                return renderContentCard(content, {
                     viewState,
-                    progressSeconds: safeProgress,
+                    progressSeconds: progress,
                     durationSeconds: duration,
-                    onContinue: (c) =>
-                        (window.location.hash = `#/content/${c._id}`)
+                    onContinue: (c) => {
+                        window.location.hash = `#/content/${c._id}`;
+                    }
                 });
             });
 
@@ -90,43 +84,51 @@ async function loadContinueWatchingShelf(root, profileId) {
 }
 
 /* =======================================================================
-   Shelf 2: Recommended For You
+   Shelf 2: Recommended For You (Optimized with populated profile)
 ======================================================================= */
 async function loadRecommendedShelf(root, profileId) {
     const shelfSelector = "#shelf-recommended";
     await appendShelf(root, shelfSelector, "Recommended for You");
 
     try {
-        const profile = await getProfileByIdService(profileId);
-        const likedIds = Array.isArray(profile.likedContent)
-            ? profile.likedContent.map(String)
+        // Fetch populated profile (includes likedContent + lastWatched.contentId)
+        const { profile } = await getProfileWithContentService(profileId);
+
+        const liked = Array.isArray(profile.likedContent)
+            ? profile.likedContent
             : [];
-        const lastWatchedIds = Array.isArray(profile.lastWatched)
-            ? profile.lastWatched.map((r) => String(r.contentId))
+        const lastWatched = Array.isArray(profile.lastWatched)
+            ? profile.lastWatched.map((r) => r.contentId).filter(Boolean)
             : [];
-        const sourceIds = Array.from(
-            new Set([...likedIds, ...lastWatchedIds])
-        ).slice(0, 20);
 
-        const seedContents = await Promise.all(
-            sourceIds.map(getContentByIdService).map((p) => p.catch(() => null))
-        );
-
-        const genres = Array.from(
-            new Set(seedContents.filter(Boolean).flatMap((c) => c.genres || []))
-        );
-
-        let recs = [];
-        if (genres.length > 0) {
-            recs = await getContentsByGenresService(genres, 1, 20);
-            const exclude = new Set(sourceIds);
-            recs = recs.filter((c) => !exclude.has(String(c._id)));
+        const allSource = [...liked, ...lastWatched];
+        if (!allSource.length) {
+            appendEmptyMessage(
+                shelfSelector,
+                "No personalized recommendations yet."
+            );
+            return;
         }
+
+        // Extract genres from liked and last watched contents
+        const genreSet = new Set();
+        allSource.forEach((c) =>
+            (c.genres || []).forEach((g) => genreSet.add(g))
+        );
+
+        // Get similar contents by genre
+        const genres = Array.from(genreSet);
+        const res = await getContentsByGenresService(genres, 1, 30);
+        let recs = res.contents || [];
+
+        // Exclude already seen/liked
+        const excludeIds = new Set(allSource.map((c) => String(c._id)));
+        recs = recs.filter((c) => !excludeIds.has(String(c._id)));
 
         if (!recs.length) {
             appendEmptyMessage(
                 shelfSelector,
-                "No personalized recommendations yet."
+                "No new recommendations yet. Watch or like more content!"
             );
             return;
         }

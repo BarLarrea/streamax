@@ -101,7 +101,7 @@ export const getWatchHistoryByProfileId = async (profileId) => {
         return { status: "invalid_id", data: null };
     }
 
-    const result = await WatchHistory.find(
+    const records = await WatchHistory.find(
         { profileId },
         "contentId type durationAtWatch progress isCompleted updatedAt"
     )
@@ -109,8 +109,9 @@ export const getWatchHistoryByProfileId = async (profileId) => {
             path: "contentId",
             select: "title type posterUrl duration description releaseYear genres"
         })
-        .lean()
-        .sort({ updatedAt: -1 });
+        .sort({ updatedAt: -1 })
+        .limit(20)
+        .lean();
 
     if (!result) {
         return { status: "error", data: null };
