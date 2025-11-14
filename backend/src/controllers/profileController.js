@@ -247,7 +247,7 @@ const toggleLikeContent = async (req, res) => {
             return res.status(400).json({ message: "Content id is missing" });
         }
 
-        const content = await contentRepo.findContentById(contentId);
+        const content = await contentRepo.getContentById(contentId);
 
         if (!content) {
             return res.status(404).json({ message: "Content not found" });

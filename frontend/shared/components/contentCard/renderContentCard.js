@@ -1,6 +1,8 @@
 export function renderContentCard(content, opts = {}) {
+    console.log("renderContentCard received:", content);
+
     const {
-        _id,
+        id,
         title,
         type,
         description = "",
@@ -68,7 +70,7 @@ export function renderContentCard(content, opts = {}) {
         card.addEventListener("click", (e) => {
             const isButton = e.target.closest(".continue-btn");
             if (isButton) return;
-            window.location.hash = `#/content/${_id}`;
+            window.location.hash = `#/content/${id}`;
         });
     }
 

@@ -1,8 +1,6 @@
 import { API_URLS } from "../config/urls.js";
 import api from "./api.js";
 
-console.log("%cLOADED contentService.js (THE REAL ONE)", "color: #00ff00");
-
 // ======= ADMIN AREA (requires admin) ======= //
 
 /* Create new content */

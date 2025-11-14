@@ -1,0 +1,137 @@
+<!-- File: frontend/pages/content/content.html -->
+<section
+    class="content-page"
+    data-page="content"
+>
+    <!-- ===== HERO SECTION ===== -->
+    <div class="content-hero">
+        <div class="content-hero__poster-wrap">
+            <img
+                id="content-poster"
+                class="content-poster"
+                src="assets/posters/defaultPoster.png"
+                alt="Content poster"
+            />
+        </div>
+
+        <div class="content-hero__details">
+            <div class="content-hero__type-line">
+                <span
+                    id="content-type-pill"
+                    class="type-pill"
+                ></span>
+                <span
+                    id="content-series-badge"
+                    class="series-badge hidden"
+                ></span>
+            </div>
+
+            <h1
+                id="content-title"
+                class="content-title"
+            >
+                Loading...
+            </h1>
+
+            <p
+                id="content-description"
+                class="content-description"
+            ></p>
+
+            <div class="content-meta-inline">
+                <span
+                    id="meta-releaseYear"
+                    class="meta-chip"
+                ></span>
+                <span
+                    id="meta-duration"
+                    class="meta-chip"
+                ></span>
+                <span
+                    id="meta-rating"
+                    class="meta-chip"
+                ></span>
+            </div>
+
+            <div class="content-meta-grid">
+                <div class="meta-row">
+                    <span class="meta-label">Genres</span>
+                    <span
+                        id="meta-genres"
+                        class="meta-value"
+                    ></span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Actors</span>
+                    <span
+                        id="meta-actors"
+                        class="meta-value"
+                    ></span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Directors</span>
+                    <span
+                        id="meta-directors"
+                        class="meta-value"
+                    ></span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Languages</span>
+                    <span
+                        id="meta-languages"
+                        class="meta-value"
+                    ></span>
+                </div>
+            </div>
+
+            <div class="content-actions">
+                <button
+                    id="play-btn"
+                    class="btn btn--primary"
+                    type="button"
+                >
+                    ▶ Play
+                </button>
+                <button
+                    id="like-btn"
+                    class="btn btn--subtle"
+                    type="button"
+                >
+                    <i class="bi bi-heart"></i> Like
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SEASONS SECTION (for series) ===== -->
+    <section
+        id="seasons-section"
+        class="content-section hidden"
+    >
+        <div class="section-header">
+            <h2 class="section-title">Seasons</h2>
+        </div>
+        <div class="section-body">
+            <div
+                id="seasons-carousel"
+                class="shelf"
+            ></div>
+        </div>
+    </section>
+
+    <!-- ===== EPISODES SECTION (for season) ===== -->
+    <section
+        id="episodes-section"
+        class="content-section hidden"
+    >
+        <div class="section-header">
+            <h2 class="section-title">Episodes</h2>
+        </div>
+        <div class="section-body">
+            <div
+                id="episodes-carousel"
+                class="shelf"
+            ></div>
+        </div>
+    </section>
+</section>

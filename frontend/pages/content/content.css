@@ -1,0 +1,184 @@
+/* File: frontend/pages/content/content.css */
+
+/* Root */
+.content-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 3rem;
+}
+
+/* ===== HERO ===== */
+.content-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: stretch;
+    margin-bottom: 2.5rem;
+}
+
+.content-hero__poster-wrap {
+    position: relative;
+    border-radius: var(--radius-lg, 16px);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg, 0 18px 45px rgba(0, 0, 0, 0.45));
+    background: radial-gradient(circle at top, #233, #000);
+}
+
+.content-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Right side */
+.content-hero__details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.content-hero__type-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.type-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.6);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.series-badge {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.series-badge.hidden {
+    display: none;
+}
+
+.content-title {
+    font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+    font-weight: 700;
+    margin: 0;
+}
+
+.content-description {
+    font-size: 0.95rem;
+    color: var(--text-2, #cfd8dc);
+    line-height: 1.5;
+    max-width: 60ch;
+}
+
+/* Meta line (chips) */
+.content-meta-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.meta-chip {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* Meta grid (label + value) */
+.content-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+}
+
+.meta-row {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.meta-label {
+    min-width: 80px;
+    color: var(--text-3, #90a4ae);
+}
+
+.meta-value {
+    color: var(--text-1, #eceff1);
+}
+
+/* Actions */
+.content-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.content-actions .btn {
+    min-width: 130px;
+}
+
+/* ===== SECTIONS (seasons / episodes) ===== */
+.content-section {
+    margin-top: 2rem;
+}
+
+.content-section.hidden {
+    display: none;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Optional tweaks so cards*/
+#seasons-carousel .content-card,
+#episodes-carousel .content-card {
+    max-width: 260px;
+}
+
+/* Like button styling */
+#like-btn i {
+    font-size: 1.1rem;
+    margin-right: 6px;
+}
+
+#like-btn.btn--liked {
+    color: var(--brand-1);
+}
+
+#like-btn.btn--liked i {
+    color: var(--brand-1);
+}
+
+#like-btn:hover {
+    opacity: 0.85;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .content-hero {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .content-page {
+        padding-inline: 1rem;
+    }
+}

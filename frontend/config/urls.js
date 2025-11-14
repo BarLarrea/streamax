@@ -53,6 +53,7 @@ export const API_URLS = {
         DELETE: (id) => `/profiles/${id}`,
         LAST_WATCHED: (id) => `/profiles/last-watched/${id}`,
         TOGGLE_LIKE: (id) => `/profiles/toggle-like/${id}`,
+        TOGGLE_LIKE: (id) => `/profiles/toggle-like/${id}`,
         WITH_CONTENT: (id) => `/profiles/${id}/with-content`
     },
 

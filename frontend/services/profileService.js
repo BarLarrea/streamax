@@ -53,3 +53,10 @@ export const getProfileWithContentService = async (profileId) => {
     const res = await api.get(`${API_URLS.PROFILES.WITH_CONTENT(profileId)}`);
     return res.data;
 };
+
+export const toggleLikeService = async (profileId, contentId) => {
+    const res = await api.put(API_URLS.PROFILES.TOGGLE_LIKE(profileId), {
+        contentId
+    });
+    return res.data;
+};
