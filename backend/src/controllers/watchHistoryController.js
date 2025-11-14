@@ -1,6 +1,7 @@
 import * as watchHistoryRepo from "../repositories/watchHistoryRepository.js";
 import watchHistoryFormatter from "../utils/watchHistoryFormatter.js";
 import { getContentById } from "../repositories/contentRepository.js";
+import Profile from "../models/profileModel.js";
 
 // ==================== CREATE / UPDATE / DELETE ====================
 
@@ -56,7 +57,6 @@ export const createWatchHistoryRecord = async (req, res) => {
                 "Duplicate record detected. Returning existing record."
             );
 
-            // 🔥 Get the existing record instead of failing
             const existing = await watchHistoryRepo.getWatchHistoryRecord(
                 profileId,
                 contentId
@@ -285,6 +285,7 @@ export const getWacthHistoryByContentID = async (req, res) => {
 export const getWatchHistoryRecord = async (req, res) => {
     try {
         const { profileId, contentId } = req.params;
+        console.log({ profileId, contentId });
         if (!profileId || !contentId) {
             return res
                 .status(400)
@@ -408,6 +409,63 @@ export const getPopularContents = async (req, res) => {
         });
     } catch (error) {
         console.error("Error in getPopularContents:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// ==================== STATS ====================
+
+export const getDailyViewsForUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({
+                message: "userId is required"
+            });
+        }
+
+        const profiles = await Profile.find({ userId })
+            .select("_id profileName")
+            .lean();
+
+        if (!profiles.length) {
+            return res.status(404).json({ message: "No profiles found" });
+        }
+
+        const result = [];
+
+        for (const p of profiles) {
+            const { status, data } =
+                await watchHistoryRepo.getDailyViewsByProfileId(p._id);
+
+            result.push({
+                profileId: p._id,
+                name: p.profileName,
+                daily: status === "success" ? data : []
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            profiles: result
+        });
+    } catch (err) {
+        console.error("Error in getDailyViewsForUser:", err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getGenrePopularity = async (req, res) => {
+    try {
+        const { status, data } = await watchHistoryRepo.getViewsByGenre();
+
+        return res.status(200).json({
+            success: true,
+            data
+        });
+    } catch (error) {
+        console.error("Error in getGenrePopularity:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };

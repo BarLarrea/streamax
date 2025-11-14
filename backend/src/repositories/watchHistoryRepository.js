@@ -1,4 +1,5 @@
 import WatchHistory from "../models/watchHistoryModel.js";
+import mongoose from "mongoose";
 import { isValidId } from "../utils/dalUtils.js";
 
 // ==================== CREATE / UPDATE / DELETE ====================
@@ -251,6 +252,7 @@ export const aggregatePopularContents = async (limit = 20) => {
                     _id: 0,
                     contentId: "$_id",
                     watchCount: 1,
+                    "content.id": "$content._id",
                     "content._id": 1,
                     "content.title": 1,
                     "content.type": 1,
@@ -274,4 +276,73 @@ export const getCompletedContentIds = async (profileId) => {
     ).lean();
 
     return records.map((r) => r.contentId.toString());
+};
+
+// ==================== STATS ====================
+
+export const getDailyViewsByProfileId = async (profileId) => {
+    try {
+        const result = await WatchHistory.aggregate([
+            {
+                $match: {
+                    profileId: new mongoose.Types.ObjectId(profileId),
+                    isArchived: false
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: "%Y-%m-%d",
+                            date: "$createdAt"
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: 1 } },
+            {
+                $project: {
+                    _id: 0,
+                    date: "$_id",
+                    count: 1
+                }
+            }
+        ]);
+
+        return { status: "success", data: result };
+    } catch (e) {
+        return { status: "error", data: [] };
+    }
+};
+
+export const getViewsByGenre = async () => {
+    const result = await WatchHistory.aggregate([
+        { $match: { isArchived: false } },
+        {
+            $lookup: {
+                from: "contents",
+                localField: "contentId",
+                foreignField: "_id",
+                as: "content"
+            }
+        },
+        { $unwind: "$content" },
+        { $unwind: "$content.genres" },
+        {
+            $group: {
+                _id: "$content.genres",
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                genre: "$_id",
+                count: 1
+            }
+        }
+    ]);
+
+    return { status: "success", data: result };
 };

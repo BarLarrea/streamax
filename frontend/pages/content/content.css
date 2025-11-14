@@ -197,6 +197,11 @@
     margin-top: 3rem;
     padding: 0.5rem 0;
 }
+.content-section .section-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+}
 
 .section-title {
     font-size: 1.35rem;

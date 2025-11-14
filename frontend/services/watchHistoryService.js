@@ -61,3 +61,13 @@ export async function getSingleRecordService(profileId, contentId) {
 
     return response.data.data;
 }
+
+export async function getDailyViewsForUserService(userId) {
+    const res = await api.get(`/watch-history/stats/daily/${userId}`);
+    return res.data.profiles;
+}
+
+export async function getGenrePopularityService() {
+    const res = await api.get(`/watch-history/stats/genres`);
+    return res.data.data;
+}

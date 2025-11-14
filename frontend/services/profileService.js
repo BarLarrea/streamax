@@ -34,7 +34,7 @@ export const deleteProfile = async (profileId) => {
 // ===== PROFILE LEVEL USAGES ====== //
 export const getProfileByIdService = async (profileId) => {
     const res = await api.get(API_URLS.PROFILES.BY_ID(profileId));
-    return res.data;
+    return res.data.profile;
 };
 
 export const updateLastWatchedService = async (

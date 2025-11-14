@@ -46,9 +46,9 @@ const profileSchema = new mongoose.Schema(
 
             validate: {
                 validator: function (arr) {
-                    return arr.length <= 5;
+                    return arr.length <= 10;
                 },
-                message: "You can store up to 5 last watched items only"
+                message: "You can store up to 10 last watched items only"
             }
         }
     },

@@ -11,7 +11,9 @@ import {
     getWatchHistoryRecord,
     getCompletedContentsByProfileId,
     getWatchingNow,
-    getPopularContents
+    getPopularContents,
+    getDailyViewsForUser,
+    getGenrePopularity
 } from "../controllers/watchHistoryController.js";
 
 const router = express.Router();
@@ -66,5 +68,14 @@ router.get(
 );
 
 router.get("/popular", ...watchHistoryPipeline, getPopularContents);
+
+router.get(
+    "/stats/daily/:userId",
+    verifyAccessToken,
+    ...watchHistoryPipeline,
+    getDailyViewsForUser
+);
+
+router.get("/stats/genres", ...watchHistoryPipeline, getGenrePopularity);
 
 export default router;

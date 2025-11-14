@@ -184,12 +184,6 @@ const deleteProfileById = async (req, res) => {
 };
 
 const updateLastWatched = (profile, contentId, progress, duration) => {
-    console.log("Updating last watched:", {
-        profileId: profile._id,
-        contentId,
-        progress,
-        duration
-    });
     const index = profile.lastWatched.findIndex(
         (object) => object.contentId.toString() === contentId.toString()
     );
@@ -202,7 +196,7 @@ const updateLastWatched = (profile, contentId, progress, duration) => {
         profile.lastWatched.push(existing); // push it to the end
     } else {
         // remove the oldest (first) item
-        if (profile.lastWatched.length >= 5) {
+        if (profile.lastWatched.length >= 10) {
             profile.lastWatched.shift();
         }
         profile.lastWatched.push({

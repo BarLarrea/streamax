@@ -1,0 +1,75 @@
+/* =============================
+   SEARCH PAGE WRAPPER
+============================= */
+.search-page {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: var(--header-height);
+    background: linear-gradient(to bottom, var(--bg-0), var(--bg-1));
+}
+
+.search-page .container {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+    padding-bottom: 4rem;
+}
+
+/* =============================
+   SEARCH BAR
+============================= */
+.search-header {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    margin-bottom: 2.2rem;
+}
+
+.search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 460px; /* רוחב עדין וקצר יותר */
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.6rem; /* מקום לאייקון */
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    color: var(--text-1);
+    font-size: 1rem;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.search-bar input::placeholder {
+    color: var(--text-3);
+}
+
+.search-bar input:focus {
+    border-color: var(--brand-1);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* =============================
+   RESULTS
+============================= */
+
+#results-container {
+    margin-top: 1rem;
+}
+
+#results-container .carousel__title {
+    color: var(--text-1);
+}
+
+#results-container .shelf {
+    margin-top: 2rem;
+}
+
+.search-page .carousel__title {
+    color: var(--text-1);
+}

@@ -2,11 +2,11 @@ import loadCarousel from "../../shared/components/carousel/index.js";
 import { renderContentCard } from "../../shared/components/contentCard/renderContentCard.js";
 import { showSpinner, hideSpinner } from "../../utils/loading.js";
 
-import { getProfileWithContentService } from "../../services/profileService.js";
 import {
-    getWatchingNowService,
-    getPopularContentsService
-} from "../../services/watchHistoryService.js";
+    getProfileWithContentService,
+    getProfileByIdService
+} from "../../services/profileService.js";
+import { getPopularContentsService } from "../../services/watchHistoryService.js";
 import {
     getContentsByGenresService,
     getAllContentsPagedService,
@@ -46,8 +46,8 @@ async function loadContinueWatchingShelf(root, profileId) {
         showSpinner();
 
         // 1) Get local profile
-        const stored = localStorage.getItem("selectedProfile");
-        if (!stored) {
+        const profile = await getProfileByIdService(profileId);
+        if (!profile) {
             appendEmptyMessage(
                 shelfSelector,
                 "No items to continue. Start watching something!"
@@ -55,7 +55,8 @@ async function loadContinueWatchingShelf(root, profileId) {
             return;
         }
 
-        const profile = JSON.parse(stored);
+        localStorage.setItem("selectedProfile", JSON.stringify(profile));
+
         const lastWatched = Array.isArray(profile.lastWatched)
             ? profile.lastWatched
             : [];
@@ -81,7 +82,7 @@ async function loadContinueWatchingShelf(root, profileId) {
                     progressSeconds: item.progress,
                     durationSeconds: item.duration,
                     onContinue: (c) => {
-                        window.location.hash = `#/content/${c._id}`;
+                        window.location.hash = `#/content/${c.id}`;
                     }
                 });
             })
@@ -149,8 +150,8 @@ async function loadRecommendedShelf(root, profileId) {
         let recs = res.contents || [];
 
         // Exclude already seen/liked
-        const excludeIds = new Set(allSource.map((c) => String(c._id)));
-        recs = recs.filter((c) => !excludeIds.has(String(c._id)));
+        const excludeIds = new Set(allSource.map((c) => String(c.id)));
+        recs = recs.filter((c) => !excludeIds.has(String(c.id)));
 
         if (!recs.length) {
             appendEmptyMessage(
@@ -227,45 +228,54 @@ async function loadGenreShelves(root) {
         "Horror"
     ];
 
-    for (const genre of genres) {
-        const shelfSelector = `#shelf-${genre.toLowerCase()}`;
-        await appendShelf(
-            root,
-            shelfSelector,
-            `Recently Added in ${capitalize(genre)}`
-        );
+    const shelfConfigs = genres.map((genre) => ({
+        genre,
+        selector: `#shelf-${genre.toLowerCase()}`,
+        title: `Recently Added in ${capitalize(genre)}`
+    }));
 
-        try {
-            showSpinner();
-            const res = await getAllContentsPagedService(1, 10, {
-                genres: genre,
-                sortBy: "createdAt"
-            });
+    // Create all shelves in the correct order (with titles + click-to-genre)
+    for (const { selector, title } of shelfConfigs) {
+        await appendShelf(root, selector, title);
+    }
 
-            const list = res.contents || [];
+    // Load content for all shelves in parallel
+    await Promise.all(
+        shelfConfigs.map(({ genre, selector }) =>
+            loadSingleGenreShelf(genre, selector)
+        )
+    );
+}
 
-            if (!list.length) {
-                appendEmptyMessage(shelfSelector, "No recent content found.");
-                continue;
-            }
+async function loadSingleGenreShelf(genre, shelfSelector) {
+    try {
+        showSpinner();
+        const res = await getAllContentsPagedService(1, 10, {
+            genres: genre,
+            sortBy: "createdAt"
+        });
 
-            const cards = list.map((c) =>
-                renderContentCard(c, { viewState: "new", clickable: true })
-            );
-            renderCards(`${shelfSelector} .carousel__track`, cards);
-        } catch (err) {
-            // Handle "no content found" (404) gracefully
-            if (err.response?.status === 404) {
-                appendEmptyMessage(shelfSelector, "No recent content found.");
-                continue;
-            }
+        const list = res.contents || [];
 
-            // Real error (server/network)
-            console.error(`Error loading genre "${genre}":`, err);
-            appendEmptyMessage(shelfSelector, "Unable to load this genre.");
-        } finally {
-            hideSpinner();
+        if (!list.length) {
+            appendEmptyMessage(shelfSelector, "No recent content found.");
+            return;
         }
+
+        const cards = list.map((c) =>
+            renderContentCard(c, { viewState: "new", clickable: true })
+        );
+        renderCards(`${shelfSelector} .carousel__track`, cards);
+    } catch (err) {
+        if (err.response?.status === 404) {
+            appendEmptyMessage(shelfSelector, "No recent content found.");
+            return;
+        }
+
+        console.error(`Error loading genre "${genre}":`, err);
+        appendEmptyMessage(shelfSelector, "Unable to load this genre.");
+    } finally {
+        hideSpinner();
     }
 }
 

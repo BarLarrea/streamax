@@ -138,6 +138,12 @@ function renderHero(root, content, watchData) {
     const playBtn = root.querySelector("#play-btn");
     const likeBtn = root.querySelector("#like-btn");
 
+    if (type === "series") {
+        if (playBtn) playBtn.style.display = "none";
+    } else {
+        if (playBtn) playBtn.style.display = "inline-flex";
+    }
+
     // -------------------------
     // 1) Poster / Title / Desc
     // -------------------------
@@ -223,22 +229,24 @@ function renderHero(root, content, watchData) {
     // -------------------------
     let startFrom = 0;
 
-    // Correct destructuring
-    const { progress = 0, isCompleted = false } = watchData || {};
+    if (playBtn && type !== "series") {
+        const {
+            progress = 0,
+            duration = 0,
+            isCompleted = false
+        } = watchData || {};
 
-    if (playBtn) {
         if (isCompleted) {
             playBtn.innerHTML = `<i class="bi bi-play-fill"></i> Watch Again`;
         } else if (progress > 0) {
             playBtn.innerHTML = `<i class="bi bi-play-fill"></i> Resume`;
-            startFrom = progress;
         } else {
             playBtn.innerHTML = `<i class="bi bi-play-fill"></i> Play`;
         }
 
         playBtn.onclick = () => {
-            if (startFrom > 0) {
-                window.location.hash = `#/watch/${id}?from=${startFrom}`;
+            if (progress > 0) {
+                window.location.hash = `#/watch/${id}?from=${progress}`;
             } else {
                 window.location.hash = `#/watch/${id}`;
             }

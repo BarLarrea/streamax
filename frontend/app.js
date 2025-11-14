@@ -12,6 +12,8 @@ import loadHomePage from "./pages/home/index.js";
 import loadGenrePage from "./pages/genre/index.js";
 import loadContentPage from "./pages/content/index.js";
 import loadWatchPage from "./pages/watch/index.js";
+import loadSearchPage from "./pages/search/index.js";
+import loadStatsPage from "./pages/stats/index.js";
 
 function getCurrentPage() {
     const hash = window.location.hash || "#/login";
@@ -89,6 +91,12 @@ const initApp = async () => {
                 break;
             case "watch":
                 await loadWatchPage();
+                break;
+            case "search":
+                await loadSearchPage();
+                break;
+            case "stats":
+                await loadStatsPage();
                 break;
             default:
                 await loadNotFoundPage();

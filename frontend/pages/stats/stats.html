@@ -1,0 +1,36 @@
+<section
+    class="stats-page"
+    data-page="stats"
+>
+    <div class="container">
+        <h1 class="stats-title">Statistics</h1>
+
+        <!-- ===== DAILY VIEWS (BAR CHART) ===== -->
+        <div class="chart-card">
+            <h2 class="chart-title">Daily Views</h2>
+            <div class="chart-wrapper">
+                <canvas id="dailyViewsChart"></canvas>
+                <p
+                    class="empty-msg hidden"
+                    id="dailyViewsEmpty"
+                >
+                    No data available
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== GENRE POPULARITY (PIE CHART) ===== -->
+        <div class="chart-card">
+            <h2 class="chart-title">Genre Popularity</h2>
+            <div class="chart-wrapper">
+                <canvas id="genrePopularityChart"></canvas>
+                <p
+                    class="empty-msg hidden"
+                    id="genrePopularityEmpty"
+                >
+                    No data available
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
