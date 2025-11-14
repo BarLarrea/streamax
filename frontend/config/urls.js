@@ -8,6 +8,13 @@ export const API_URLS = {
         REFRESH: "/auth/refresh"
     },
 
+    USERS: {
+        ME: "/users/me",
+        UPDATE: "/users/me",
+        DELETE: "/users/me",
+        CHANGE_PASSWORD: "/users/me/password"
+    },
+
     ADMIN: {
         ROOT: "/admin",
         CONTENT: {

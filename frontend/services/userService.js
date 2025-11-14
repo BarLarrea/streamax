@@ -2,7 +2,7 @@ import api from "./api.js";
 import { API_URLS } from "../config/urls.js";
 
 export const editUser = async (userName, userEmail) => {
-    const response = await api.patch(`${API_URLS.USERS.EDIT}`, {
+    const response = await api.patch(`${API_URLS.USERS.UPDATE}`, {
         userName,
         email: userEmail
     });
@@ -10,7 +10,7 @@ export const editUser = async (userName, userEmail) => {
 };
 
 export const changeUserPassword = async (currentPassword, newPassword) => {
-    const redponse = await api.patch(`${API_URLS.USERS.CH_PSSWORD}`, {
+    const redponse = await api.patch(`${API_URLS.USERS.CHANGE_PASSWORD}`, {
         currentPassword,
         newPassword
     });
