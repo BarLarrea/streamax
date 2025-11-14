@@ -1,5 +1,6 @@
 import { renderContentCard } from "../../shared/components/contentCard/renderContentCard.js";
 import { getContentsByGenreService } from "../../services/contentService.js";
+import { showSpinner, hideSpinner } from "../../utils/loading.js";
 
 let currentPage = 1;
 let isLoading = false;
@@ -99,8 +100,7 @@ function setupGenreDropdown(selectedGenre) {
 async function loadMoreContents() {
     if (!hasMore || isLoading) return;
 
-    isLoading = true;
-    showLoading(true);
+    showSpinner();
 
     try {
         const [sortBy, sortOrder] = currentSort.split("-");
@@ -123,11 +123,22 @@ async function loadMoreContents() {
 
         const listEl = document.getElementById("genre-content-list");
 
+        if (response.contents.length === 0 && currentPage === 1) {
+            listEl.innerHTML = `
+                        <div class="no-results">
+                            No content found for this genre.
+                        </div>
+                    `;
+            hasMore = false;
+            return;
+        }
+
         response.contents.forEach((item) => {
             const card = renderContentCard(item, {
                 clickable: true,
                 viewState: "new"
             });
+            card.classList.add("fade-in-card");
             listEl.appendChild(card);
         });
 
@@ -138,8 +149,7 @@ async function loadMoreContents() {
         console.error("Genre load error:", err);
         hasMore = false;
     } finally {
-        isLoading = false;
-        showLoading(false);
+        hideSpinner();
     }
 }
 
@@ -184,10 +194,4 @@ function setupInfiniteScroll() {
             await loadMoreContents();
         }
     };
-}
-
-function showLoading(state) {
-    const el = document.getElementById("genre-loading");
-    if (state) el.classList.remove("hidden");
-    else el.classList.add("hidden");
 }

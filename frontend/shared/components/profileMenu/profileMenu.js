@@ -6,16 +6,14 @@ export const initProfileMenu = () => {
     const dropdown = document.getElementById("profile-dropdown");
     const logoutBtn = document.getElementById("logout-btn");
 
-    // === Set profile image dynamically ===
+    // === Set profile image  ===
     try {
-        const selectedProfile = JSON.parse(
-            localStorage.getItem("selectedProfile")
-        );
-        if (selectedProfile?.avatar && avatar) {
-            avatar.src = selectedProfile.avatar;
+        const storedAvatar = localStorage.getItem("profileAvatar");
+        if (storedAvatar && avatar) {
+            avatar.src = storedAvatar;
         }
     } catch (err) {
-        console.warn("No selectedProfile found in localStorage.");
+        console.warn("No profileAvatar found in localStorage.");
     }
 
     // === Toggle dropdown ===

@@ -24,4 +24,24 @@ export const initNavBar = () => {
             nav.classList.remove("open");
         }
     });
+
+    // initial activation
+    updateActiveNavLink();
+
+    // activation on route change
+    window.addEventListener("hashchange", updateActiveNavLink);
 };
+
+function updateActiveNavLink() {
+    const current = window.location.hash.replace("#/", "") || "home";
+
+    document.querySelectorAll(".nav a").forEach((link) => {
+        const href = link.getAttribute("href").replace("#/", "");
+
+        if (href === current) {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+    });
+}
