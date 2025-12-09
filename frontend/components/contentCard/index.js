@@ -1,4 +1,4 @@
-import loadComponent from "../../../utils/loadComponent.js";
+import loadComponent from "../../utils/loadComponent.js";
 import { initContentCard } from "./contentCard.js";
 
 const loadContentCard = async (selector, content, opts = {}) => {
@@ -9,8 +9,8 @@ const loadContentCard = async (selector, content, opts = {}) => {
 
     await loadComponent(
         selector,
-        "./shared/components/contentCard/contentCard.html",
-        "./shared/components/contentCard/contentCard.css"
+        "./components/contentCard/contentCard.html",
+        "./components/contentCard/contentCard.css"
     );
 
     // Initialize card logic

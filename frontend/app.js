@@ -1,5 +1,5 @@
-import loadHeader from "./shared/components/header/index.js";
-import loadFooter from "./shared/components/footer/index.js";
+import loadHeader from "./components/header/index.js";
+import loadFooter from "./components/footer/index.js";
 import loadLoginPage from "./pages/login/index.js";
 import loadRegisterPage from "./pages/register/index.js";
 import loadProfilesPage from "./pages/profiles/index.js";

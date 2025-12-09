@@ -1,10 +1,10 @@
-import loadComponent from "../../../utils/loadComponent.js";
+import loadComponent from "../../utils/loadComponent.js";
 
 const loadHeader = async (currentPage) => {
     await loadComponent(
         "#app-header",
-        "./shared/components/header/header.html",
-        "./shared/components/header/header.css"
+        "./components/header/header.html",
+        "./components/header/header.css"
     );
 
     const module = await import("./header.js");

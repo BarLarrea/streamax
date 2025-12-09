@@ -1,4 +1,4 @@
-import { renderContentCard } from "../../shared/components/contentCard/renderContentCard.js";
+import { renderContentCard } from "../../components/contentCard/renderContentCard.js";
 import { getContentsByGenreService } from "../../services/contentService.js";
 import { showSpinner, hideSpinner } from "../../utils/loading.js";
 

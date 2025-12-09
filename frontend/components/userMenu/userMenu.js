@@ -1,5 +1,5 @@
-import { logoutUser } from "../../../services/authService.js";
-import { showSuccess, showError } from "../../../utils/notifications.js";
+import { logoutUser } from "../../services/authService.js";
+import { showSuccess, showError } from "../../utils/notifications.js";
 
 export const initUserMenu = () => {
     const avatar = document.getElementById("user-avatar");

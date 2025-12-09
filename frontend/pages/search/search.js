@@ -1,6 +1,6 @@
 import { searchContentService } from "../../services/contentService.js";
-import loadCarousel from "../../shared/components/carousel/index.js";
-import { renderContentCard } from "../../shared/components/contentCard/renderContentCard.js";
+import loadCarousel from "../../components/carousel/index.js";
+import { renderContentCard } from "../../components/contentCard/renderContentCard.js";
 import { showSpinner, hideSpinner } from "../../utils/loading.js";
 
 let debounceTimer = null;

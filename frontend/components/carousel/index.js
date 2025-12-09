@@ -1,4 +1,4 @@
-import loadComponent from "../../../utils/loadComponent.js";
+import loadComponent from "../../utils/loadComponent.js";
 import { initCarousel } from "./carousel.js";
 
 const loadCarousel = async (selector) => {
@@ -9,8 +9,8 @@ const loadCarousel = async (selector) => {
 
     await loadComponent(
         selector,
-        "./shared/components/carousel/carousel.html",
-        "./shared/components/carousel/carousel.css"
+        "./components/carousel/carousel.html",
+        "./components/carousel/carousel.css"
     );
 
     const container = document.querySelector(selector);

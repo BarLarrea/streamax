@@ -11,6 +11,9 @@ import contentRoutes from "./routes/contentRoutes.js";
 import watchHistoryRoutes from "./routes/watchHistoryRoutes.js";
 
 const app = express();
+const PORT = process.env.PORT || 5050;
+
+connectDB();
 
 app.use(
     cors({
@@ -19,10 +22,9 @@ app.use(
     })
 );
 
+// Global midllewares
 app.use(express.json());
 app.use(cookieParser());
-
-connectDB();
 
 //Routes setup
 app.use("/api/auth", authRout);
@@ -32,6 +34,5 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/content", contentRoutes);
 app.use("/api/watch-history", watchHistoryRoutes);
 
-const PORT = process.env.PORT || 5050;
 
 app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
